@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace CiBitMainServer.Models
+{
+    public class TransactionDTO
+    {
+        public string SenderId { get; set; }
+        public string ReceiverId { get; set; }
+        public string ResearchId { get; set; }
+        public DateTime Date { get; set; }
+        public int Amount { get; set; }
+        public int BlockchainNumber { get; set; }
+        public string CoinId { get; set; }
+    }
+}

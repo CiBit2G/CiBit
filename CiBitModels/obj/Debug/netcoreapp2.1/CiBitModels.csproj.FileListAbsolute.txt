@@ -1,0 +1,8 @@
+C:\Users\Shaked Pen Graitzer\source\repos\CiBitServer\CiBitModels\bin\Debug\netcoreapp2.1\CiBitModels.deps.json
+C:\Users\Shaked Pen Graitzer\source\repos\CiBitServer\CiBitModels\bin\Debug\netcoreapp2.1\CiBitModels.dll
+C:\Users\Shaked Pen Graitzer\source\repos\CiBitServer\CiBitModels\bin\Debug\netcoreapp2.1\CiBitModels.pdb
+C:\Users\Shaked Pen Graitzer\source\repos\CiBitServer\CiBitModels\obj\Debug\netcoreapp2.1\CiBitModels.csproj.CoreCompileInputs.cache
+C:\Users\Shaked Pen Graitzer\source\repos\CiBitServer\CiBitModels\obj\Debug\netcoreapp2.1\CiBitModels.AssemblyInfoInputs.cache
+C:\Users\Shaked Pen Graitzer\source\repos\CiBitServer\CiBitModels\obj\Debug\netcoreapp2.1\CiBitModels.AssemblyInfo.cs
+C:\Users\Shaked Pen Graitzer\source\repos\CiBitServer\CiBitModels\obj\Debug\netcoreapp2.1\CiBitModels.dll
+C:\Users\Shaked Pen Graitzer\source\repos\CiBitServer\CiBitModels\obj\Debug\netcoreapp2.1\CiBitModels.pdb
