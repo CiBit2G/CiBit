@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Transactions;
 using CiBitMainServer.Models;
 using MySql.Data.MySqlClient;
 
@@ -30,6 +31,8 @@ namespace CiBitMainServer.DBLogic
         private const string amount = "amount";
         private const string blockchainNumber = "bcNumber";
         private const string coinId = "coin_id";
+        private const string TransactionId = "t_id";
+        
 
         #endregion
 
@@ -186,6 +189,44 @@ namespace CiBitMainServer.DBLogic
         public static List<SpObject> RemoveUserConverter(UserDTO request)
         {
             return GetUserConverter(request);
+        }
+
+        public static List<SpObject> GetTransactionConverter(TransactionDTO request)
+        {
+            return new List<SpObject>
+            {
+                new SpObject
+                {
+                    Name = TransactionId,
+                    value = request.TransactionId.ToString(),
+                    ParamType = MySqlDbType.Int32
+                },
+                new SpObject
+                {
+                    Name = blockchainNumber,
+                    value = request.BlockchainNumber.ToString(),
+                    ParamType = MySqlDbType.Int32
+                }
+            };
+        }
+
+        public static List<SpObject> GetCoinsConverter(string coinId, int Amount)
+        {
+            return new List<SpObject>
+            {
+                new SpObject
+                {
+                    Name = coinId,
+                    value = coinId,
+                    ParamType = MySqlDbType.VarChar
+                },
+                new SpObject
+                {
+                    Name = amount,
+                    value = Amount.ToString(),
+                    ParamType = MySqlDbType.Int32
+                }
+            };
         }
     }
 

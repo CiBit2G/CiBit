@@ -7,12 +7,13 @@ namespace CiBitMainServer.Models
 {
     public class TransactionDTO
     {
+        public int TransactionId { get; set; }
         public string SenderId { get; set; }
         public string ReceiverId { get; set; }
         public string ResearchId { get; set; }
         public DateTime Date { get; set; }
         public int Amount { get; set; }
         public int BlockchainNumber { get; set; }
-        public string CoinId { get; set; }
+        public List<CoinDTO> Coins { get; set; }
     }
 }
