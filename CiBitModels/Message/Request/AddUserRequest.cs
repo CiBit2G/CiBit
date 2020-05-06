@@ -24,12 +24,12 @@ namespace CiBitUtil.Message.Request
         public DateTime DOB { get; set; }
 
         [Required]
-        [StringLength(maximumLength: 45, MinimumLength = 6)]
+        [StringLength(maximumLength: 50, MinimumLength = 6)]
         [Password]
         public string Password { get; set; }
 
         [Required]
-        [StringLength(maximumLength: 45, MinimumLength = 6)]
+        [StringLength(maximumLength: 50, MinimumLength = 6)]
         public string VerifyPassword { get; set; }
 
         [Required]

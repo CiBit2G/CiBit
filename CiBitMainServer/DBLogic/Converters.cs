@@ -173,7 +173,7 @@ namespace CiBitMainServer.DBLogic
             };
         }
 
-        public static List<SpObject> RemoveCoinConverter(TransactionDTO request)
+       /* public static List<SpObject> RemoveCoinConverter(TransactionDTO request)
         {
             return new List<SpObject>
             {
@@ -184,7 +184,7 @@ namespace CiBitMainServer.DBLogic
                 ParamType = MySqlDbType.VarChar
                 }
             };
-        }
+        } */
 
         public static List<SpObject> RemoveUserConverter(UserDTO request)
         {

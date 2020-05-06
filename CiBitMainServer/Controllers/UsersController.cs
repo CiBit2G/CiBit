@@ -104,8 +104,15 @@ namespace CiBitMainServer.Controllers
             var spObj = Converters.CreateUserConverter(userinfo);
             var reader = context.StoredProcedureSql("CreateUser", spObj);
 
+            IPythonAPI py = new PythonAPI();
+            string message;
+            string response = py.CSharpPythonRestfulApiSimpleTest("https://localhost:44357/api/v1.0/newUser", userinfo.CibitId,out message);
+            
             context.Connection.Close();
-            return true;
+            if (response == "OK")
+                return true;
+            else
+                return false;
         }
 
         // DELETE: Users/CreateUser/CreateUserRequest

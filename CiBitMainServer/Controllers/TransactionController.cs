@@ -11,10 +11,10 @@ using System.Linq;
 
 namespace CiBitMainServer.Controllers
 {
-    public class TransactionController : Controller
+   public class TransactionController : Controller
     {
         // INSERT: Transaction/AddTransaction/CreateUserRequest
-        public bool AddTransaction([FromBody]AddTransactionRequest request)
+     /*   public bool AddTransaction([FromBody]AddTransactionRequest request)
         {
             var context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
             var verify = new ValidateUser();
@@ -50,9 +50,9 @@ namespace CiBitMainServer.Controllers
 
             context.Connection.Close();
             return true;
-        }
+        } */
 
-        public TransactionDTO GetTransaction([FromBody]GetTransactionRequest request)
+      /*  public TransactionDTO GetTransaction([FromBody]GetTransactionRequest request)
         {
             CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb; ;
             int i=0;
@@ -89,11 +89,12 @@ namespace CiBitMainServer.Controllers
                 {
                     CoinId = reader["coinId"].ToString()
                 });
-                response.transaction.Coins.Add(cRespone.Coins.TakeLast(i);
+                response.transaction.Coins.Add(cRespone.Coins.TakeLast(i));
                 i ++;
             }
             context.Connection.Close();
             return response;
-        }
+        } 
+        */
     }
 }

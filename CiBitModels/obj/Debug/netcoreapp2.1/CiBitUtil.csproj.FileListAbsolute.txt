@@ -14,3 +14,4 @@ C:\Users\user\Desktop\Projects\FinalProject\CiBit\CiBitModels\obj\Debug\netcorea
 C:\Users\user\Desktop\Projects\FinalProject\CiBit\CiBitModels\obj\Debug\netcoreapp2.1\CiBitUtil.AssemblyInfo.cs
 C:\Users\user\Desktop\Projects\FinalProject\CiBit\CiBitModels\obj\Debug\netcoreapp2.1\CiBitUtil.dll
 C:\Users\user\Desktop\Projects\FinalProject\CiBit\CiBitModels\obj\Debug\netcoreapp2.1\CiBitUtil.pdb
+C:\Users\user\Desktop\Projects\FinalProject\CiBit\CiBitModels\obj\Debug\netcoreapp2.1\CiBitUtil.csprojAssemblyReference.cache
