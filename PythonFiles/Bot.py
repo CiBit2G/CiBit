@@ -54,7 +54,7 @@ class Search:
         sum = self.addNewArticles(self.newPublications, cibitId)
         if check == sum:
             print(sum)
-        #createCoins(sum, cibitId)
+        self.createCoins(sum, cibitId)
 
 # compare between the two list we got of articles and find what article need to be updated.
     def compareArticles(self, articles, cibitId):
@@ -106,14 +106,11 @@ class Search:
             cursor = self.connection.cursor()
             args = [coinId, cibitId, worked]
             result = cursor.callproc('AddCoin', args)
-            print(result[-1])
-            print(i)
             if result[-1] == 1:
                 i += 1
         args = [None, cibitId, None, datetime.datetime.now(), amount]
-        cursor.callproc('AddTransaction', args)
+        cursor.callproc('AddNewCoinsTransaction', args)
         cursor.close()
-
 
 # a function that gets the new user and find all the details known about him in google scholar
     def newUser(self, cibitId):
@@ -124,7 +121,7 @@ class Search:
         self.searchUser(name, cibitId)
 
 # a function that gets all the users in the database and send each one to check for new citations
-    def monthyUpdate(self):
+    def monthlyUpdate(self):
         cursor = self.connection.cursor()
         cursor.callproc('getUsers')
         authors = list(next(cursor.stored_results()))
@@ -138,33 +135,31 @@ class Search:
 
 
 def connect():
-    connection = mysql.connector.connect(host='localhost',
+    try:
+        connection = mysql.connector.connect(host='localhost',
                                          database='cibitdb',
                                          user='bot',
-                                         password='qwe32110')
-    if connection.is_connected():
-        db_Info = connection.get_server_info()
-        print("Connected to MySQL Server version ", db_Info)
-        cursor = connection.cursor()
-        cursor.execute("select database();")
-        record = cursor.fetchone()
-        print("You're connected to database: ", record)
-        cursor.close()
-    return connection
+                                         password='qwe32110',
+                                         auth_plugin='mysql_native_password')
+        return connection
+    except mysql.connector.Error as e:
+        print("Error while connecting to MySQL", e)
 
 
 def main():
+    search = Search()
     try:
-        search = Search()
         if len(sys.argv) == 2:
+            print(sys.argv[1])
             search.newUser(str(sys.argv[1]))
         elif len(sys.argv) == 1:
-            search.monthyUpdate()
+            print(sys.argv[0])
+            search.monthlyUpdate()
         else:
             logger.error("Too many arguments")
-    except mysql.connector.Error as e:
-        print("Error while connecting to MySQL", e)
     finally:
+        if search is None:
+            return 0
         if search.connection.is_connected():
             search.connection.commit()
             search.connection.close()

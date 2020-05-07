@@ -1,6 +1,6 @@
 import json
 import requests
-from CoinGenrator import verfiyCoins
+from CoinGenrator import verifyCoins
 
 
 class Block:
