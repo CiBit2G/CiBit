@@ -1,4 +1,4 @@
-#!C:\Users\user\Desktop\Projects\FinalProject\PythonFiles\venv\Scripts\python.exe
+#!C:\Users\user\Documents\GitHub\CiBit\PythonFiles\venv\Scripts\python.exe
 # EASY-INSTALL-ENTRY-SCRIPT: 'future==0.18.2','console_scripts','pasteurize'
 __requires__ = 'future==0.18.2'
 import re

@@ -1,7 +1,6 @@
-from CoinGenerator import verfiyCoins
 import json
 import requests
-from flask import Flask, jsonify, request
+from CoinGenrator import verfiyCoins
 
 
 class Block:
@@ -14,9 +13,11 @@ class Block:
 
     # a function to start building the block's data
     def fillData(self):
+        return self.data
 
     # a function to check if the block has  100 transactions or 24 hours had past since last block.
     def isBlockReady(self):
+        return True
 
     # a function to get next transaction of the block from the server.
     def getTransactions(self, index):
@@ -25,11 +26,4 @@ class Block:
         Variables = {'BlockchainNumber': self.Id, 'TransactionId': index}
         self.data.append(requests.get(url = temp, params = Variables).json())
 
-
-
-
-
-
-@app.route('/transactions/new', methods=['POST'])
-def new_transaction():
 

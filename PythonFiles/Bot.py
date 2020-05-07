@@ -3,9 +3,7 @@ import datetime
 import scholarly
 import logging
 import sys
-import requests
-from flask import Flask, jsonify, request, app
-from CoinGenerator import generateCoin
+from CoinGenrator import generateCoin
 
 
 logger = logging.getLogger('testbot')
@@ -139,7 +137,6 @@ class Search:
         cursor.close()
 
 
-
 def connect():
     connection = mysql.connector.connect(host='localhost',
                                          database='cibitdb',
@@ -156,13 +153,15 @@ def connect():
     return connection
 
 
-search = Search()
-
-
-@app.route("/api/v1.0/update" , methods=["POST"])
-def update():
+def main():
     try:
-        search.monthyUpdate()
+        search = Search()
+        if len(sys.argv) == 2:
+            search.newUser(str(sys.argv[1]))
+        elif len(sys.argv) == 1:
+            search.monthyUpdate()
+        else:
+            logger.error("Too many arguments")
     except mysql.connector.Error as e:
         print("Error while connecting to MySQL", e)
     finally:
@@ -172,36 +171,9 @@ def update():
             print("MySQL connection is closed")
 
 
-@app.route("/api/v1.0/newUser", methods=["POST"])
-def newUser():
-    try:
-        post = request.get_json()
-        search.newUser(post.get('cibitId'))
-        response = jsonify(True)
-        response.status = 200
-    except mysql.connector.Error as e:
-        print("Error while connecting to MySQL", e)
-        response = jsonify((False))
-        response.status = 400
-    finally:
-        if search.connection.is_connected():
-            search.connection.commit()
-            search.connection.close()
-            return response
-
-
-# Instantiate the Node
-app = Flask(__name__)
-
 if __name__ == '__main__':
-    from argparse import ArgumentParser
+    main()
 
-    parser = ArgumentParser()
-    parser.add_argument('-p', '--port', default=5001, type=int, help='port to listen on')
-    args = parser.parse_args()
-    port = args.port
-
-    app.run(host='0.0.0.0', port=port)
 
 #API1 for checking new changes in the last month.
 #API2 for recieving a cibit id from the server and updating tables.

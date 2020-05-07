@@ -7,12 +7,14 @@ using CiBitMainServer.DBLogic;
 using CiBitUtil.Validation;
 using AutoMapper;
 using CiBitMainServer.Models;
+using System;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CiBitMainServer.Controllers
 {
     public class UsersController : Controller
     {
-
+        private static readonly string pyFullPath = $"C:\\Users\\{Environment.UserName}\\Documents\\GitHub\\CiBit\\PythonFiles\\Bot.py";
         // GET: Users/GetUser/GetUserRequest
         public GetUserResponse GetUser([FromBody]GetUserRequest request)
         {
@@ -76,43 +78,34 @@ namespace CiBitMainServer.Controllers
         // INSERT: Users/CreateUser/CreateUserRequest
         public bool CreateUser([FromBody]CreateUserRequest request)
         {
-            var context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb; ;
-            var hash = new ValidateUser();
+            if (!ModelState.IsValid)
+                throw new System.Exception(ModelState.ErrorCount.ToString());
 
-            //test
-            if (string.IsNullOrEmpty(request.FName ))
-                request = new CreateUserRequest
-                {
-                    FName = "Nadav",
-                    LName = "Voloch",
-                    DOB = System.DateTime.Now,
-                    Email = "a@b.com",
-                    Password = "testPassword",
-                    VerifyPassword = "testPassword",
-                    ArticleName = "An Access Control model for data security in Online Social Networks based on role and user credibility",
-                    CitationCount = 0,
-                    University = "Ben-Gurion University"
-                };
+            try
+            {
+                var context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb; ;
+                var hash = new ValidateUser();
 
-            var config = new MapperConfiguration(mc => mc.CreateMap<CreateUserRequest, UserDTO>());
-            var mapper = new Mapper(config);
-            var userinfo = mapper.Map<CreateUserRequest, UserDTO>(request);
+                var config = new MapperConfiguration(mc => mc.CreateMap<CreateUserRequest, UserDTO>());
+                var mapper = new Mapper(config);
+                var userinfo = mapper.Map<CreateUserRequest, UserDTO>(request);
 
-            userinfo.Password = hash.Hash(userinfo.Password); //hash Password
-            userinfo.CibitId = hash.CreateCibitId();
-            userinfo.ArticleName = userinfo.ArticleName.ToLower();
-            var spObj = Converters.CreateUserConverter(userinfo);
-            var reader = context.StoredProcedureSql("CreateUser", spObj);
+                userinfo.Password = hash.Hash(userinfo.Password); //hash Password
+                userinfo.CibitId = hash.CreateCibitId();
+                userinfo.ArticleName = userinfo.ArticleName.ToLower();
+                var spObj = Converters.CreateUserConverter(userinfo);
+                var reader = context.StoredProcedureSql("CreateUser", spObj);
 
-            IPythonAPI py = new PythonAPI();
-            string message;
-            string response = py.CSharpPythonRestfulApiSimpleTest("https://localhost:44357/api/v1.0/newUser", userinfo.CibitId, out message);
-            
-            context.Connection.Close();
-            if (response == "OK")
+                var bot = new RunPythonBot();
+                bot.run_cmd(pyFullPath, userinfo.CibitId);
+
+                context.Connection.Close();
                 return true;
-            else
+            }
+            catch 
+            {
                 return false;
+            }
         }
 
         // DELETE: Users/CreateUser/CreateUserRequest

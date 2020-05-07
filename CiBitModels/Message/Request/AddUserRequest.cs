@@ -37,7 +37,7 @@ namespace CiBitUtil.Message.Request
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            var passRegex = new Regex(@"^[0-9a-zA-Z][^ \S\t\n\r]{5,44}$");
+            var passRegex = new Regex(@"^[0-9a-zA-Z!@#$%^&*(){}?/*-+_+]{6,45}$");
 
             if (!passRegex.Match(Password).Success)
             {

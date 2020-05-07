@@ -27,9 +27,9 @@ namespace CiBitMainServer.DBLogic
                 httpWebRequest.Method = "POST";
                 using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                 {
-                    dynamic Id = new object();
-                        Id.cibitId = cibitId;
-                    streamWriter.Write(Id.ToString());
+                    dynamic User = new JObject();
+                    User.cibitId = cibitId;
+                    streamWriter.Write(User.ToString());
                 }
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream()))
