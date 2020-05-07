@@ -15,3 +15,12 @@ C:\Users\user\Desktop\Projects\FinalProject\CiBit\CiBitModels\obj\Debug\netcorea
 C:\Users\user\Desktop\Projects\FinalProject\CiBit\CiBitModels\obj\Debug\netcoreapp2.1\CiBitUtil.dll
 C:\Users\user\Desktop\Projects\FinalProject\CiBit\CiBitModels\obj\Debug\netcoreapp2.1\CiBitUtil.pdb
 C:\Users\user\Desktop\Projects\FinalProject\CiBit\CiBitModels\obj\Debug\netcoreapp2.1\CiBitUtil.csprojAssemblyReference.cache
+C:\Users\ShakedG\Documents\GitHub\CiBit\CiBitModels\obj\Debug\netcoreapp2.1\CiBitUtil.csprojAssemblyReference.cache
+C:\Users\ShakedG\Documents\GitHub\CiBit\CiBitModels\obj\Debug\netcoreapp2.1\CiBitUtil.csproj.CoreCompileInputs.cache
+C:\Users\ShakedG\Documents\GitHub\CiBit\CiBitModels\obj\Debug\netcoreapp2.1\CiBitUtil.AssemblyInfoInputs.cache
+C:\Users\ShakedG\Documents\GitHub\CiBit\CiBitModels\obj\Debug\netcoreapp2.1\CiBitUtil.AssemblyInfo.cs
+C:\Users\ShakedG\Documents\GitHub\CiBit\CiBitModels\obj\Debug\netcoreapp2.1\CiBitUtil.dll
+C:\Users\ShakedG\Documents\GitHub\CiBit\CiBitModels\obj\Debug\netcoreapp2.1\CiBitUtil.pdb
+C:\Users\ShakedG\Documents\GitHub\CiBit\CiBitModels\bin\Debug\netcoreapp2.1\CiBitUtil.deps.json
+C:\Users\ShakedG\Documents\GitHub\CiBit\CiBitModels\bin\Debug\netcoreapp2.1\CiBitUtil.dll
+C:\Users\ShakedG\Documents\GitHub\CiBit\CiBitModels\bin\Debug\netcoreapp2.1\CiBitUtil.pdb

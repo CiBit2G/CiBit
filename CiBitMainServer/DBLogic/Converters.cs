@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Transactions;
 using CiBitMainServer.Models;
 using MySql.Data.MySqlClient;
@@ -57,13 +59,13 @@ namespace CiBitMainServer.DBLogic
             },
             new SpObject
             {
-                Name = senderId,
+                Name = receiverId,
                 value = request.ReceiverId,
                 ParamType = MySqlDbType.VarChar
             },
             new SpObject
             {
-                Name = senderId,
+                Name = date,
                 value = request.Date.ToString(),
                 ParamType = MySqlDbType.DateTime
             },
@@ -79,6 +81,19 @@ namespace CiBitMainServer.DBLogic
                 value = request.BlockchainNumber.ToString(),
                 ParamType = MySqlDbType.Int32
             }
+            };
+        }
+
+        internal static List<SpObject> RemoveCoinConverter(TransactionDTO request)
+        {
+            return new List<SpObject>
+            {
+                new SpObject
+                {
+                    Name = coinId,
+                    value = request.Coins.First(),
+                    ParamType = MySqlDbType.VarChar
+                }
             };
         }
 
@@ -210,21 +225,21 @@ namespace CiBitMainServer.DBLogic
             };
         }
 
-        public static List<SpObject> GetCoinsConverter(string coinId, int Amount)
+        public static List<SpObject> GetCoinsConverter(TransactionDTO request)
         {
             return new List<SpObject>
             {
                 new SpObject
                 {
-                    Name = coinId,
-                    value = coinId,
-                    ParamType = MySqlDbType.VarChar
+                    Name = TransactionId,
+                    value = request.TransactionId.ToString(),
+                    ParamType = MySqlDbType.Int32
                 },
                 new SpObject
                 {
-                    Name = amount,
-                    value = Amount.ToString(),
-                    ParamType = MySqlDbType.Int32
+                    Name = cibitId,
+                    value = request.SenderId,
+                    ParamType = MySqlDbType.VarChar
                 }
             };
         }

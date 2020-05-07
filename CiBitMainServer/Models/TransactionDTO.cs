@@ -14,6 +14,6 @@ namespace CiBitMainServer.Models
         public DateTime Date { get; set; }
         public int Amount { get; set; }
         public int BlockchainNumber { get; set; }
-        public List<CoinDTO> Coins { get; set; }
+        public List<string> Coins { get; set; }
     }
 }

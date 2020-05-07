@@ -7,11 +7,11 @@ namespace CiBitUtil.Message.Response
 {
     public class GetCoinResponse
     {
-        public List<Coin> Coins { get; set; }
+        public List<string> Coins { get; set; }
 
         public GetCoinResponse()
         {
-            Coins = new List<Coin>();
+            Coins = new List<string>();
         }
     }
 }
