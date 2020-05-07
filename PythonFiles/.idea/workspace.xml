@@ -1,13 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d48b30c5-3eb0-4ed4-8ffb-28dd24748310" name="Default Changelist" comment="" />
+    <list default="true" id="d48b30c5-3eb0-4ed4-8ffb-28dd24748310" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitMainServer.Views.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitMainServer.Views.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitMainServer.Views.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitMainServer.Views.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitMainServer.deps.json" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitMainServer.deps.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitMainServer.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitMainServer.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitMainServer.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitMainServer.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitMainServer.runtimeconfig.dev.json" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitMainServer.runtimeconfig.dev.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitUtil.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitUtil.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitUtil.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitUtil.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/CiBitMainServer.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/obj/CiBitMainServer.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/CiBitMainServer.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/obj/CiBitMainServer.csproj.nuget.g.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/CiBitMainServer.Views.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/CiBitMainServer.Views.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/CiBitMainServer.Views.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/CiBitMainServer.Views.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/CiBitMainServer.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/CiBitMainServer.assets.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/CiBitMainServer.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/CiBitMainServer.csproj.CoreCompileInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/CiBitMainServer.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/CiBitMainServer.csproj.FileListAbsolute.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/CiBitMainServer.csprojAssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/CiBitMainServer.csprojAssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/CiBitMainServer.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/CiBitMainServer.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/CiBitMainServer.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/CiBitMainServer.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/Razor/Views/Home/About.g.cshtml.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/Razor/Views/Home/Contact.g.cshtml.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/Razor/Views/Home/Index.g.cshtml.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/Razor/Views/Home/Privacy.g.cshtml.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/Razor/Views/Shared/Error.g.cshtml.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/Razor/Views/Shared/_CookieConsentPartial.g.cshtml.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/Razor/Views/Shared/_Layout.g.cshtml.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/Razor/Views/Shared/_ValidationScriptsPartial.g.cshtml.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/Razor/Views/_ViewImports.g.cshtml.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/Debug/netcoreapp2.1/Razor/Views/_ViewStart.g.cshtml.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitMainServer/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitModels/bin/Debug/netcoreapp2.1/CiBitUtil.deps.json" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitModels/bin/Debug/netcoreapp2.1/CiBitUtil.deps.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitModels/bin/Debug/netcoreapp2.1/CiBitUtil.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitModels/bin/Debug/netcoreapp2.1/CiBitUtil.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitModels/bin/Debug/netcoreapp2.1/CiBitUtil.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitModels/bin/Debug/netcoreapp2.1/CiBitUtil.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitModels/obj/CiBitUtil.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitModels/obj/CiBitUtil.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitModels/obj/CiBitUtil.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitModels/obj/CiBitUtil.csproj.nuget.g.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitModels/obj/Debug/netcoreapp2.1/CiBitUtil.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitModels/obj/Debug/netcoreapp2.1/CiBitUtil.assets.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitModels/obj/Debug/netcoreapp2.1/CiBitUtil.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitModels/obj/Debug/netcoreapp2.1/CiBitUtil.csproj.CoreCompileInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitModels/obj/Debug/netcoreapp2.1/CiBitUtil.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitModels/obj/Debug/netcoreapp2.1/CiBitUtil.csproj.FileListAbsolute.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitModels/obj/Debug/netcoreapp2.1/CiBitUtil.csprojAssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitModels/obj/Debug/netcoreapp2.1/CiBitUtil.csprojAssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitModels/obj/Debug/netcoreapp2.1/CiBitUtil.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitModels/obj/Debug/netcoreapp2.1/CiBitUtil.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitModels/obj/Debug/netcoreapp2.1/CiBitUtil.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitModels/obj/Debug/netcoreapp2.1/CiBitUtil.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitModels/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitModels/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CiBitModels/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitModels/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/PythonFiles.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/PythonFiles.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
   <component name="ProjectId" id="1bXPHKTWWblI8nGDd82PKnMTCOB" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -15,7 +67,9 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -24,5 +78,11 @@
   </component>
   <component name="SvnConfiguration">
     <configuration />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="186" y="9" key="SettingsEditor" timestamp="1588860063336">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="186" y="9" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1588860063336" />
   </component>
 </project>

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\user\\Desktop\\Projects\\FinalProject\\CiBit\\CiBitModels\\CiBitUtil.csproj": {}
+    "C:\\Users\\user\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj": {}
   },
   "projects": {
-    "C:\\Users\\user\\Desktop\\Projects\\FinalProject\\CiBit\\CiBitModels\\CiBitUtil.csproj": {
+    "C:\\Users\\user\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\user\\Desktop\\Projects\\FinalProject\\CiBit\\CiBitModels\\CiBitUtil.csproj",
+        "projectUniqueName": "C:\\Users\\user\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj",
         "projectName": "CiBitUtil",
-        "projectPath": "C:\\Users\\user\\Desktop\\Projects\\FinalProject\\CiBit\\CiBitModels\\CiBitUtil.csproj",
+        "projectPath": "C:\\Users\\user\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj",
         "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\user\\Desktop\\Projects\\FinalProject\\CiBit\\CiBitModels\\obj\\",
+        "outputPath": "C:\\Users\\user\\Documents\\GitHub\\CiBit\\CiBitModels\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

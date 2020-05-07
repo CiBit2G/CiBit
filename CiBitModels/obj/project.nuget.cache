@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "j13iyIuxUkidgrbh3gMp0Lj+bkFe2g3YxBCfk29cCAVdJKBLdPTRoE5HQod5iUe0CewlSF20JvvUOlQxN1kOHA==",
+  "dgSpecHash": "JxfTouY7FdcVqGgGe9cbB0zQsXTZCpr3cdIo5aw1Y5DrqT4A/dJgWy18ejmlxqVQarjovqL75JZznpDCFJVIiA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\user\\Desktop\\Projects\\FinalProject\\CiBit\\CiBitModels\\CiBitUtil.csproj",
+  "projectFilePath": "C:\\Users\\user\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj",
   "expectedPackageFiles": [
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.netcore.app\\2.1.0\\microsoft.netcore.app.2.1.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.netcore.dotnetapphost\\2.1.0\\microsoft.netcore.dotnetapphost.2.1.0.nupkg.sha512",

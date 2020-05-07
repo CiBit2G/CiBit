@@ -106,7 +106,7 @@ namespace CiBitMainServer.Controllers
 
             IPythonAPI py = new PythonAPI();
             string message;
-            string response = py.CSharpPythonRestfulApiSimpleTest("https://localhost:44357/api/v1.0/newUser", userinfo.CibitId,out message);
+            string response = py.CSharpPythonRestfulApiSimpleTest("https://localhost:44357/api/v1.0/newUser", userinfo.CibitId, out message);
             
             context.Connection.Close();
             if (response == "OK")
