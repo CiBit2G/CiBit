@@ -1,8 +1,10 @@
+import Block
+
 class Chain:
     def __init__(self, Hash):
         self.currentHash is None
         self.previousHash = Hash
-        self.new_block(previous_hash='1', proof=100)
+        self.new_block = Block(previousHash=0)
 
     # a quick verfication that chain's hash is valid till final block
     def valid_chain(self, chain):
