@@ -43,18 +43,20 @@ class Search:
             args = [key, value, cibitId]
             sum += value
             cursor.callproc('CreateArticle', args)
+        self.connection.commit()
         cursor.close
         return sum
 
 # searches the user for the first time and add all the articles he got to the database and counts all the citations from his aritcles.
-    def searchUser(self, author, cibitId):
+    def addUser(self, author, cibitId):
         check = 0
         newAuthor = next((scholarly.search_author(author))).fill()
         check = self.createDict(newAuthor)
         sum = self.addNewArticles(self.newPublications, cibitId)
         if check == sum:
             print(sum)
-        self.createCoins(sum, cibitId)
+        newList = self.createCoins(sum, cibitId)
+        self.createTransaction(sum, cibitId, newList)
 
 # compare between the two list we got of articles and find what article need to be updated.
     def compareArticles(self, articles, cibitId):
@@ -69,6 +71,7 @@ class Search:
                 del self.newPublications[art[2]]
             except KeyError as e:
                 logger.info(e)
+        self.connection.commit()
         cursor.close()
         return sum
 
@@ -94,22 +97,44 @@ class Search:
         print("amount of of citations left, doubles in Google Scholar " + str(newCitations))
         print("finish checking User:"+ name + "\n")
         if sum != 0:
-            self.createCoins(sum, user[0])
+             newCoinList = self.createCoins(sum, user[0])
+             self.createTransaction(sum, user[0], newCoinList)
         cursor.close()
 
-# Creates a new coin Id and adds it to the database
+# Creates a new coin list with no duplicate keys in the database and the list.
     def createCoins(self, amount, cibitId):
         i = 0
-        worked = False
+        newCoinList = list()
+        cursor = self.connection.cursor()
+        cursor.callproc("getCoins")
+        oldCoinList = list(next(cursor.stored_results()))
         while i < amount:
             coinId = generateCoin(cibitId)
-            cursor = self.connection.cursor()
-            args = [coinId, cibitId, worked]
-            result = cursor.callproc('AddCoin', args)
-            if result[-1] == 1:
-                i += 1
-        args = [None, cibitId, None, datetime.datetime.now(), amount]
-        cursor.callproc('AddNewCoinsTransaction', args)
+            if coinId not in oldCoinList and coinId not in newCoinList:
+               print(i)
+               i += 1
+               args = (coinId, cibitId)
+               newCoinList.append(args)
+        cursor.close()
+        return newCoinList
+
+# Creates a new transaction and enter all the Coins, as well as the shared table to the database.
+    def createTransaction(self, amount, cibitId, newCoinList):
+        cursor = self.connection.cursor()
+        transactionList = list()
+        transactionId = 0;
+        args = [None, cibitId, None, datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'), amount, transactionId]
+        result = cursor.callproc('AddNewCoinsTransaction', args)
+        transactionId = result[-1]
+        queryCoins = "INSERT INTO coins (coinId, cibitId) VALUES(%s, %s)"
+        queryTransactionsCoins = "INSERT INTO coinspertranscation(transactionsId, newCoinId, oldCoinId, status) VALUES(%s, %s, %s, %s)"
+        cursor.executemany(queryCoins, newCoinList)
+        self.connection.commit()
+        for coin in newCoinList:
+            args = (transactionId, coin[0], None, 0)
+            transactionList.append(args)
+        cursor.executemany(queryTransactionsCoins, transactionList)
+        self.connection.commit()
         cursor.close()
 
 # a function that gets the new user and find all the details known about him in google scholar
@@ -118,7 +143,7 @@ class Search:
         cursor.callproc('getUser', [cibitId])
         user = list(next(cursor.stored_results())).pop()
         name = user[1] + ' ' + user[2] + ', ' + user[4]
-        self.searchUser(name, cibitId)
+        self.addUser(name, cibitId)
 
 # a function that gets all the users in the database and send each one to check for new citations
     def monthlyUpdate(self):

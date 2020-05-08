@@ -32,3 +32,4 @@ C:\Users\user\Documents\GitHub\CiBit\CiBitModels\obj\Debug\netcoreapp2.1\CiBitUt
 C:\Users\user\Documents\GitHub\CiBit\CiBitModels\obj\Debug\netcoreapp2.1\CiBitUtil.AssemblyInfo.cs
 C:\Users\user\Documents\GitHub\CiBit\CiBitModels\obj\Debug\netcoreapp2.1\CiBitUtil.dll
 C:\Users\user\Documents\GitHub\CiBit\CiBitModels\obj\Debug\netcoreapp2.1\CiBitUtil.pdb
+C:\Users\user\Documents\GitHub\CiBit\CiBitModels\obj\Debug\netcoreapp2.1\CiBitUtil.csprojAssemblyReference.cache

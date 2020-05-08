@@ -17,6 +17,7 @@ class Block:
 
     # a function to check if the block has  100 transactions or 24 hours had past since last block.
     def isBlockReady(self):
+        temp= self.url+"Transaction/BlockReady"
         return True
 
     # a function to get next transaction of the block from the server.
