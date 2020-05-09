@@ -25,6 +25,7 @@
 ipch/
 obj/
 bin/
+.vs/
 [Bb]in
 [Dd]ebug*/
 [Rr]elease*/
