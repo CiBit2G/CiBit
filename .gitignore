@@ -24,6 +24,7 @@
 *.sdf
 ipch/
 obj/
+bin/
 [Bb]in
 [Dd]ebug*/
 [Rr]elease*/
@@ -33,3 +34,6 @@ Ankh.NoLoad
 _ReSharper*/
 *.resharper
 [Tt]est[Rr]esult*
+CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitMainServer.runtimeconfig.dev.json
+*.v2
+.vs/CiBitServer/v16/.suo
