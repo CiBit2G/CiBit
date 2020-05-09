@@ -15,80 +15,82 @@ namespace CiBitMainServer.Controllers
     public class TransactionController : Controller
     {
         //INSERT: Transaction/AddTransaction/CreateUserRequest
-           public bool AddTransaction([FromBody]AddTransactionRequest request)
-           {
-               var context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
-               var verify = new ValidateUser();
+        public bool AddTransaction([FromBody]AddTransactionRequest request)
+        {
+            var context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
+            var verify = new ValidateUser();
 
-               var config = new MapperConfiguration(mc => mc.CreateMap<AddTransactionRequest, TransactionDTO>());
-               var mapper = new Mapper(config);
-               var userinfo = mapper.Map<AddTransactionRequest, TransactionDTO>(request);
-           
-               //verify CoinID with pythone API
-
-               var spObj = Converters.AddTransactionConverter(userinfo);
-               var reader = context.StoredProcedureSql("AddTransaction", spObj);
-
-               context.Connection.Close();
-               return true;
-           }
-
-           // DELETE: Transaction/RemoveCoin/RemoveCoinRequest
-           public bool RemoveCoin([FromBody]RemoveCoinRequest request)
-           {
-               CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
-               ValidateUser valid = new ValidateUser();
-
-               var config = new MapperConfiguration(mc => mc.CreateMap<RemoveCoinRequest, TransactionDTO>().ForMember(dest => dest.Coins,
-                   m => m.MapFrom(src => src.CoinId.ToList())));
+            var config = new MapperConfiguration(mc => mc.CreateMap<AddTransactionRequest, TransactionDTO>());
             var mapper = new Mapper(config);
-               var userinfo = mapper.Map<RemoveCoinRequest, TransactionDTO>(request);
+            var userinfo = mapper.Map<AddTransactionRequest, TransactionDTO>(request);
 
-               //verify CoinID with pythone API
-    
-               var spObj = Converters.RemoveCoinConverter(userinfo);
-               var reader = context.StoredProcedureSql("RemoveCoin", spObj);
+            //verify CoinID with pythone API
 
-               context.Connection.Close();
-               return true;
-           } 
+            var spObj = Converters.AddTransactionConverter(userinfo);
+            var reader = context.StoredProcedureSql("AddTransaction", spObj);
 
-          public GetTransactionReponse GetTransaction([FromBody]GetTransactionRequest request)
-          {
-              CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
-              var config = new MapperConfiguration(mc => mc.CreateMap<GetTransactionRequest, TransactionDTO>());
-              var mapper = new Mapper(config);
-              var Transactioninfo = mapper.Map<GetTransactionRequest, TransactionDTO>(request);
+            context.Connection.Close();
+            return true;
+        }
 
-              var spObj = Converters.GetTransactionConverter(Transactioninfo);
+        // DELETE: Transaction/RemoveCoin/RemoveCoinRequest
+        public bool RemoveCoin([FromBody]RemoveCoinRequest request)
+        {
+            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
+            ValidateUser valid = new ValidateUser();
 
-              var reader = context.StoredProcedureSql("getTransaction", spObj);
+            var config = new MapperConfiguration(mc => mc.CreateMap<RemoveCoinRequest, TransactionDTO>().ForMember(dest => dest.Coins,
+                m => m.MapFrom(src => src.CoinId.ToList())));
+            var mapper = new Mapper(config);
+            var userinfo = mapper.Map<RemoveCoinRequest, TransactionDTO>(request);
 
-              GetTransactionReponse response = new GetTransactionReponse();
+            //verify CoinID with pythone API
 
-              while (reader.Read())
-              {
-                  response.transaction = new Transaction()
-                  {
-                      TransactionId = int.Parse(reader["transactionId"].ToString()),
-                      SenderId = reader["cibitSender"].ToString(),
-                      ReceiverId = reader["cibitReceiver"].ToString(),
-                      ResearchId = reader["researchId"].ToString(),
-                      Date = DateTime.Parse(reader["dateTime"].ToString()),
-                      Amount = int.Parse(reader["coinAmount"].ToString()),
-                      BlockchainNumber = int.Parse(reader["blockNumber"].ToString())
-                  };
-              }
-              response.transaction.Coins = new List<string>();
-              spObj= Converters.GetCoinsConverter(Transactioninfo);
-              reader = context.StoredProcedureSql("getTransactionCoins", spObj);
-              while((reader.Read()))
-              {
-                  response.transaction.Coins.Add(reader["coinId"].ToString());
-              }
-              context.Connection.Close();
-              return response;
-          } 
-          
+            var spObj = Converters.RemoveCoinConverter(userinfo);
+            var reader = context.StoredProcedureSql("RemoveCoin", spObj);
+
+            context.Connection.Close();
+            return true;
+        }
+
+        public GetTransactionReponse GetTransaction([FromBody]GetTransactionRequest request)
+        {
+            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
+            var config = new MapperConfiguration(mc => mc.CreateMap<GetTransactionRequest, TransactionDTO>());
+            var mapper = new Mapper(config);
+            var Transactioninfo = mapper.Map<GetTransactionRequest, TransactionDTO>(request);
+
+            var spObj = Converters.GetTransactionConverter(Transactioninfo);
+
+            var reader = context.StoredProcedureSql("getTransaction", spObj);
+
+            GetTransactionReponse response = new GetTransactionReponse();
+
+            while (reader.Read())
+            {
+                response.transaction = new Transaction()
+                {
+                    TransactionId = int.Parse(reader["transactionId"].ToString()),
+                    SenderId = reader["cibitSender"].ToString(),
+                    ReceiverId = reader["cibitReceiver"].ToString(),
+                    ResearchId = reader["researchId"].ToString(),
+                    Date = DateTime.Parse(reader["transactionDate"].ToString()),
+                    Amount = int.Parse(reader["coinAmount"].ToString()),
+                };
+            }
+            context.Connection.Close();
+            response.transaction.Coins = new List<string>();
+            config = new MapperConfiguration(mc => mc.CreateMap<Transaction, TransactionDTO>());
+            mapper = new Mapper(config);
+            Transactioninfo = mapper.Map< Transaction, TransactionDTO >(response.transaction);
+            spObj = Converters.GetCoinsConverter(Transactioninfo);
+            reader = context.StoredProcedureSql("getTransactionCoins", spObj);
+            while (reader.Read())
+            {
+                response.transaction.Coins.Add(reader["coinId"].ToString());
+            }
+            context.Connection.Close();
+            return response;
+        }
     }
 }

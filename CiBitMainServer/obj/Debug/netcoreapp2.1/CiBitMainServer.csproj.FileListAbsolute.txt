@@ -142,3 +142,37 @@ C:\Users\user\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiB
 C:\Users\user\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiBitMainServer.dll
 C:\Users\user\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiBitMainServer.pdb
 C:\Users\user\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiBitMainServer.genruntimeconfig.cache
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\bin\Debug\netcoreapp2.1\CiBitMainServer.deps.json
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\bin\Debug\netcoreapp2.1\CiBitMainServer.runtimeconfig.json
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\bin\Debug\netcoreapp2.1\CiBitMainServer.runtimeconfig.dev.json
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\bin\Debug\netcoreapp2.1\CiBitMainServer.dll
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\bin\Debug\netcoreapp2.1\CiBitMainServer.pdb
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\bin\Debug\netcoreapp2.1\CiBitMainServer.Views.dll
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\bin\Debug\netcoreapp2.1\CiBitMainServer.Views.pdb
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\bin\Debug\netcoreapp2.1\CiBitUtil.dll
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\bin\Debug\netcoreapp2.1\CiBitUtil.pdb
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiBitMainServer.csprojAssemblyReference.cache
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiBitMainServer.csproj.CoreCompileInputs.cache
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiBitMainServer.RazorAssemblyInfo.cache
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiBitMainServer.RazorAssemblyInfo.cs
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiBitMainServer.AssemblyInfoInputs.cache
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiBitMainServer.AssemblyInfo.cs
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiBitMainServer.TagHelpers.input.cache
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiBitMainServer.TagHelpers.output.cache
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiBitMainServer.RazorCoreGenerate.cache
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\Razor\Views\Home\About.g.cshtml.cs
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\Razor\Views\Home\Contact.g.cshtml.cs
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\Razor\Views\Home\Index.g.cshtml.cs
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\Razor\Views\Home\Privacy.g.cshtml.cs
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\Razor\Views\Shared\Error.g.cshtml.cs
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\Razor\Views\Shared\_CookieConsentPartial.g.cshtml.cs
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\Razor\Views\Shared\_Layout.g.cshtml.cs
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\Razor\Views\Shared\_ValidationScriptsPartial.g.cshtml.cs
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\Razor\Views\_ViewImports.g.cshtml.cs
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\Razor\Views\_ViewStart.g.cshtml.cs
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiBitMainServer.RazorTargetAssemblyInfo.cache
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiBitMainServer.RazorTargetAssemblyInfo.cs
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiBitMainServer.Views.pdb
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiBitMainServer.csproj.CopyComplete
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiBitMainServer.dll
+C:\Users\Shaked Pen Graitzer\Documents\GitHub\CiBit\CiBitMainServer\obj\Debug\netcoreapp2.1\CiBitMainServer.pdb
