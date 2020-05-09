@@ -114,5 +114,49 @@ namespace CiBitMainServer.Controllers
 
             return response;
         }
+
+        public GetHashResponse GetHash(GetHashRequest request)
+        {
+            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
+
+            var config = new MapperConfiguration(mc => mc.CreateMap<GetHashRequest, TransactionDTO>());
+            var mapper = new Mapper(config);
+            var Transactioninfo = mapper.Map<GetHashRequest, TransactionDTO>(request);
+
+            var spObj = Converters.GetHashResponseConverter(Transactioninfo);
+
+            var reader = context.StoredProcedureSql("GetHash", spObj);
+
+            GetHashResponse response = null;
+            while (reader.Read())
+            {
+                response = new GetHashResponse()
+                {
+                    Hash = reader["proof"].ToString()
+                };
+            }
+            context.Connection.Close();
+
+            return response;
+        }
+
+        public bool SetHash(SetHashRequest request)
+        {
+            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
+
+            var config = new MapperConfiguration(mc => mc.CreateMap<SetHashRequest, TransactionDTO>());
+            var mapper = new Mapper(config);
+            var Transactioninfo = mapper.Map<SetHashRequest, TransactionDTO>(request);
+
+            var spObj = Converters.GetHashResponseConverter(Transactioninfo);
+
+            var reader = context.StoredProcedureSql("InsertHashFromBank", spObj);
+
+            var compare = GetHash(new GetHashRequest() { BlockchainNumber = request.BlockchainNumber });
+
+            context.Connection.Close();
+
+            return request.Hash.Equals(compare.Hash);
+        }
     }
 }

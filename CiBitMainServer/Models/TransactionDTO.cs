@@ -13,6 +13,7 @@ namespace CiBitMainServer.Models
         public string ResearchId { get; set; }
         public DateTime Date { get; set; }
         public int Amount { get; set; }
+        public string Hash { get; set; }
         public int BlockchainNumber { get; set; }
         public List<string> Coins { get; set; }
     }

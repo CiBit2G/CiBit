@@ -190,18 +190,18 @@ namespace CiBitMainServer.DBLogic
             };
         }
 
-       /* public static List<SpObject> RemoveCoinConverter(TransactionDTO request)
+        internal static List<SpObject> GetHashResponseConverter(TransactionDTO request)
         {
             return new List<SpObject>
             {
                 new SpObject
-            {
-                Name = coinId,
-                value = request.CoinId,
-                ParamType = MySqlDbType.VarChar
+                {
+                    Name = blockchainNumber,
+                    value = request.BlockchainNumber.ToString(),
+                    ParamType = MySqlDbType.Int32
                 }
             };
-        } */
+        }
 
         public static List<SpObject> RemoveUserConverter(UserDTO request)
         {
