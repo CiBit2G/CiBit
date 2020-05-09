@@ -1,4 +1,3 @@
-import json
 import requests
 from CoinGenrator import verifyCoins
 
@@ -6,7 +5,7 @@ from CoinGenrator import verifyCoins
 class Block:
     def __init__(self, previousHash):
         self.data = list()
-        self.Id = -1
+        self.Id = 0
         self.previousBlockHash = previousHash
         self.url = "https://localhost:44357/"
 
@@ -23,7 +22,7 @@ class Block:
 
     # a function to check if the block has  100 transactions or 24 hours had past since last block.
     def isBlockReady(self):
-        temp = self.url+"Transaction/BlockReady"
+        temp = self.url+"Transaction/BlockReady/"
         response = requests.get(temp)
         if response.status_code != 200:
             return -1
@@ -31,9 +30,13 @@ class Block:
 
     # a function to get next transaction of the block from the server.
     def getTransactions(self, index):
-        temp = self.url +"Transaction/GetTransaction"
+        temp = self.url +"Transaction/GetTransaction/"
         Variables = {'BlockchainNumber': self.Id, 'TransactionId': index}
-        response = requests.get(url=temp, params=Variables)
+        try:
+            response = requests.get(url=temp, params=Variables)
+            print(response)
+        except requests.exceptions.RequestException as e:
+            print(e)
         if response.status_code == 200 and response.json().SenderId is None:
             answer = response.json()
             if self.CheckCoins(answer.CoinList, answer.SenderId):
@@ -45,8 +48,14 @@ class Block:
 
     def CheckCoins(self, coinList, cibitId):
         for coin in coinList:
-            if cibitId != coin.CibitId:
-                return False
             if not verifyCoins(coin.CoinId, cibitId):
                 return False
         return True
+
+
+def main():
+    block = Block(0)
+    block.getTransactions(40)
+
+if __name__ == '__main__':
+    main()

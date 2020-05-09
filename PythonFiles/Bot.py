@@ -127,7 +127,7 @@ class Search:
         result = cursor.callproc('AddNewCoinsTransaction', args)
         transactionId = result[-1]
         queryCoins = "INSERT INTO coins (coinId, cibitId) VALUES(%s, %s)"
-        queryTransactionsCoins = "INSERT INTO coinspertranscation(transactionsId, newCoinId, oldCoinId, status) VALUES(%s, %s, %s, %s)"
+        queryTransactionsCoins = "INSERT INTO coinspertranscation(transactionId, newCoinId, oldCoinId, status) VALUES(%s, %s, %s, %s)"
         cursor.executemany(queryCoins, newCoinList)
         self.connection.commit()
         for coin in newCoinList:

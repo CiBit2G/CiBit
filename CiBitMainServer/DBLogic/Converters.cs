@@ -237,8 +237,14 @@ namespace CiBitMainServer.DBLogic
                 },
                 new SpObject
                 {
-                    Name = cibitId,
+                    Name = senderId,
                     value = request.SenderId,
+                    ParamType = MySqlDbType.VarChar
+                },
+                new SpObject
+                {
+                    Name = receiverId,
+                    value = request.ReceiverId,
                     ParamType = MySqlDbType.VarChar
                 }
             };

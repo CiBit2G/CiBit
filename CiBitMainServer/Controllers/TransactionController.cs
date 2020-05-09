@@ -55,8 +55,8 @@ namespace CiBitMainServer.Controllers
 
           public GetTransactionReponse GetTransaction([FromBody]GetTransactionRequest request)
           {
-              CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb; ;
-              var config = new MapperConfiguration(mc => mc.CreateMap<GetUserRequest, UserDTO>());
+              CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
+              var config = new MapperConfiguration(mc => mc.CreateMap<GetTransactionRequest, TransactionDTO>());
               var mapper = new Mapper(config);
               var Transactioninfo = mapper.Map<GetTransactionRequest, TransactionDTO>(request);
 
@@ -81,7 +81,7 @@ namespace CiBitMainServer.Controllers
               }
               response.transaction.Coins = new List<string>();
               spObj= Converters.GetCoinsConverter(Transactioninfo);
-              reader = context.StoredProcedureSql("getCoins", spObj);
+              reader = context.StoredProcedureSql("getTransactionCoins", spObj);
               while((reader.Read()))
               {
                   response.transaction.Coins.Add(reader["coinId"].ToString());
