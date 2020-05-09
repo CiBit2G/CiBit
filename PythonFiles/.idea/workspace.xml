@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< Updated upstream
     <list default="true" id="d66e1d82-3652-4ebe-9f4e-5dcda25714ab" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../.vs/CiBitServer/v16/.suo" beforeDir="false" afterPath="$PROJECT_DIR$/../.vs/CiBitServer/v16/.suo" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitMainServer.Views.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../CiBitMainServer/bin/Debug/netcoreapp2.1/CiBitMainServer.Views.dll" afterDir="false" />
@@ -16,6 +17,9 @@
       <change beforePath="$PROJECT_DIR$/Block.py" beforeDir="false" afterPath="$PROJECT_DIR$/Block.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/Bot.py" afterDir="false" />
     </list>
+=======
+    <list default="true" id="d66e1d82-3652-4ebe-9f4e-5dcda25714ab" name="Default Changelist" comment="" />
+>>>>>>> Stashed changes
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -100,6 +104,7 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state width="1364" height="440" key="DebuggerActiveHint/0.0.1366.728@0.0.1366.728" timestamp="1588941779295" />
+<<<<<<< Updated upstream
     <state width="683" height="243" key="GridCell.Tab.0.bottom" timestamp="1588980553202">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -147,6 +152,43 @@
           <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
+=======
+    <state width="679" height="180" key="GridCell.Tab.0.bottom" timestamp="1588989662459">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="679" height="180" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1588989662459" />
+    <state width="679" height="180" key="GridCell.Tab.0.center" timestamp="1588989662459">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="679" height="180" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1588989662459" />
+    <state width="679" height="180" key="GridCell.Tab.0.left" timestamp="1588989662459">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="679" height="180" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1588989662459" />
+    <state width="679" height="180" key="GridCell.Tab.0.right" timestamp="1588989662459">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="679" height="180" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1588989662459" />
+    <state width="683" height="243" key="GridCell.Tab.1.bottom" timestamp="1588989662436">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="683" height="243" key="GridCell.Tab.1.bottom/0.0.1366.728@0.0.1366.728" timestamp="1588989662436" />
+    <state width="683" height="243" key="GridCell.Tab.1.center" timestamp="1588989662436">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="683" height="243" key="GridCell.Tab.1.center/0.0.1366.728@0.0.1366.728" timestamp="1588989662436" />
+    <state width="683" height="243" key="GridCell.Tab.1.left" timestamp="1588989662436">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="683" height="243" key="GridCell.Tab.1.left/0.0.1366.728@0.0.1366.728" timestamp="1588989662436" />
+    <state width="683" height="243" key="GridCell.Tab.1.right" timestamp="1588989662436">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="683" height="243" key="GridCell.Tab.1.right/0.0.1366.728@0.0.1366.728" timestamp="1588989662436" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+>>>>>>> Stashed changes
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
