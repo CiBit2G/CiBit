@@ -34,7 +34,9 @@ namespace CiBitMainServer.DBLogic
         private const string blockchainNumber = "bcNumber";
         private const string coinId = "coin_id";
         private const string TransactionId = "t_id";
-        
+        private const string lastBlock = "lastBlock";
+        private const string firstTransactionOnBlock = "firstTransactionOnBlock";
+
 
         #endregion
 

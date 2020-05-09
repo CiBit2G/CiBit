@@ -87,9 +87,31 @@ namespace CiBitMainServer.Controllers
             reader = context.StoredProcedureSql("getTransactionCoins", spObj);
             while (reader.Read())
             {
-                response.transaction.Coins.Add(reader["coinId"].ToString());
+                response.transaction.Coins.Add(reader["newCoinId"].ToString());
             }
             context.Connection.Close();
+            return response;
+        }
+
+        //GET: Transaction/AddTransaction/BlockReady
+        public BlockReadyResponse BlockReady()
+        {
+            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
+
+            var reader = context.StoredProcedureSql("GetBlockReady", null);
+
+            BlockReadyResponse response = null;
+            while (reader.Read())
+            {
+                response = new BlockReadyResponse()
+                {
+                    TransactionId = int.Parse(reader["firstTransactionOnBlock"].ToString()),
+                    BlockchainNumber = int.Parse(reader["lastBlock"].ToString()),
+                    Amount = int.Parse(reader["amount"].ToString()),
+                };
+            }
+            context.Connection.Close();
+
             return response;
         }
     }
