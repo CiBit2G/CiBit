@@ -13,7 +13,7 @@ namespace CiBitUtil.Message.Request
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (string.IsNullOrWhiteSpace(CoinId) || CoinId.Length != 256)
+            if (string.IsNullOrWhiteSpace(CoinId) || CoinId.Length != 192)
             {
                 yield return new ValidationResult(
                     $"Coin Id is Required and must be at exactly 256 charchters. Coin Id is: {CoinId?.Length}.",

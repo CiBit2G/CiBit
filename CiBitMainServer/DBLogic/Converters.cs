@@ -258,7 +258,7 @@ namespace CiBitMainServer.DBLogic
                 new SpObject
                 {
                     Name = coinId,
-                    value = request.Coins[0].ToString(),
+                    value = request.Coins.FirstOrDefault(),
                     ParamType = MySqlDbType.VarChar
                 }
             };

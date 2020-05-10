@@ -42,25 +42,25 @@ class Block:
         if response.status_code == 200:
             answer = response.json()['transaction']
             print(answer)
-            checkId = answer['receiverId'] if answer['senderId'] is None else answer['senderId']
-            if self.CheckCoins(answer['coins'], checkId):
+            checkId = answer['receiverId'] if answer['senderId'] == '' else answer['senderId']
+            if self.CheckCoins(list(answer['coins']), checkId):
                 self.data.append(answer)
 
     def CheckCoins(self, coinList, cibitId):
         for coin in coinList:
             if not verifyCoins(coin, cibitId):
                 return False
-            if not self.coinExist(self, coin):
+            if not self.coinExist(coin):
                 return False
         return True
 
     def coinExist(self, coinId):
-        temp = self.url +"Transaction/CoinExist/"
-        payload = "{\"CoinId\":" + coinId + "\n}"
+        temp = self.url + "Transaction/CoinExist/"
+        payload = {'CoinId': coinId}
         headers = {'Content-Type': 'application/json'}
         try:
             with no_ssl_verification():
-                response = requests.request('GET', url=temp, headers=headers, data=payload)
+                response = requests.request('GET', url=temp, headers=headers, data=json.dumps(payload))
             print(response)
         except requests.exceptions.RequestException as e:
             print(e)

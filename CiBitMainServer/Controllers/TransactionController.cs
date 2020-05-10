@@ -39,8 +39,7 @@ namespace CiBitMainServer.Controllers
             CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
             ValidateUser valid = new ValidateUser();
 
-            var config = new MapperConfiguration(mc => mc.CreateMap<RemoveCoinRequest, TransactionDTO>().ForMember(dest => dest.Coins,
-                m => m.MapFrom(src => src.CoinId.ToList())));
+            var config = new MapperConfiguration(mc => mc.CreateMap<RemoveCoinRequest, TransactionDTO>().AfterMap((src, dest) => dest.Coins.Add(src.CoinId)));
             var mapper = new Mapper(config);
             var userinfo = mapper.Map<RemoveCoinRequest, TransactionDTO>(request);
 
@@ -163,7 +162,7 @@ namespace CiBitMainServer.Controllers
         {
             CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
 
-            var config = new MapperConfiguration(mc => mc.CreateMap<GetCoinRequest, TransactionDTO>());
+            var config = new MapperConfiguration(mc => mc.CreateMap<GetCoinRequest, TransactionDTO>().AfterMap((src, dest) => dest.Coins.Add(src.CoinId)));
             var mapper = new Mapper(config);
             var Transactioninfo = mapper.Map<GetCoinRequest, TransactionDTO>(request);
 
