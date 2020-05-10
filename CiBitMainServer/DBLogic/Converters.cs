@@ -251,6 +251,18 @@ namespace CiBitMainServer.DBLogic
                 }
             };
         }
+        public static List<SpObject> GetCoinResponseConverter(TransactionDTO request)
+        {
+            return new List<SpObject>
+            {
+                new SpObject
+                {
+                    Name = coinId,
+                    value = request.Coins[0].ToString(),
+                    ParamType = MySqlDbType.VarChar
+                }
+            };
+        }
     }
 
     #endregion

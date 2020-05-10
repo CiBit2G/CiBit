@@ -158,5 +158,29 @@ namespace CiBitMainServer.Controllers
 
             return request.Hash.Equals(compare.Hash);
         }
+
+        public bool CoinExist([FromBody]GetCoinRequest request)
+        {
+            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
+
+            var config = new MapperConfiguration(mc => mc.CreateMap<GetCoinRequest, TransactionDTO>());
+            var mapper = new Mapper(config);
+            var Transactioninfo = mapper.Map<GetCoinRequest, TransactionDTO>(request);
+
+            var spObj = Converters.GetCoinResponseConverter(Transactioninfo);
+
+            var reader = context.StoredProcedureSql("getCoin", spObj);
+
+            string answer = null;
+            while (reader.Read())
+            {
+                answer = reader["coinId"].ToString();
+            }
+            context.Connection.Close();
+            if (answer != null)
+                return true;
+            return false;
+
+        }
     }
 }
