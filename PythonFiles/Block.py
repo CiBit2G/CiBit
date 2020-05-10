@@ -1,5 +1,6 @@
 import requests
 from CoinGenrator import verifyCoins
+from NoSSL import no_ssl_verification
 
 
 class Block:
@@ -24,24 +25,26 @@ class Block:
 
     # a function to get next transaction of the block from the server.
     def getTransactions(self, index):
-        temp = self.url +"Transaction/GetTransaction/"
-        Variables = {'BlockchainNumber': self.Id, 'TransactionId': index}
+        temp = "https://localhost:44357/Transaction/GetTransaction/"
+        payload = "{\"BlockchainNumber\": 0,  \"TransactionId\": 40\n}"
+        headers = {'Content-Type': 'application/json'}
         try:
-            response = requests.get(url=temp, params=Variables)
-            print(response)
+            with no_ssl_verification():
+                response = requests.request('GET', url=temp, headers=headers, data=payload)
+                print(response.text.encode('utf8'))
         except requests.exceptions.RequestException as e:
             print(e)
         if response.status_code == 200:
             answer = response.json()
-            checkId = answer.ReciverId if answer.senderId is None else answer.senderId
-            if self.CheckCoins(answer.CoinList,checkId):
+            checkId = answer.reciverId if answer.senderId is None else answer.senderId
+            if self.CheckCoins(answer.coin, checkId):
                 self.data.append(answer)
 
     def CheckCoins(self, coinList, cibitId):
         for coin in coinList:
-            if not verifyCoins(coin.CoinId, cibitId):
+            if not verifyCoins(coin, cibitId):
                 return False
-            if not self.coinExist(self. coin.CoinId):
+            if not self.coinExist(self, coin):
                 return False
         return True
 
@@ -57,6 +60,7 @@ class Block:
         if response.status_code == 200:
             return True
         return False
+
 
 def main():
     block = Block(0)
