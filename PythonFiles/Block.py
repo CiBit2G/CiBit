@@ -9,24 +9,18 @@ class Block:
         self.previousBlockHash = previousHash
         self.url = "https://localhost:44357/"
 
-
-    # a function to start building the block's data
-    def fillData(self):
-        check = self.isBlockReady()
-        if check == -1:
-            return 0
-        self.Id = check
-        for i in range(0,100):
-            self.getTransactions(i)
-        return self.data
-
     # a function to check if the block has  100 transactions or 24 hours had past since last block.
     def isBlockReady(self):
         temp = self.url+"Transaction/BlockReady/"
         response = requests.get(temp)
         if response.status_code != 200:
             return -1
-        return response.json().bcNumber
+        return response.json()
+
+    # a function to start building the block's data
+    def fillData(self, amount):
+        for i in range(0, amount):
+            self.getTransactions(i)
 
     # a function to get next transaction of the block from the server.
     def getTransactions(self, index):
@@ -37,21 +31,32 @@ class Block:
             print(response)
         except requests.exceptions.RequestException as e:
             print(e)
-        if response.status_code == 200 and response.json().SenderId is None:
+        if response.status_code == 200:
             answer = response.json()
-            if self.CheckCoins(answer.CoinList, answer.SenderId):
+            checkId = answer.ReciverId if answer.senderId is None else answer.senderId
+            if self.CheckCoins(answer.CoinList,checkId):
                 self.data.append(answer)
-            if self.CheckCoins(answer.CoinList, answer.SenderId):
-                self.data.append(answer)
-            else:
-                return False
 
     def CheckCoins(self, coinList, cibitId):
         for coin in coinList:
             if not verifyCoins(coin.CoinId, cibitId):
                 return False
+            if not self.coinExist(self. coin.CoinId):
+                return False
         return True
 
+    def coinExist(self, coinId):
+        temp = self.url +"Transaction/CoinExist/"
+        var = {'CoinId' : coinId}
+        try:
+            response = requests.get(url=temp, params=var)
+            print(response)
+        except requests.exceptions.RequestException as e:
+            print(e)
+            return False
+        if response.status_code == 200:
+            return True
+        return False
 
 def main():
     block = Block(0)
