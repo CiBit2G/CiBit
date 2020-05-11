@@ -75,6 +75,7 @@ namespace CiBitMainServer.Controllers
                     ResearchId = reader["researchId"].ToString(),
                     Date = DateTime.Parse(reader["transactionDate"].ToString()),
                     Amount = int.Parse(reader["coinAmount"].ToString()),
+                    PartOfFull = float.Parse(reader["partOfFull"].ToString())
                 };
             }
             context.Connection.Close();

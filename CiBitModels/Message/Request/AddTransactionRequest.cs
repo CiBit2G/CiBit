@@ -24,6 +24,9 @@ namespace CiBitUtil.Message.Request
         [Required]
         public int Amount { get; set; }
 
+        [Required]
+        public float PartOfFull { get; set; }
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if(Amount <= 0)

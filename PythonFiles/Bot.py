@@ -55,8 +55,8 @@ class Search:
         sum = self.addNewArticles(self.newPublications, cibitId)
         if check == sum:
             print(sum)
-        newList = self.createCoins(sum, cibitId)
-        self.createTransaction(sum, cibitId, newList)
+        self.createCoins(sum, cibitId)
+
 
 # compare between the two list we got of articles and find what article need to be updated.
     def compareArticles(self, articles, cibitId):
@@ -97,41 +97,46 @@ class Search:
         print("amount of of citations left, doubles in Google Scholar " + str(newCitations))
         print("finish checking User:"+ name + "\n")
         if sum != 0:
-             newCoinList = self.createCoins(sum, user[0])
-             self.createTransaction(sum, user[0], newCoinList)
+             self.createCoins(sum, user[0])
         cursor.close()
 
 # Creates a new coin list with no duplicate keys in the database and the list.
     def createCoins(self, amount, cibitId):
         i = 0
+        j = 1
         newCoinList = list()
+        amountOfParts = amount // 100 + 1 if amount % 100 != 0 else amount//100
         cursor = self.connection.cursor()
         cursor.callproc("getCoins")
         oldCoinList = list(next(cursor.stored_results()))
         while i < amount:
             coinId = generateCoin(cibitId)
             if coinId not in oldCoinList and coinId not in newCoinList:
-               print(i)
-               i += 1
-               args = (coinId, cibitId)
-               newCoinList.append(args)
+                i += 1
+                args = (coinId, cibitId)
+                newCoinList.append(args)
+            if (i + 1) % 100 == 0:
+                self.createTransaction(i+1, cibitId, newCoinList, j/amountOfParts)
+                oldCoinList += newCoinList
+                newCoinList.clear()
+                j += 1
+        self.createTransaction(i+1, cibitId,newCoinList, j/amountOfParts)
         cursor.close()
-        return newCoinList
 
 # Creates a new transaction and enter all the Coins, as well as the shared table to the database.
-    def createTransaction(self, amount, cibitId, newCoinList):
+    def createTransaction(self, amount, cibitId, newCoinList, index):
         cursor = self.connection.cursor()
         transactionList = list()
         transactionId = 0;
-        args = [None, cibitId, None, datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'), amount, transactionId]
+        args = [None, cibitId, None, datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'), amount, index, transactionId]
         result = cursor.callproc('AddNewCoinsTransaction', args)
         transactionId = result[-1]
         queryCoins = "INSERT INTO coins (coinId, cibitId) VALUES(%s, %s)"
-        queryTransactionsCoins = "INSERT INTO coinspertranscation(transactionId, newCoinId, oldCoinId, status) VALUES(%s, %s, %s, %s)"
+        queryTransactionsCoins = "INSERT INTO coinspertranscation(transactionId, newCoinId, oldCoinId, status, partOfFull) VALUES(%s, %s, %s, %s, %s)"
         cursor.executemany(queryCoins, newCoinList)
         self.connection.commit()
         for coin in newCoinList:
-            args = (transactionId, coin[0], None, 0)
+            args = (transactionId, coin[0], None, 0, index)
             transactionList.append(args)
         cursor.executemany(queryTransactionsCoins, transactionList)
         self.connection.commit()

@@ -52,7 +52,7 @@ class Block:
             if not verifyCoins(coin, cibitId):
                 return False
         if not self.coinExist(coinList):
-                return False
+            return False
         return True
 
     def coinExist(self, coinList):
@@ -74,11 +74,3 @@ class Block:
         return hashlib.sha256(block_string).hexdigest()
 
 
-def main():
-    block = Block(0)
-    startInfo = block.isBlockReady()
-    block.fillData(startInfo['blockchainNumber'], startInfo['transactionId'], (startInfo['transactionId'] + startInfo['amount']))
-
-
-if __name__ == '__main__':
-    main()

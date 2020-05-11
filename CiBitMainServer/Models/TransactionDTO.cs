@@ -15,6 +15,7 @@ namespace CiBitMainServer.Models
         public int Amount { get; set; }
         public string Hash { get; set; }
         public int BlockchainNumber { get; set; }
+        public float PartOfFull { get; set; }
         public List<string> Coins { get; set; }
 
         public TransactionDTO()

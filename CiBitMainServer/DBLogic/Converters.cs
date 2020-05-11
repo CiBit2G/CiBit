@@ -34,8 +34,10 @@ namespace CiBitMainServer.DBLogic
         private const string blockchainNumber = "bcNumber";
         private const string coinId = "coin_id";
         private const string TransactionId = "t_id";
+        private const string PartOfFull = "part";
         private const string lastBlock = "lastBlock";
         private const string firstTransactionOnBlock = "firstTransactionOnBlock";
+       
 
 
         #endregion
@@ -79,9 +81,9 @@ namespace CiBitMainServer.DBLogic
             },
             new SpObject
             {
-                Name = senderId,
-                value = request.BlockchainNumber.ToString(),
-                ParamType = MySqlDbType.Int32
+                Name = PartOfFull,
+                value = request.PartOfFull.ToString(),
+                ParamType = MySqlDbType.Float
             }
             };
         }
@@ -252,6 +254,18 @@ namespace CiBitMainServer.DBLogic
             };
         }
         public static List<SpObject> GetCoinResponseConverter(TransactionDTO request)
+        {
+            return new List<SpObject>
+            {
+                new SpObject
+                {
+                    Name = coinId,
+                    value = request.Coins.FirstOrDefault(),
+                    ParamType = MySqlDbType.VarChar
+                }
+            };
+        }
+        public static List<SpObject> GetAllCoinResponseConverter(TransactionDTO request)
         {
             return new List<SpObject>
             {

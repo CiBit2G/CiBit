@@ -3,9 +3,10 @@ from Block import Block
 Id = "bank1Test"
 
 class Chain:
-    def __init__(self, Hash):
+    def __init__(self, hush):
         self.currentHash is None
-        self.new_block = Block(previousHash=Hash)
+        self.new_block is None
+        self.previousHush = hush
         self.BankId = Id
 
     # a quick verfication that chain's hash is valid till final block
@@ -20,13 +21,16 @@ class Chain:
     def new_block(self, proof, previous_hash):
         return proof
 
-    # creates a hash from all the data.
-    def hash(block):
-        return block
-
     #
     def proof_of_work(self, last_block):
         return True
 
 
+def main():
+    chain =Chain(0)
+    chain.new_block()
+
+
+if __name__ == '__main__':
+    main()
 
