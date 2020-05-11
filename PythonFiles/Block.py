@@ -1,5 +1,6 @@
 import requests
 import json
+import hashlib
 from CoinGenrator import verifyCoins
 from NoSSL import no_ssl_verification
 
@@ -7,7 +8,7 @@ from NoSSL import no_ssl_verification
 class Block:
     def __init__(self, previousHash):
         self.data = list()
-        self.Id = 0
+        self.Id = -1
         self.previousBlockHash = previousHash
         self.url = "https://localhost:44357/"
 
@@ -23,7 +24,8 @@ class Block:
         return response.json()
 
     # a function to start building the block's data
-    def fillData(self, start, end):
+    def fillData(self, id, start, end):
+        self.Id = id
         for i in range(start, end):
             self.getTransactions(i)
 
@@ -36,7 +38,6 @@ class Block:
         try:
             with no_ssl_verification():
                 response = requests.request('GET', url=temp, headers=headers, data=json.dumps(payload))
-                print(response.text.encode('utf8'))
         except requests.exceptions.RequestException as e:
             print(e)
         if response.status_code == 200:
@@ -50,18 +51,17 @@ class Block:
         for coin in coinList:
             if not verifyCoins(coin, cibitId):
                 return False
-            if not self.coinExist(coin):
+        if not self.coinExist(coinList):
                 return False
         return True
 
-    def coinExist(self, coinId):
+    def coinExist(self, coinList):
         temp = self.url + "Transaction/CoinExist/"
-        payload = {'CoinId': coinId}
+        payload = {'coins': coinList}
         headers = {'Content-Type': 'application/json'}
         try:
             with no_ssl_verification():
                 response = requests.request('GET', url=temp, headers=headers, data=json.dumps(payload))
-            print(response)
         except requests.exceptions.RequestException as e:
             print(e)
             return False
@@ -69,14 +69,15 @@ class Block:
             return True
         return False
 
+    def Hash(self):
+        block_string = json.dumps(self.data).encode()
+        return hashlib.sha256(block_string).hexdigest()
+
 
 def main():
     block = Block(0)
     startInfo = block.isBlockReady()
-    print(startInfo)
-    block.fillData(startInfo['transactionId'], (startInfo['transactionId'] + startInfo['amount']))
-    for b in block.data:
-        print(b)
+    block.fillData(startInfo['blockchainNumber'], startInfo['transactionId'], (startInfo['transactionId'] + startInfo['amount']))
 
 
 if __name__ == '__main__':

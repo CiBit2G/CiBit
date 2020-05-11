@@ -179,7 +179,29 @@ namespace CiBitMainServer.Controllers
             if (answer != null)
                 return true;
             return false;
+        }
 
+        public bool ConfirmCoins([FromBody]GetAllCoinsRequest request)
+        {
+            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
+
+            var config = new MapperConfiguration(mc => mc.CreateMap<GetAllCoinsRequest, TransactionDTO>());
+            var mapper = new Mapper(config);
+            var Transactioninfo = mapper.Map<GetAllCoinsRequest, TransactionDTO>(request);
+
+            var spObj = Converters.GetCoinResponseConverter(Transactioninfo);
+
+            var reader = context.StoredProcedureSql("getCoin", spObj);
+
+            string answer = null;
+            while (reader.Read())
+            {
+                answer = reader["coinId"].ToString();
+            }
+            context.Connection.Close();
+            if (answer != null)
+                return true;
+            return false;
         }
     }
 }
