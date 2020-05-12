@@ -67,3 +67,19 @@ set amount = (select count(blockNumber) from transactions where blockNumber = la
 set firstTransactionOnBlock = (select min(transactionId) from transactions where blockNumber = lastBlock);
 select lastBlock,firstTransactionOnBlock, amount;
 END
+
+----------------------------------------------------------------------------
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddNewCoinsTransaction`(
+IN sender_id varchar(50), receiver_id varchar(50), research_id int, date_time DATETIME, amount int,
+out Id int)
+BEGIN
+declare blockNum int;
+set Id = 0;
+call GetBlockNumberParam(blockNum);
+insert INTO transactions(cibitSender, cibitReceiver, researchId, transactionDate, coinAmount, status, blockNumber)
+values(sender_id, receiver_id, research_id, date_time, amount, 0, blockNum);
+if last_insert_id() is not null then 
+	set Id = last_insert_id();
+end if;
+END
