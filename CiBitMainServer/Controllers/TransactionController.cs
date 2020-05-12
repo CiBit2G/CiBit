@@ -20,13 +20,18 @@ namespace CiBitMainServer.Controllers
         {
             var context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
             var verify = new ValidateUser();
-
             var userinfo = TypeMapper.Mapper.Map<AddTransactionRequest, TransactionDTO>(request);
 
-            //verify CoinID with pythone API
+            var reader = context.StoredProcedureSql("getBlock", null);// Get the leatest block and generate a new block if needed
+            while (reader.Read())
+            {
+                userinfo.BlockchainNumber = int.Parse(reader["blockId"].ToString());
+            }
+
+            //TODO: verify CoinID with pythone API
 
             var spObj = Converters.AddTransactionConverter(userinfo);
-            var reader = context.StoredProcedureSql("AddTransaction", spObj);
+            reader = context.StoredProcedureSql("AddTransaction", spObj);
 
             context.Connection.Close();
             return true;
