@@ -23,8 +23,8 @@
 *.sbr
 *.sdf
 ipch/
-CiBitMainServer\obj\
-CiBitMainServer\bin\
+CiBitMainServer\obj/
+CiBitMainServer\bin/
 [Bb]in
 [Dd]ebug*/
 [Rr]elease*/
