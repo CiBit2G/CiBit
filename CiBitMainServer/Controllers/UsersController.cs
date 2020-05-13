@@ -9,6 +9,7 @@ using AutoMapper;
 using CiBitMainServer.Models;
 using System;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using CiBitMainServer.Mapping;
 
 namespace CiBitMainServer.Controllers
 {
@@ -23,9 +24,7 @@ namespace CiBitMainServer.Controllers
 
             CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb; ;
 
-            var config = new MapperConfiguration(mc => mc.CreateMap<GetUserRequest, UserDTO>());
-            var mapper = new Mapper(config);
-            var userinfo = mapper.Map<GetUserRequest, UserDTO>(request);
+            var userinfo = TypeMapper.Mapper.Map<GetUserRequest, UserDTO>(request);
 
             var spObj = Converters.GetUserConverter(userinfo);
 
@@ -86,9 +85,7 @@ namespace CiBitMainServer.Controllers
                 var context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb; ;
                 var hash = new ValidateUser();
 
-                var config = new MapperConfiguration(mc => mc.CreateMap<CreateUserRequest, UserDTO>());
-                var mapper = new Mapper(config);
-                var userinfo = mapper.Map<CreateUserRequest, UserDTO>(request);
+                var userinfo = TypeMapper.Mapper.Map<CreateUserRequest, UserDTO>(request);
 
                 userinfo.Password = hash.Hash(userinfo.Password); //hash Password
                 userinfo.CibitId = hash.CreateCibitId();
@@ -113,9 +110,7 @@ namespace CiBitMainServer.Controllers
         {
             CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb; ;
 
-            var config = new MapperConfiguration(mc => mc.CreateMap<RemoveUserRequest, UserDTO>());
-            var mapper = new Mapper(config);
-            var userinfo = mapper.Map<RemoveUserRequest, UserDTO>(request);
+            var userinfo = TypeMapper.Mapper.Map<RemoveUserRequest, UserDTO>(request);
 
             var spObj = Converters.RemoveUserConverter(userinfo);
             var reader = context.StoredProcedureSql("RemoveUser", spObj);

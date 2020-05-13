@@ -9,6 +9,7 @@ using CiBitUtil.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CiBitMainServer.Mapping;
 
 namespace CiBitMainServer.Controllers
 {
@@ -19,15 +20,18 @@ namespace CiBitMainServer.Controllers
         {
             var context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
             var verify = new ValidateUser();
+            var userinfo = TypeMapper.Mapper.Map<AddTransactionRequest, TransactionDTO>(request);
 
-            var config = new MapperConfiguration(mc => mc.CreateMap<AddTransactionRequest, TransactionDTO>());
-            var mapper = new Mapper(config);
-            var userinfo = mapper.Map<AddTransactionRequest, TransactionDTO>(request);
+            var reader = context.StoredProcedureSql("getBlock", null);// Get the leatest block and generate a new block if needed
+            while (reader.Read())
+            {
+                userinfo.BlockchainNumber = int.Parse(reader["blockId"].ToString());
+            }
 
-            //verify CoinID with pythone API
+            //TODO: verify CoinID with pythone API
 
             var spObj = Converters.AddTransactionConverter(userinfo);
-            var reader = context.StoredProcedureSql("AddTransaction", spObj);
+            reader = context.StoredProcedureSql("AddTransaction", spObj);
 
             context.Connection.Close();
             return true;
@@ -39,9 +43,7 @@ namespace CiBitMainServer.Controllers
             CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
             ValidateUser valid = new ValidateUser();
 
-            var config = new MapperConfiguration(mc => mc.CreateMap<RemoveCoinRequest, TransactionDTO>().AfterMap((src, dest) => dest.Coins.Add(src.CoinId)));
-            var mapper = new Mapper(config);
-            var userinfo = mapper.Map<RemoveCoinRequest, TransactionDTO>(request);
+            var userinfo = TypeMapper.Mapper.Map<RemoveCoinRequest, TransactionDTO>(request);
 
             //verify CoinID with pythone API
 
@@ -55,9 +57,8 @@ namespace CiBitMainServer.Controllers
         public GetTransactionReponse GetTransaction([FromBody]GetTransactionRequest request)
         {
             CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
-            var config = new MapperConfiguration(mc => mc.CreateMap<GetTransactionRequest, TransactionDTO>());
-            var mapper = new Mapper(config);
-            var Transactioninfo = mapper.Map<GetTransactionRequest, TransactionDTO>(request);
+            
+            var Transactioninfo = TypeMapper.Mapper.Map<GetTransactionRequest, TransactionDTO>(request);
 
             var spObj = Converters.GetTransactionConverter(Transactioninfo);
 
@@ -80,9 +81,7 @@ namespace CiBitMainServer.Controllers
             }
             context.Connection.Close();
             response.transaction.Coins = new List<string>();
-            config = new MapperConfiguration(mc => mc.CreateMap<Transaction, TransactionDTO>());
-            mapper = new Mapper(config);
-            Transactioninfo = mapper.Map< Transaction, TransactionDTO >(response.transaction);
+            Transactioninfo = TypeMapper.Mapper.Map< Transaction, TransactionDTO >(response.transaction);
             spObj = Converters.GetCoinsConverter(Transactioninfo);
             reader = context.StoredProcedureSql("getTransactionCoins", spObj);
             while (reader.Read())
@@ -147,9 +146,7 @@ namespace CiBitMainServer.Controllers
         {
             CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
 
-            var config = new MapperConfiguration(mc => mc.CreateMap<GetHashRequest, TransactionDTO>());
-            var mapper = new Mapper(config);
-            var Transactioninfo = mapper.Map<GetHashRequest, TransactionDTO>(request);
+            var Transactioninfo = TypeMapper.Mapper.Map<GetHashRequest, TransactionDTO>(request);
 
             var spObj = Converters.GetHashResponseConverter(Transactioninfo);
 
@@ -172,9 +169,7 @@ namespace CiBitMainServer.Controllers
         {
             CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
 
-            var config = new MapperConfiguration(mc => mc.CreateMap<SetHashRequest, TransactionDTO>());
-            var mapper = new Mapper(config);
-            var Transactioninfo = mapper.Map<SetHashRequest, TransactionDTO>(request);
+            var Transactioninfo = TypeMapper.Mapper.Map<SetHashRequest, TransactionDTO>(request);
 
             var spObj = Converters.GetHashResponseConverter(Transactioninfo);
 
@@ -191,9 +186,7 @@ namespace CiBitMainServer.Controllers
         {
             CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
 
-            var config = new MapperConfiguration(mc => mc.CreateMap<GetCoinRequest, TransactionDTO>().AfterMap((src, dest) => dest.Coins.Add(src.CoinId)));
-            var mapper = new Mapper(config);
-            var Transactioninfo = mapper.Map<GetCoinRequest, TransactionDTO>(request);
+            var Transactioninfo = TypeMapper.Mapper.Map<GetCoinRequest, TransactionDTO>(request);
 
             var spObj = Converters.GetCoinResponseConverter(Transactioninfo);
 
@@ -214,9 +207,7 @@ namespace CiBitMainServer.Controllers
         {
             CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
 
-            var config = new MapperConfiguration(mc => mc.CreateMap<GetAllCoinsRequest, TransactionDTO>());
-            var mapper = new Mapper(config);
-            var Transactioninfo = mapper.Map<GetAllCoinsRequest, TransactionDTO>(request);
+            var Transactioninfo = TypeMapper.Mapper.Map<GetAllCoinsRequest, TransactionDTO>(request);
 
             var spObj = Converters.GetCoinResponseConverter(Transactioninfo);
 

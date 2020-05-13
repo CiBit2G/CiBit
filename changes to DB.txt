@@ -1,0 +1,85 @@
+add new SP:
+------------------------------------------------------------------------------
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetBlockNumberParam`(out blockNumber int)
+BEGIN
+declare lastBlock, amount int;
+if (SELECT DATE(time_Stamp) FROM blocktable) < CURDATE() then
+	call AddBlock();
+end if;
+set lastBlock =  (select max(blockId) from blockTable where previousHash is null);
+set amount = (select count(blockNumber) from transactions where blockNumber = lastBlock);
+if amount >= 100 then
+	call AddBlock();
+end if;
+set blockNumber = (select max(blockId) from blockTable where previousHash is null);
+END
+
+------------------------------------------------------------------------------
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddBlock`()
+BEGIN
+insert INTO blocktable(time_Stamp, proof)
+values(now(),0);
+END
+
+-----------------------------------------------------------------------------
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getBlock`()
+BEGIN
+declare lastBlock, amount int;
+if (SELECT DATE(time_Stamp) FROM blocktable) < CURDATE() then
+	call AddBlock();
+end if;
+set lastBlock =  (select max(blockId) from blockTable where previousHash is null);
+set amount = (select count(blockNumber) from transactions where blockNumber = lastBlock);
+if amount >= 100 then
+	call AddBlock();
+end if;
+select max(blockId) from blockTable where previousHash is null;
+END
+
+-----------------------------------------------------------------------------
+
+
+Alter SP:
+-----------------------------------------------------------------------------
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddNewTransaction`(
+IN sender_id varchar(50), receiver_id varchar(50), research_id varchar(45),date_time datetime, amount int)
+BEGIN
+declare blockNum int;
+call GetBlockNumberParam(blockNum);
+insert INTO transactions(cibitSender, cibitReceiver, researchId, transactionDate, coinAmount, status, blockNumber)
+values(sender_id, receiver_id, research_id, date_time, amount, 0, blockNum);
+END
+
+-----------------------------------------------------------------------------
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetBlockReady`()
+BEGIN
+declare lastBlock , firstTransactionOnBlock , amount int;
+set lastBlock =  (select min(blockId) from blockTable where previousHash = 0);
+if lastBlock is null then
+	set lastBlock =  (select max(blockId) from blockTable);
+end if;
+set amount = (select count(blockNumber) from transactions where blockNumber = lastBlock);
+set firstTransactionOnBlock = (select min(transactionId) from transactions where blockNumber = lastBlock);
+select lastBlock,firstTransactionOnBlock, amount;
+END
+
+----------------------------------------------------------------------------
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddNewCoinsTransaction`(
+IN sender_id varchar(50), receiver_id varchar(50), research_id int, date_time DATETIME, amount int,
+out Id int)
+BEGIN
+declare blockNum int;
+set Id = 0;
+call GetBlockNumberParam(blockNum);
+insert INTO transactions(cibitSender, cibitReceiver, researchId, transactionDate, coinAmount, status, blockNumber)
+values(sender_id, receiver_id, research_id, date_time, amount, 0, blockNum);
+if last_insert_id() is not null then 
+	set Id = last_insert_id();
+end if;
+END
