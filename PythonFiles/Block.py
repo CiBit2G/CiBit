@@ -79,5 +79,3 @@ class Block:
     def Hash(self):
         block_string = json.dumps(self).encode()
         self.hush = hashlib.sha256(block_string).hexdigest()
-
-
