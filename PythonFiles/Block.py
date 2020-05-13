@@ -4,34 +4,41 @@ import hashlib
 from CoinGenrator import verifyCoins
 from NoSSL import no_ssl_verification
 
+url = "https://localhost:44357/"
+
 
 class Block:
-    def __init__(self, previousHash):
+    def __init__(self, id, previousHash):
         self.data = list()
-        self.Id = -1
+        self.Id = id
         self.previousBlockHash = previousHash
-        self.url = "https://localhost:44357/"
+        self.hush is None
+        self.checkBlock()
+
 
     # a function to check if the block has  100 transactions or 24 hours had past since last block.
-    def isBlockReady(self):
-        temp = self.url + "Transaction/BlockReady/"
-        payload = {}
-        headers = {}
-        with no_ssl_verification():
-            response = requests.request("GET", url=temp, headers=headers, data=payload)
-        if response.status_code != 200:
-            return -1
-        return response.json()
+    def checkBlock(self):
+        temp = url +"Transaction/BlockInfo"
+        payload = {'BlockchainNumber': self.Id}
+        headers = {'Content-Type': 'application/json'}
+        try:
+            with no_ssl_verification():
+                response = requests.request('GET', url=temp, headers=headers, data=json.dumps(payload))
+        except requests.exceptions.RequestException as e:
+            print(e)
+        if response.status_code == 200:
+            answer = response.json()
+            self.fillData(answer['transactionId'], answer['amount'] + answer['transactionId'])
+        return True
 
     # a function to start building the block's data
-    def fillData(self, id, start, end):
-        self.Id = id
+    def fillData(self, start, end):
         for i in range(start, end):
             self.getTransactions(i)
 
     # a function to get next transaction of the block from the server.
     def getTransactions(self, index):
-        temp = self.url + "Transaction/GetTransaction/"
+        temp = url + "Transaction/GetTransaction/"
         payload = {'BlockchainNumber': self.Id,
                    'TransactionId': index}
         headers = {'Content-Type': 'application/json'}
@@ -51,13 +58,13 @@ class Block:
         for coin in coinList:
             if not verifyCoins(coin, cibitId):
                 return False
-        if not self.coinExist(coinList):
-            return False
+            if not self.coinExist(coin):
+                return False
         return True
 
-    def coinExist(self, coinList):
-        temp = self.url + "Transaction/CoinExist/"
-        payload = {'coins': coinList}
+    def coinExist(self, coinId):
+        temp = url + "Transaction/CoinExist/"
+        payload = {'CoinId': coinId}
         headers = {'Content-Type': 'application/json'}
         try:
             with no_ssl_verification():
@@ -70,7 +77,7 @@ class Block:
         return False
 
     def Hash(self):
-        block_string = json.dumps(self.data).encode()
-        return hashlib.sha256(block_string).hexdigest()
+        block_string = json.dumps(self).encode()
+        self.hush = hashlib.sha256(block_string).hexdigest()
 
 

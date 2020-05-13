@@ -13,7 +13,7 @@ namespace CiBitUtil.Models
         public DateTime Date { get; set; }
         public int Amount { get; set; }
         public int BlockchainNumber { get; set; }
-        public float PartOfFull { get; set; }
+        public int Fragment { get; set; }
 
         public List<string> Coins { get; set; }
     }

@@ -75,7 +75,7 @@ namespace CiBitMainServer.Controllers
                     ResearchId = reader["researchId"].ToString(),
                     Date = DateTime.Parse(reader["transactionDate"].ToString()),
                     Amount = int.Parse(reader["coinAmount"].ToString()),
-                    PartOfFull = float.Parse(reader["partOfFull"].ToString())
+                    Fragment = int.Parse(reader["fragment"].ToString())
                 };
             }
             context.Connection.Close();
@@ -115,6 +115,34 @@ namespace CiBitMainServer.Controllers
             return response;
         }
 
+
+        public BlockReadyResponse BlockInfo(getBlockRequest request)
+        {
+
+            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
+            var config = new MapperConfiguration(mc => mc.CreateMap<GetTransactionRequest, TransactionDTO>());
+            var mapper = new Mapper(config);
+            var Transactioninfo = mapper.Map<getBlockRequest, TransactionDTO>(request);
+            var spObj = Converters.GetBlockConverter(Transactioninfo);
+
+            var reader = context.StoredProcedureSql("getBlockInfo", spObj);
+
+            
+
+            BlockReadyResponse response = null;
+            while (reader.Read())
+            {
+                response = new BlockReadyResponse()
+                {
+                    TransactionId = int.Parse(reader["transactionId"].ToString()),
+                    BlockchainNumber = int.Parse(reader["blockNumber"].ToString()),
+                    Amount = int.Parse(reader["amount"].ToString()),
+                };
+            }
+            context.Connection.Close();
+
+            return response;
+        }
         public GetHashResponse GetHash(GetHashRequest request)
         {
             CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;

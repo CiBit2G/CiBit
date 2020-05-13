@@ -103,9 +103,8 @@ class Search:
 # Creates a new coin list with no duplicate keys in the database and the list.
     def createCoins(self, amount, cibitId):
         i = 0
-        j = 1
+        fragment = amount
         newCoinList = list()
-        amountOfParts = amount // 100 + 1 if amount % 100 != 0 else amount//100
         cursor = self.connection.cursor()
         cursor.callproc("getCoins")
         oldCoinList = list(next(cursor.stored_results()))
@@ -116,27 +115,27 @@ class Search:
                 args = (coinId, cibitId)
                 newCoinList.append(args)
             if (i + 1) % 100 == 0:
-                self.createTransaction(i+1, cibitId, newCoinList, j/amountOfParts)
+                fragment -= 100
+                self.createTransaction(100, cibitId, newCoinList, fragment)
                 oldCoinList += newCoinList
                 newCoinList.clear()
-                j += 1
-        self.createTransaction(i+1, cibitId,newCoinList, j/amountOfParts)
+        self.createTransaction(fragment, cibitId,newCoinList, 0)
         cursor.close()
 
 # Creates a new transaction and enter all the Coins, as well as the shared table to the database.
-    def createTransaction(self, amount, cibitId, newCoinList, index):
+    def createTransaction(self, amount, cibitId, newCoinList, fragment):
         cursor = self.connection.cursor()
         transactionList = list()
         transactionId = 0;
-        args = [None, cibitId, None, datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'), amount, index, transactionId]
+        args = [None, cibitId, None, datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'), amount, fragment, transactionId]
         result = cursor.callproc('AddNewCoinsTransaction', args)
         transactionId = result[-1]
         queryCoins = "INSERT INTO coins (coinId, cibitId) VALUES(%s, %s)"
-        queryTransactionsCoins = "INSERT INTO coinspertranscation(transactionId, newCoinId, oldCoinId, status, partOfFull) VALUES(%s, %s, %s, %s, %s)"
+        queryTransactionsCoins = "INSERT INTO coinspertranscation(transactionId, newCoinId, oldCoinId, status) VALUES(%s, %s, %s, %s)"
         cursor.executemany(queryCoins, newCoinList)
         self.connection.commit()
         for coin in newCoinList:
-            args = (transactionId, coin[0], None, 0, index)
+            args = (transactionId, coin[0], None, 0)
             transactionList.append(args)
         cursor.executemany(queryTransactionsCoins, transactionList)
         self.connection.commit()
