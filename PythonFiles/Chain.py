@@ -12,17 +12,19 @@ url = "https://localhost:44357/"
 class Chain:
     def __init__(self):
         self.currentHash = 0
-        self.blocks = list() #blocknubmer, proof, previousHush
+        self.blocks = list()   # blocknumber, proof, previousHush
         self.BankId = Id
 
     # a quick verification that chain's hash is valid till final block
-    def valid_chain(self, lastBlockInDbNumber, lastBlockId):
+    def valid_chain(self, lastBlockId):
+        num = 0
         newBlocks = self.getDbBlocks(self)
         for block in newBlocks:
             if self.proofOfWork(block) != 1:
                 newBlock = self.resolveConflicts(block)
                 self.updateBlock(newBlock)
-        for i in range(lastBlockInDbNumber + 1, lastBlockId):
+            num = block.Id
+        for i in range(num + 1, lastBlockId):
             newBlock = self(i, self.blocks[-1].hush)
             checkResult = self.proofOfWork(newBlock)
             if checkResult == 1:
@@ -68,40 +70,57 @@ class Chain:
     def checkTransactions(self):
         return True
 
-    # Adds the new block to this bankDb
-    def addBlock(self, block):
-        cursor = connect().cursor()
-        args = [block.Id, block.hush, block.previousBlockHash]
-        # NEED TO CREATE LIST OF TRANSACTIONID WITH BLOCKID(STAYS THE SAME)
-        # EXCUTEMANY
-        cursor.callproc('addBlock',args)
-        cursor.close()
-
-    # Updates the block in this bankDb
-    def updateBlock(self, block):
-        cursor = connect().cursor()
-        args = [block.Id, block.hush, block.previousBlockHash]
-        cursor.callproc('updateBlock',args)
-        cursor.close()
-
-    def getCurrentState(self):
-        cursor = connect().cursor()
-        cursor.callproc('GetLastBlock')
-        answer = list(next(cursor.stored_results()))
-        cursor.close()
-        return answer
-
-    # gets all the data of the blocks in the bankDb
-    def getDbBlocks(self):
-        cursor = connect().cursor()
-        cursor.callproc('getAllBlocks')
-        answer = list(next(cursor.stored_results()))
-        cursor.close()
-        return answer
-
     def Hash(self, index):
         block_string = json.dumps(self.blocks[index]).encode()
         self.currentHash = hashlib.sha256(block_string).hexdigest()
+
+
+# Need to Fix all repeated code and use a function to call querys/sp
+# Adds the new block to this bankDb
+def addBlock(block):
+    blockList = list()
+    connection = connect()
+    cursor = connection.cursor()
+    args = [block.Id, block.hush, block.previousBlockHash]
+    cursor.callproc('addBlock',args)
+    query = "INSERT INTO transactionsperblock (transactionId, blockId) VALUES(%s, %s)"
+    for transaction in block.data:
+        args = [transaction['transactionId'],block.Id]
+        blockList.append(args)
+    cursor.executemany(query, blockList)
+    connection.commit
+    cursor.close()
+
+# gets all the data of the blocks in the bankDb
+def getDbBlocks():
+    args = []
+    sp = 'getAllBlocks'
+    answer = UseDb(args, sp)
+    return answer
+
+
+# Updates the block in this bankDb
+def updateBlock( block):
+    args = [block.Id, block.hush, block.previousBlockHash]
+    sp = 'updateBlock'
+    UseDb(args, sp)
+
+
+def deleteblockTransactions(blockId):
+    sp = 'deleteTransactions'
+    args = [blockId]
+    answer = UseDb(args, sp)
+
+
+def UseDb(args, sp):
+    connection = connect()
+    cursor = connection.cursor()
+    cursor.callproc(sp, args)
+    answer = list(next(cursor.stored_results()))
+    connection.commit
+    cursor.close()
+    return answer
+
 
 def connect():
     try:
@@ -114,14 +133,12 @@ def connect():
     except mysql.connector.Error as e:
         print("Error while connecting to MySQL", e)
 
+
 def main():
     chain = Chain()
     newblock = Block(1,None)
     answer = chain.isBlockReady()
-    check = chain.getCurrentState()
-    if check[0] == answer['blockchainNumber'] and check[1] == answer['hash']:
-        return
-    chain.valid_chain(check[0], answer['blockchainNumber'])
+    chain.valid_chain(answer['blockchainNumber'])
 
 
 if __name__ == '__main__':

@@ -21,12 +21,14 @@ class Block:
         try:
             with no_ssl_verification():
                 response = requests.request('GET', url=temp, headers=headers, data=json.dumps(payload))
+            if response.status_code == 200:
+                answer = response.json()
+                self.fillData(answer['transactionId'], answer['amount'])
+                return True
+            return False
         except requests.exceptions.RequestException as e:
             print(e)
-        if response.status_code == 200:
-            answer = response.json()
-            self.fillData(answer['transactionId'], answer['amount'])
-        return True
+            return False
 
     # a function to start building the block's data
     def fillData(self, start, amount):
@@ -46,16 +48,17 @@ class Block:
         try:
             with no_ssl_verification():
                 response = requests.request('GET', url=temp, headers=headers, data=json.dumps(payload))
+                if response.status_code == 200:
+                    answer = response.json()['transaction']
+                    print(answer)
+                    checkId = answer['receiverId'] if answer['senderId'] == '' else answer['senderId']
+                    if self.CheckCoins(list(answer['coins']), checkId):
+                        self.data.append(answer)
+                        return True
+                return False
         except requests.exceptions.RequestException as e:
             print(e)
-        if response.status_code == 200:
-            answer = response.json()['transaction']
-            print(answer)
-            checkId = answer['receiverId'] if answer['senderId'] == '' else answer['senderId']
-            if self.CheckCoins(list(answer['coins']), checkId):
-                self.data.append(answer)
-                return True
-        return False
+            return False
 
      # a function to check that all the coins of the transaction if they exist and if their hush is right.
     def CheckCoins(self, coinList, cibitId):
@@ -74,9 +77,10 @@ class Block:
         try:
             with no_ssl_verification():
                 response = requests.request('GET', url=temp, headers=headers, data=json.dumps(payload))
+                if response.status_code == 200:
+                    return True
+                return False
         except requests.exceptions.RequestException as e:
             print(e)
             return False
-        if response.status_code == 200:
-            return True
-        return False
+
