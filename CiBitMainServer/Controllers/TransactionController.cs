@@ -113,9 +113,7 @@ namespace CiBitMainServer.Controllers
         {
 
             CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
-            var config = new MapperConfiguration(mc => mc.CreateMap<GetTransactionRequest, TransactionDTO>());
-            var mapper = new Mapper(config);
-            var Transactioninfo = mapper.Map<getBlockRequest, TransactionDTO>(request);
+            var Transactioninfo = TypeMapper.Mapper.Map<getBlockRequest, TransactionDTO>(request);
             var spObj = Converters.GetBlockConverter(Transactioninfo);
 
             var reader = context.StoredProcedureSql("getBlockInfo", spObj);
