@@ -35,6 +35,7 @@ namespace CiBitMainServer.DBLogic
         private const string TransactionId = "t_id";
         private const string Fragment = "Fragment";
         private const string lastBlock = "lastBlock";
+        private const string proof = "proof";
         private const string firstTransactionOnBlock = "firstTransactionOnBlock";
        
 
@@ -185,7 +186,7 @@ namespace CiBitMainServer.DBLogic
             };
         }
 
-        internal static List<SpObject> GetHashResponseConverter(TransactionDTO request)
+        internal static List<SpObject> CheckHashResponseConverter(TransactionDTO request)
         {
             return new List<SpObject>
             {

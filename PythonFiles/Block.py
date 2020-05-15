@@ -1,6 +1,5 @@
 import requests
 import json
-import hashlib
 from CoinGenrator import verifyCoins
 from NoSSL import no_ssl_verification
 
@@ -12,9 +11,7 @@ class Block:
         self.data = list()
         self.Id = id
         self.previousBlockHash = previousHash
-        self.hush is None
         self.checkBlock()
-
 
     # a function to check if the block has  100 transactions or 24 hours had past since last block.
     def checkBlock(self):
@@ -28,13 +25,17 @@ class Block:
             print(e)
         if response.status_code == 200:
             answer = response.json()
-            self.fillData(answer['transactionId'], answer['amount'] + answer['transactionId'])
+            self.fillData(answer['transactionId'], answer['amount'])
         return True
 
     # a function to start building the block's data
-    def fillData(self, start, end):
-        for i in range(start, end):
-            self.getTransactions(i)
+    def fillData(self, start, amount):
+        i = start
+        end = amount
+        while end > 0:
+            if self.getTransactions(i):
+                end -= 1
+            i += 1
 
     # a function to get next transaction of the block from the server.
     def getTransactions(self, index):
@@ -53,7 +54,10 @@ class Block:
             checkId = answer['receiverId'] if answer['senderId'] == '' else answer['senderId']
             if self.CheckCoins(list(answer['coins']), checkId):
                 self.data.append(answer)
+                return True
+        return False
 
+     # a function to check that all the coins of the transaction if they exist and if their hush is right.
     def CheckCoins(self, coinList, cibitId):
         for coin in coinList:
             if not verifyCoins(coin, cibitId):
@@ -62,6 +66,7 @@ class Block:
                 return False
         return True
 
+    # a function to check that coin exist in database.
     def coinExist(self, coinId):
         temp = url + "Transaction/CoinExist/"
         payload = {'CoinId': coinId}
@@ -75,7 +80,3 @@ class Block:
         if response.status_code == 200:
             return True
         return False
-
-    def Hash(self):
-        block_string = json.dumps(self).encode()
-        self.hush = hashlib.sha256(block_string).hexdigest()

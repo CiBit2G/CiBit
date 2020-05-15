@@ -4,6 +4,6 @@ namespace CiBitUtil.Message.Response
 {
     public class BlockReadyResponse : GetTransactionRequest
     {
-        public int Amount { get; set; }
+        public string Hash { get; set; }
     }
 }

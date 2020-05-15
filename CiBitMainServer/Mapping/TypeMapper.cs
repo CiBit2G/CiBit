@@ -35,7 +35,7 @@ namespace CiBitMainServer.Mapping
             CreateMap<Transaction, TransactionDTO>();
             CreateMap<AddTransactionRequest, TransactionDTO>();
             CreateMap<RemoveCoinRequest, TransactionDTO>();
-            CreateMap<GetHashRequest, TransactionDTO>();
+            CreateMap<CheckHashRequest, TransactionDTO>();
             CreateMap<SetHashRequest, TransactionDTO>();
             CreateMap<GetCoinRequest, TransactionDTO>();
             CreateMap<GetAllCoinsRequest, TransactionDTO>();

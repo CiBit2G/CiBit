@@ -51,7 +51,7 @@ namespace CiBitMainServer.Controllers
         public GetTransactionReponse GetTransaction([FromBody]GetTransactionRequest request)
         {
             CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
-            
+
             var Transactioninfo = TypeMapper.Mapper.Map<GetTransactionRequest, TransactionDTO>(request);
 
             var spObj = Converters.GetTransactionConverter(Transactioninfo);
@@ -74,8 +74,12 @@ namespace CiBitMainServer.Controllers
                 };
             }
             context.Connection.Close();
+
+            if (response.transaction == null)
+                return null;
+
             response.transaction.Coins = new List<string>();
-            Transactioninfo = TypeMapper.Mapper.Map< Transaction, TransactionDTO >(response.transaction);
+            Transactioninfo = TypeMapper.Mapper.Map<Transaction, TransactionDTO>(response.transaction);
             spObj = Converters.GetCoinsConverter(Transactioninfo);
             reader = context.StoredProcedureSql("getTransactionCoins", spObj);
             while (reader.Read())
@@ -98,9 +102,8 @@ namespace CiBitMainServer.Controllers
             {
                 response = new BlockReadyResponse()
                 {
-                    TransactionId = int.Parse(reader["firstTransactionOnBlock"].ToString()),
                     BlockchainNumber = int.Parse(reader["lastBlock"].ToString()),
-                    Amount = int.Parse(reader["amount"].ToString()),
+                    Hash = reader["blockHash"].ToString(),
                 };
             }
             context.Connection.Close();
@@ -109,7 +112,7 @@ namespace CiBitMainServer.Controllers
         }
 
 
-        public BlockReadyResponse BlockInfo(getBlockRequest request)
+        public BlockInfoResponse BlockInfo([FromBody] getBlockRequest request)
         {
 
             CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
@@ -118,12 +121,10 @@ namespace CiBitMainServer.Controllers
 
             var reader = context.StoredProcedureSql("getBlockInfo", spObj);
 
-            
-
-            BlockReadyResponse response = null;
+            BlockInfoResponse response = null;
             while (reader.Read())
             {
-                response = new BlockReadyResponse()
+                response = new BlockInfoResponse()
                 {
                     TransactionId = int.Parse(reader["transactionId"].ToString()),
                     BlockchainNumber = int.Parse(reader["blockNumber"].ToString()),
@@ -134,27 +135,34 @@ namespace CiBitMainServer.Controllers
 
             return response;
         }
-        public GetHashResponse GetHash(GetHashRequest request)
+        public int CheckHash([FromBody]CheckHashRequest request)
         {
             CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
 
-            var Transactioninfo = TypeMapper.Mapper.Map<GetHashRequest, TransactionDTO>(request);
+            var Transactioninfo = TypeMapper.Mapper.Map<CheckHashRequest, TransactionDTO>(request);
 
-            var spObj = Converters.GetHashResponseConverter(Transactioninfo);
+            var spObj = Converters.CheckHashResponseConverter(Transactioninfo);
 
             var reader = context.StoredProcedureSql("GetHash", spObj);
 
-            GetHashResponse response = null;
+            CheckHashResponse response = null;
             while (reader.Read())
             {
-                response = new GetHashResponse()
+                response = new CheckHashResponse()
                 {
                     Hash = reader["proof"].ToString()
                 };
             }
             context.Connection.Close();
 
-            return response;
+            if (response.Hash == "0")
+                return 0;
+            else if (response.Hash.CompareTo(request.Hash) == 0)
+            {
+                ///check if transaction are panding  - return 4
+                return 1;
+            }
+            return -1;
         }
 
         public bool SetHash(SetHashRequest request)
@@ -163,15 +171,17 @@ namespace CiBitMainServer.Controllers
 
             var Transactioninfo = TypeMapper.Mapper.Map<SetHashRequest, TransactionDTO>(request);
 
-            var spObj = Converters.GetHashResponseConverter(Transactioninfo);
+            var spObj = Converters.CheckHashResponseConverter(Transactioninfo);
 
             var reader = context.StoredProcedureSql("InsertHashFromBank", spObj);
 
-            var compare = GetHash(new GetHashRequest() { BlockchainNumber = request.BlockchainNumber });
+            //check consensus
+
+            var compare = CheckHash(new CheckHashRequest() { Hash = request.Hash });
 
             context.Connection.Close();
 
-            return request.Hash.Equals(compare.Hash);
+            return compare == 0;
         }
 
         public bool CoinExist([FromBody]GetCoinRequest request)

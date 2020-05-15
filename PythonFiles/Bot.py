@@ -57,7 +57,6 @@ class Search:
             print(sum)
         self.createCoins(sum, cibitId)
 
-
 # compare between the two list we got of articles and find what article need to be updated.
     def compareArticles(self, articles, cibitId):
         cursor = self.connection.cursor()
@@ -127,7 +126,7 @@ class Search:
         cursor = self.connection.cursor()
         transactionList = list()
         transactionId = 0;
-        args = [None, cibitId, None, datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'), amount, fragment, transactionId]
+        args = [None, cibitId, None, amount, fragment, transactionId]
         result = cursor.callproc('AddNewCoinsTransaction', args)
         transactionId = result[-1]
         queryCoins = "INSERT INTO coins (coinId, cibitId) VALUES(%s, %s)"
