@@ -29,7 +29,6 @@ namespace CiBitMainServer.DBLogic
         private const string senderId = "sender_id";
         private const string receiverId = "receiver_id";
         private const string researchId = "research_id";
-        private const string date = "date_time";
         private const string amount = "amount";
         private const string blockchainNumber = "bcNumber";
         private const string coinId = "coin_id";
@@ -66,12 +65,6 @@ namespace CiBitMainServer.DBLogic
                 Name = receiverId,
                 value = request.ReceiverId,
                 ParamType = MySqlDbType.VarChar
-            },
-            new SpObject
-            {
-                Name = date,
-                value = request.Date.ToString(),
-                ParamType = MySqlDbType.DateTime
             },
             new SpObject
             {

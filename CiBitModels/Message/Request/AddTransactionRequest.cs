@@ -19,9 +19,6 @@ namespace CiBitUtil.Message.Request
         public string ResearchId { get; set; }
 
         [Required]
-        public DateTime Date { get; set; }
-
-        [Required]
         public int Amount { get; set; }
 
         [Required]
