@@ -38,23 +38,35 @@ class Chain:
         return True
 
     # changes data in block and DB by the consensus
-    def resolveConflicts(self, blook):
-         #replace with method - delete from table,check block, insert to table
+    def resolveConflicts(self, block):
+        temp = url + "Transaction/CheckConsensus"
+        payload = {'bankId': self.BankId, 'BlockchainNumber': block.Id}
+        headers = {'Content-Type': 'application/json'}
+    # replace with method - delete from table,check block, insert to table
+        try:
+            with no_ssl_verification():
+                response = requests.request('GET', url=temp, headers=headers, data=json.dumps(payload))
+                if response['Hash'] == self.hash:
+                    return block
+                else:
+                    return response
+        except requests.exceptions.RequestException as e:
+            print(e)
         newBlock = Block()
         return True
 
     # a function to check that the block is in-sync with server
     def proofOfWork(self,block):
         temp = url + "Transaction/CheckHash/"
-        payload = {'BlockchainNumber': block.Id,
-                  'Hush': self.currentHash}
+        payload = {'BlockchainNumber': block.Id, 'Hush': self.currentHash}
         headers = {'Content-Type': 'application/json'}
         try:
             with no_ssl_verification():
                 response = requests.request('GET', url=temp, headers=headers, data=json.dumps(payload))
+                return response
         except requests.exceptions.RequestException as e:
             print(e)
-        return response
+
 
     # a function to check if block is ready to be filled with data and have a consensus
     def isBlockReady(self):
