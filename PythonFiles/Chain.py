@@ -71,7 +71,7 @@ class Chain:
                 with no_ssl_verification():
                     response = requests.request('GET', url=temp, headers=headers, data=json.dumps(payload))
                     if response.status_code == 200:
-                        self.checkTransactions(response['transactionList'])
+                        checkTransactions(response['transactionList'], block.Id)
             except requests.exceptions.RequestException as e:
                 print(e)
 
@@ -98,19 +98,69 @@ class Chain:
             return -1
         return response.json()
 
-    #deletes or adds transactions per consensus
-    def checkTransactions(self, TrasactionList):
-        return True
-
     def Hash(self, newBlock):
         block_string = json.dumps(newBlock).encode()
         return hashlib.sha256(block_string).hexdigest()
 
     def sendHash(self, blockId):
-        pass
+        temp = url + "Transaction/SetHash"
+        payload = {"BankId" : self.BankId, "BlockId" : blockId, "Hash": self.currentHash}
+        headers = {'Content-Type': 'application/json'}
+        try:
+            with no_ssl_verification():
+                response = requests.request('Post', url=temp, headers=headers, data=json.dumps(payload))
+        except requests.exceptions.RequestException as e:
+            print(e)
+            return response
 
-    def sendTransactions(self, blockId):
-        pass
+    def sendTransactions(self, block):
+        temp = url + "Transaction/SetTransactions"
+        payload = {"transactionList" : block.data, "BlockId" : block.Id}
+        headers = {'Content-Type': 'application/json'}
+        try:
+            with no_ssl_verification():
+                response = requests.request('Post', url=temp, headers=headers, data=json.dumps(payload))
+                return response
+        except requests.exceptions.RequestException as e:
+            print(e)
+            return False
+
+
+# deletes or adds transactions per consensus
+def checkTransactions(TransactionList, blockId):
+    transactionDeleteList = list()
+    transactionUpdateList = list()
+    transactionsDB = getTransactions(blockId)
+    for transaction in transactionsDB:
+        if transaction not in TransactionList:
+            args = [transaction, blockId]
+            transactionDeleteList.append(args)
+    for transaction in TransactionList:
+        if transaction not in transactionsDB:
+            args = [transaction, blockId]
+            transactionUpdateList.append(args)
+    addMoreTransactions(transactionUpdateList)
+    deleteMoreTransactions(transactionDeleteList)
+
+
+# adds transactions per consensus to DB
+def addMoreTransactions(transactionUpdateList):
+    connection = connect()
+    cursor = connection.cursor()
+    query = "INSERT INTO transactionsperblock (transactionId, blockId) VALUES(%s, %s)"
+    cursor.executemany(query, transactionUpdateList)
+    connection.commit
+    cursor.close()
+
+
+# deletes transactions per consensus from DB
+def deleteMoreTransactions(transactionDeleteList):
+    connection = connect()
+    cursor = connection.cursor()
+    query = "Delete From transactionsperblock (transactionId, blockId) VALUES(%s, %s)"
+    cursor.executemany(query, transactionDeleteList)
+    connection.commit
+    cursor.close()
 
 
 # Adds the new block to this bankDb
@@ -121,7 +171,7 @@ def addBlock(block):
     addTransaction(block)
 
 
-#  Adds transacionList to transactionperblock Table
+#  Adds transactions List to transactionperblock Table
 def addTransaction(block):
     blockList = list()
     connection = connect()
@@ -132,6 +182,7 @@ def addTransaction(block):
         blockList.append(args)
     cursor.executemany(query, blockList)
     connection.commit
+    cursor.close()
 
 
 # gets all the data of the blocks in the bankDb
@@ -142,17 +193,27 @@ def getDbBlocks():
     return answer
 
 
+# gets all the transactions written in this block
+def getTransactions(blockId):
+    args = [blockId]
+    sp = 'getTransactionsperBlock'
+    answer = UseDb(args, sp)
+    return answer
+
+
 # Updates the block in this bankDb
 def updateBlock(block):
     args = [block.Id, block.hush, block.previousBlockHash]
     sp = 'updateBlock'
     UseDb(args, sp)
 
+
 # Deletes all transaction that were in this block.
 def deleteblockTransactions(blockId):
     sp = 'deleteTransactions'
     args = [blockId]
     answer = UseDb(args, sp)
+
 
 # A function get procedure name and argumens and use the stored procedure in his BankDB.
 def UseDb(args, sp):
