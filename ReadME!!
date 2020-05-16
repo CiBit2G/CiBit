@@ -1,8 +1,4 @@
-HTTPSConnectionPool(host='localhost', port=44357): Max retries exceeded with url:
- /Transaction/GetTransaction?BlockchainNumber=0&TransactionId=40 
- (Caused by SSLError(SSLError("bad handshake: 
- Error([('SSL routines', 'tls_process_server_certificate', 'certificate verify failed')])")))
- 
- 
- בנוסף גם יש איזו שגיאה בפונקציה GetTransaction
- הוא לא מצליח לחבר את ה mapper
+CheckConsensus - blockId - > transactionList
+CheckHash -blockId, currentHash - > chechkHashType (0,1,2,3)
+SetHash - bankId, blockId, Hash -> true/false
+SetTransactions - transactionList, blockId -> true/false

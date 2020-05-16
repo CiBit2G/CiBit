@@ -98,22 +98,27 @@ class Chain:
             return -1
         return response.json()
 
+    # a function to hash the block
     def Hash(self, newBlock):
         block_string = json.dumps(newBlock).encode()
         return hashlib.sha256(block_string).hexdigest()
 
+    # sends the current Hash to DB
     def sendHash(self, blockId):
         temp = url + "Transaction/SetHash"
-        payload = {"BankId" : self.BankId, "BlockId" : blockId, "Hash": self.currentHash}
+        payload = {"BankId": self.BankId, "BlockId": blockId, "Hash": self.currentHash}
         headers = {'Content-Type': 'application/json'}
         try:
             with no_ssl_verification():
                 response = requests.request('Post', url=temp, headers=headers, data=json.dumps(payload))
+                return response
         except requests.exceptions.RequestException as e:
             print(e)
-            return response
+            return False
 
-    def sendTransactions(self, block):
+
+# Sends transactions to DB
+def sendTransactions(block):
         temp = url + "Transaction/SetTransactions"
         payload = {"transactionList" : block.data, "BlockId" : block.Id}
         headers = {'Content-Type': 'application/json'}
