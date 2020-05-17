@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CiBitMainServer.Mapping;
+using static CiBitMainServer.Models.EnumClass;
 
 namespace CiBitMainServer.Controllers
 {
@@ -134,7 +135,7 @@ namespace CiBitMainServer.Controllers
 
             return response;
         }
-        public int CheckHash([FromBody]CheckHashRequest request)
+        public ChechkHashType CheckHash([FromBody]CheckHashRequest request)
         {
             var Transactioninfo = TypeMapper.Mapper.Map<CheckHashRequest, TransactionDTO>(request);
 
@@ -142,10 +143,10 @@ namespace CiBitMainServer.Controllers
 
             var reader = _context.StoredProcedureSql("GetHash", spObj);
 
-            CheckHashResponse response = null;
+            GetHashResponse response = null;
             while (reader.Read())
             {
-                response = new CheckHashResponse()
+                response = new GetHashResponse()
                 {
                     Hash = reader["proof"].ToString()
                 };
@@ -153,13 +154,23 @@ namespace CiBitMainServer.Controllers
             _context.Connection.Close();
 
             if (response.Hash == "0")
-                return 0;
+                return ChechkHashType.NoConsensus;
             else if (response.Hash.CompareTo(request.Hash) == 0)
             {
-                ///check if transaction are panding  - return 4
-                return 1;
+                Transactioninfo = new TransactionDTO { BlockchainNumber = Transactioninfo.BlockchainNumber };
+                spObj = Converters.CheckHashResponseConverter(Transactioninfo);
+                reader = _context.StoredProcedureSql("TransactionStatus", spObj);
+                int status = 0;
+                while (reader.Read())
+                {
+                    status = int.Parse(reader["proof"].ToString());
+                }
+                if (status == 0)
+                    return ChechkHashType.UpdateTransaction;
+                return ChechkHashType.CorrectHash;
+
             }
-            return -1;
+            return ChechkHashType.Conflict;
         }
 
         public bool SetHash(SetHashRequest request)
@@ -167,16 +178,38 @@ namespace CiBitMainServer.Controllers
             var Transactioninfo = TypeMapper.Mapper.Map<SetHashRequest, TransactionDTO>(request);
 
             var spObj = Converters.CheckHashResponseConverter(Transactioninfo);
+            try
+            {
+                var reader = _context.StoredProcedureSql("InsertHashFromBank", spObj);
+                _context.Connection.Close();
 
-            var reader = _context.StoredProcedureSql("InsertHashFromBank", spObj);
+                Transactioninfo = new TransactionDTO()
+                {
+                    BlockchainNumber = Transactioninfo.BlockchainNumber
+                };
+                spObj = Converters.CheckHashResponseConverter(Transactioninfo);
+                reader = _context.StoredProcedureSql("CheckConsensus", spObj);
 
-            //check consensus
-
-            var compare = CheckHash(new CheckHashRequest() { Hash = request.Hash });
-
-            _context.Connection.Close();
-
-            return compare == 0;
+                List<CheckConsensusResponse> response = new List<CheckConsensusResponse>();
+                while (reader.Read())
+                {
+                    response.Add(new CheckConsensusResponse()
+                    {
+                        Hash = reader["proof"].ToString(),
+                        BankCount = int.Parse(reader["banks"].ToString())
+                    });
+                }
+                _context.Connection.Close();
+                var consensus = response.OrderByDescending(o => o.BankCount).FirstOrDefault();
+                var totalBanks = response.Count;
+                if ((response.Count >= 11) && (double)consensus.BankCount / (double)totalBanks > 0.8)
+                    Transactioninfo = new TransactionDTO() { Hash = response.OrderByDescending(o => o.BankCount).FirstOrDefault().Hash };
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public bool CoinExist([FromBody]GetCoinRequest request)
@@ -215,6 +248,71 @@ namespace CiBitMainServer.Controllers
             if (answer != null)
                 return true;
             return false;
+        }
+
+        public GetTransactionListReponse CheckConsensus([FromBody]getBlockRequest request)
+        {
+            var Transactioninfo = TypeMapper.Mapper.Map<getBlockRequest, TransactionDTO>(request);
+
+            var spObj = Converters.GetCoinResponseConverter(Transactioninfo);
+
+            var reader = _context.StoredProcedureSql("GetTransactionIdByBlockNumber", spObj);
+
+            GetTransactionListReponse response = new GetTransactionListReponse
+            {
+                TransactionList = new List<int>()
+            };
+
+            while (reader.Read())
+            {
+                response.TransactionList.Add(int.Parse(reader["transactionId"].ToString()));
+            }
+            _context.Connection.Close();
+
+            return response;
+        }
+
+        public bool SetTransaction([FromBody] SetTransationsStatusRequest request)
+        {
+            var Transactioninfo = new TransactionDTO { BlockchainNumber = request.BlockNumber };
+
+            var spObj = Converters.GetCoinResponseConverter(Transactioninfo);
+
+            try
+            {
+                var reader = _context.StoredProcedureSql("GetTransactionIdByBlockNumber", spObj);
+
+                _context.Connection.Close();
+
+                GetTransactionListReponse transactionList = new GetTransactionListReponse
+                {
+                    TransactionList = new List<int>()
+                };
+
+                while (reader.Read())
+                {
+                    transactionList.TransactionList.Add(int.Parse(reader["transactionId"].ToString()));
+                }
+
+                foreach (var transactionId in transactionList.TransactionList)
+                {
+                    if (request.TransactionList.Contains(transactionId))
+                        Transactioninfo = new TransactionDTO { TransactionId = transactionId, Status = 1 };
+                    else
+                        Transactioninfo = new TransactionDTO { TransactionId = transactionId, Status = 2 };
+
+                    spObj = Converters.SetTransactionStatus(Transactioninfo);
+
+                    reader = _context.StoredProcedureSql("UpdateTransactionStatus", spObj);
+
+                    _context.Connection.Close();
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

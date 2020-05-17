@@ -17,6 +17,7 @@ namespace CiBitMainServer.Models
         public int BlockchainNumber { get; set; }
         public int Fragment { get; set; }
         public List<string> Coins { get; set; }
+        public int Status { get; set; }
 
         public TransactionDTO()
         {

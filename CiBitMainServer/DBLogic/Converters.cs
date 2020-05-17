@@ -36,6 +36,7 @@ namespace CiBitMainServer.DBLogic
         private const string Fragment = "Fragment";
         private const string lastBlock = "lastBlock";
         private const string proof = "proof";
+        private const string newStatus = "newStatus";
         private const string firstTransactionOnBlock = "firstTransactionOnBlock";
        
 
@@ -256,6 +257,18 @@ namespace CiBitMainServer.DBLogic
                     Name = coinId,
                     value = request.Coins.FirstOrDefault(),
                     ParamType = MySqlDbType.VarChar
+                }
+            };
+        }
+        public static List<SpObject> SetTransactionStatus(TransactionDTO request)
+        {
+            return new List<SpObject>
+            {
+                new SpObject
+                {
+                    Name = TransactionId,
+                    value = request.TransactionId.ToString(),
+                    ParamType = MySqlDbType.Int32
                 }
             };
         }
