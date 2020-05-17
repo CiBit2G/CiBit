@@ -9,17 +9,22 @@ namespace CiBitMainServer.Controllers
 {
     public class ResearchController : Controller
     {
+        private readonly CibitDb _context;
+
+        public ResearchController(CibitDb context)
+        {
+            _context = context;
+        }
+
         // INSERT: Research/CreateResearch/CreateResearchRequest
         public bool CreateResearch([FromBody]CreateResearchRequest request)
         {
-            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
-
             var userinfo = TypeMapper.Mapper.Map<CreateResearchRequest, ResearchDTO>(request);
 
             var spObj = Converters.CreateResearchConverter(userinfo);
-            var reader = context.StoredProcedureSql("CreateReasarch", spObj);
+            var reader = _context.StoredProcedureSql("CreateReasarch", spObj);
 
-            context.Connection.Close();
+            _context.Connection.Close();
             return true;
         }
     }

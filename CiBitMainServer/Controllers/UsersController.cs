@@ -16,19 +16,24 @@ namespace CiBitMainServer.Controllers
     public class UsersController : Controller
     {
         private static readonly string pyFullPath = $"C:\\Users\\{Environment.UserName}\\Documents\\GitHub\\CiBit\\PythonFiles\\Bot.py";
+        private readonly CibitDb _context;
+
+        public UsersController(CibitDb context)
+        {
+            _context = context;
+        }
+
         // GET: Users/GetUser/GetUserRequest
         public GetUserResponse GetUser([FromBody]GetUserRequest request)
         {
             if (!ModelState.IsValid)
                 throw new System.Exception(ModelState.ErrorCount.ToString());
 
-            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb; ;
-
             var userinfo = TypeMapper.Mapper.Map<GetUserRequest, UserDTO>(request);
 
             var spObj = Converters.GetUserConverter(userinfo);
 
-            var reader = context.StoredProcedureSql("getUser", spObj);
+            var reader = _context.StoredProcedureSql("getUser", spObj);
 
             GetUserResponse response = new GetUserResponse();
 
@@ -44,16 +49,14 @@ namespace CiBitMainServer.Controllers
                 };
             }
 
-            context.Connection.Close();
+            _context.Connection.Close();
             return response;
         }
 
         // GET: Users/GetAllUsers/
         public GetAllUsersResponse GetAllUsers()
         {
-            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb; ;
-
-            var reader = context.StoredProcedureSql("getUsers", null);
+            var reader = _context.StoredProcedureSql("getUsers", null);
 
             GetAllUsersResponse response = new GetAllUsersResponse();
 
@@ -70,7 +73,7 @@ namespace CiBitMainServer.Controllers
                 });
             }
 
-            context.Connection.Close();
+            _context.Connection.Close();
             return response;
         }
 

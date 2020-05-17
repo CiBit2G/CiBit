@@ -15,26 +15,31 @@ namespace CiBitMainServer.Controllers
 {
     public class TransactionController : Controller
     {
+        private readonly CibitDb _context;
+
+        public TransactionController(CibitDb context)
+        {
+            _context = context;
+        }
+
         //INSERT: Transaction/AddTransaction/CreateUserRequest
         public bool AddTransaction([FromBody]AddTransactionRequest request)
         {
-            var context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
             var verify = new ValidateUser();
             var userinfo = TypeMapper.Mapper.Map<AddTransactionRequest, TransactionDTO>(request);
 
             //TODO: verify CoinID with pythone API
 
             var spObj = Converters.AddTransactionConverter(userinfo);
-            var reader = context.StoredProcedureSql("AddTransaction", spObj);
+            var reader = _context.StoredProcedureSql("AddTransaction", spObj);
 
-            context.Connection.Close();
+            _context.Connection.Close();
             return true;
         }
 
         // DELETE: Transaction/RemoveCoin/RemoveCoinRequest
         public bool RemoveCoin([FromBody]RemoveCoinRequest request)
         {
-            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
             ValidateUser valid = new ValidateUser();
 
             var userinfo = TypeMapper.Mapper.Map<RemoveCoinRequest, TransactionDTO>(request);
@@ -42,21 +47,19 @@ namespace CiBitMainServer.Controllers
             //verify CoinID with pythone API
 
             var spObj = Converters.RemoveCoinConverter(userinfo);
-            var reader = context.StoredProcedureSql("RemoveCoin", spObj);
+            var reader = _context.StoredProcedureSql("RemoveCoin", spObj);
 
-            context.Connection.Close();
+            _context.Connection.Close();
             return true;
         }
 
         public GetTransactionReponse GetTransaction([FromBody]GetTransactionRequest request)
         {
-            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
-
             var Transactioninfo = TypeMapper.Mapper.Map<GetTransactionRequest, TransactionDTO>(request);
 
             var spObj = Converters.GetTransactionConverter(Transactioninfo);
 
-            var reader = context.StoredProcedureSql("getTransaction", spObj);
+            var reader = _context.StoredProcedureSql("getTransaction", spObj);
 
             GetTransactionReponse response = new GetTransactionReponse();
 
@@ -73,7 +76,7 @@ namespace CiBitMainServer.Controllers
                     Fragment = int.Parse(reader["fragment"].ToString())
                 };
             }
-            context.Connection.Close();
+            _context.Connection.Close();
 
             if (response.transaction == null)
                 return null;
@@ -81,21 +84,19 @@ namespace CiBitMainServer.Controllers
             response.transaction.Coins = new List<string>();
             Transactioninfo = TypeMapper.Mapper.Map<Transaction, TransactionDTO>(response.transaction);
             spObj = Converters.GetCoinsConverter(Transactioninfo);
-            reader = context.StoredProcedureSql("getTransactionCoins", spObj);
+            reader = _context.StoredProcedureSql("getTransactionCoins", spObj);
             while (reader.Read())
             {
                 response.transaction.Coins.Add(reader["newCoinId"].ToString());
             }
-            context.Connection.Close();
+            _context.Connection.Close();
             return response;
         }
 
         //GET: Transaction/AddTransaction/BlockReady
         public BlockReadyResponse BlockReady()
         {
-            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
-
-            var reader = context.StoredProcedureSql("GetBlockReady", null);
+            var reader = _context.StoredProcedureSql("GetBlockReady", null);
 
             BlockReadyResponse response = null;
             while (reader.Read())
@@ -106,7 +107,7 @@ namespace CiBitMainServer.Controllers
                     Hash = reader["blockHash"].ToString(),
                 };
             }
-            context.Connection.Close();
+            _context.Connection.Close();
 
             return response;
         }
@@ -114,12 +115,10 @@ namespace CiBitMainServer.Controllers
 
         public BlockInfoResponse BlockInfo([FromBody] getBlockRequest request)
         {
-
-            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
             var Transactioninfo = TypeMapper.Mapper.Map<getBlockRequest, TransactionDTO>(request);
             var spObj = Converters.GetBlockConverter(Transactioninfo);
 
-            var reader = context.StoredProcedureSql("getBlockInfo", spObj);
+            var reader = _context.StoredProcedureSql("getBlockInfo", spObj);
 
             BlockInfoResponse response = null;
             while (reader.Read())
@@ -131,19 +130,17 @@ namespace CiBitMainServer.Controllers
                     Amount = int.Parse(reader["amount"].ToString()),
                 };
             }
-            context.Connection.Close();
+            _context.Connection.Close();
 
             return response;
         }
         public int CheckHash([FromBody]CheckHashRequest request)
         {
-            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
-
             var Transactioninfo = TypeMapper.Mapper.Map<CheckHashRequest, TransactionDTO>(request);
 
             var spObj = Converters.CheckHashResponseConverter(Transactioninfo);
 
-            var reader = context.StoredProcedureSql("GetHash", spObj);
+            var reader = _context.StoredProcedureSql("GetHash", spObj);
 
             CheckHashResponse response = null;
             while (reader.Read())
@@ -153,7 +150,7 @@ namespace CiBitMainServer.Controllers
                     Hash = reader["proof"].ToString()
                 };
             }
-            context.Connection.Close();
+            _context.Connection.Close();
 
             if (response.Hash == "0")
                 return 0;
@@ -167,39 +164,35 @@ namespace CiBitMainServer.Controllers
 
         public bool SetHash(SetHashRequest request)
         {
-            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
-
             var Transactioninfo = TypeMapper.Mapper.Map<SetHashRequest, TransactionDTO>(request);
 
             var spObj = Converters.CheckHashResponseConverter(Transactioninfo);
 
-            var reader = context.StoredProcedureSql("InsertHashFromBank", spObj);
+            var reader = _context.StoredProcedureSql("InsertHashFromBank", spObj);
 
             //check consensus
 
             var compare = CheckHash(new CheckHashRequest() { Hash = request.Hash });
 
-            context.Connection.Close();
+            _context.Connection.Close();
 
             return compare == 0;
         }
 
         public bool CoinExist([FromBody]GetCoinRequest request)
         {
-            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
-
             var Transactioninfo = TypeMapper.Mapper.Map<GetCoinRequest, TransactionDTO>(request);
 
             var spObj = Converters.GetCoinResponseConverter(Transactioninfo);
 
-            var reader = context.StoredProcedureSql("getCoin", spObj);
+            var reader = _context.StoredProcedureSql("getCoin", spObj);
 
             string answer = null;
             while (reader.Read())
             {
                 answer = reader["coinId"].ToString();
             }
-            context.Connection.Close();
+            _context.Connection.Close();
             if (answer != null)
                 return true;
             return false;
@@ -207,20 +200,18 @@ namespace CiBitMainServer.Controllers
 
         public bool ConfirmCoins([FromBody]GetAllCoinsRequest request)
         {
-            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
-
             var Transactioninfo = TypeMapper.Mapper.Map<GetAllCoinsRequest, TransactionDTO>(request);
 
             var spObj = Converters.GetCoinResponseConverter(Transactioninfo);
 
-            var reader = context.StoredProcedureSql("getCoin", spObj);
+            var reader = _context.StoredProcedureSql("getCoin", spObj);
 
             string answer = null;
             while (reader.Read())
             {
                 answer = reader["coinId"].ToString();
             }
-            context.Connection.Close();
+            _context.Connection.Close();
             if (answer != null)
                 return true;
             return false;

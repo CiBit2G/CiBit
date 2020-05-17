@@ -32,7 +32,7 @@ namespace CiBitMainServer
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddTransient<CibitDb>(_ => new CibitDb(Configuration["ConnectionStrings:DefaultConnection"]));
+            services.AddScoped(_ => new CibitDb(Configuration["ConnectionStrings:DefaultConnection"]));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
         }
