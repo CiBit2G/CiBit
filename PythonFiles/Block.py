@@ -24,8 +24,7 @@ class Block:
             if response.status_code == 200:
                 answer = response.json()
                 self.fillData(answer['transactionId'], answer['amount'])
-                return True
-            return False
+            return True
         except requests.exceptions.RequestException as e:
             print(e)
             return False

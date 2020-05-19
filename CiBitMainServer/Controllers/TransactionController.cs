@@ -135,11 +135,12 @@ namespace CiBitMainServer.Controllers
 
             return response;
         }
+
         public ChechkHashType CheckHash([FromBody]CheckHashRequest request)
         {
             var Transactioninfo = TypeMapper.Mapper.Map<CheckHashRequest, TransactionDTO>(request);
 
-            var spObj = Converters.CheckHashResponseConverter(Transactioninfo);
+            var spObj = Converters.GetBlockConverter(Transactioninfo);
 
             var reader = _context.StoredProcedureSql("GetHash", spObj);
 
@@ -158,7 +159,7 @@ namespace CiBitMainServer.Controllers
             else if (response.Hash.CompareTo(request.Hash) == 0)
             {
                 Transactioninfo = new TransactionDTO { BlockchainNumber = Transactioninfo.BlockchainNumber };
-                spObj = Converters.CheckHashResponseConverter(Transactioninfo);
+                spObj = Converters.GetBlockConverter(Transactioninfo);
                 reader = _context.StoredProcedureSql("TransactionStatus", spObj);
                 int status = 0;
                 while (reader.Read())
@@ -173,11 +174,11 @@ namespace CiBitMainServer.Controllers
             return ChechkHashType.Conflict;
         }
 
-        public bool SetHash(SetHashRequest request)
+        public bool SetHash([FromBody]SetHashRequest request)
         {
             var Transactioninfo = TypeMapper.Mapper.Map<SetHashRequest, TransactionDTO>(request);
 
-            var spObj = Converters.CheckHashResponseConverter(Transactioninfo);
+            var spObj = Converters.HashfromBankResponseConverter(Transactioninfo);
             try
             {
                 var reader = _context.StoredProcedureSql("InsertHashFromBank", spObj);
@@ -187,7 +188,7 @@ namespace CiBitMainServer.Controllers
                 {
                     BlockchainNumber = Transactioninfo.BlockchainNumber
                 };
-                spObj = Converters.CheckHashResponseConverter(Transactioninfo);
+                spObj = Converters.GetBlockConverter(Transactioninfo);
                 reader = _context.StoredProcedureSql("CheckConsensus", spObj);
 
                 List<CheckConsensusResponse> response = new List<CheckConsensusResponse>();
@@ -203,10 +204,14 @@ namespace CiBitMainServer.Controllers
                 var consensus = response.OrderByDescending(o => o.BankCount).FirstOrDefault();
                 var totalBanks = response.Count;
                 if ((response.Count >= 11) && (double)consensus.BankCount / (double)totalBanks > 0.8)
-                    Transactioninfo = new TransactionDTO() { Hash = response.OrderByDescending(o => o.BankCount).FirstOrDefault().Hash };
+                {
+                    Transactioninfo = new TransactionDTO() { Hash = consensus.Hash, BlockchainNumber = request.BlockchainNumber};
+                    spObj = Converters.setHashConverter(Transactioninfo);
+                    reader = _context.StoredProcedureSql("SetHash", spObj);
+                }
                 return true;
             }
-            catch
+            catch (Exception e)
             {
                 return false;
             }

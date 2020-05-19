@@ -11,59 +11,59 @@ url = "https://localhost:44357/"
 
 class Chain:
     def __init__(self):
-        self.currentHash = 0
+        self.currentHash = 100
         self.blocks = list()   # blocknumber, proof, previousHush
         self.BankId = Id
 
     # a quick verification that chain's hash is valid till final block
     def valid_chain(self, lastBlockId):
         num = 0
-        newBlocks = self.getDbBlocks(self)
+        newBlocks = getDbBlocks()
         for block in newBlocks:
-             self.currentHush = block[1]
+             self.currentHash = block[1]
              answer = self.proofOfWork(block[0])
-             if answer['ResponseType'] == 0:
+             if answer == 0:
                  newBlock = Block(block[0], block[2])
-                 self.currentHush = self.Hash(newBlock)
-                 if self.currentHush != block[1]:
-                     deleteblockTransactions(newBlock.Id)
+                 self.currentHash = self.Hash(newBlock)
+                 if self.currentHash != block[1]:
+                     deleteBlockTransactions(newBlock.Id)
                      addTransaction(newBlock)
-                     updateBlock(newBlock)
+                     self.updateBlock(newBlock)
                      self.sendHash(newBlock.Id)
-             elif answer['ResponseType'] == 2:
+             elif answer == 2:
                  newBlock = Block(block[0], block[2])
                  self.resolveConflicts(newBlock, False)
-             elif answer['ResponseType'] == 3:
+             elif answer == 3:
                 self.sendTransactions(block[0])
-        num = block.Id
+             num = block.Id
         for i in range(num + 1, lastBlockId):
-            newBlock = (i, self.currentHush)
-            self.currentHush = self.Hash(newBlock)
+            newBlock = Block(i, self.currentHash)
+            self.currentHash = self.Hash(newBlock)
             answer = self.proofOfWork(i)
-            if answer['ResponseType'] == 0:
-                 addBlock(newBlock)
-                 self.sendHash(newBlock.Id) #bank Id, blockId ,currentHash
-            elif answer['ResponseType'] == 1:
-                 addBlock(newBlock)
-            elif answer['ResponseType'] == 2:
-                 self.resolveConflicts(newBlock, True)
-            elif answer['ResponseType'] == 3:
-                addBlock(newBlock)
+            if answer == 0:
+                self.addBlock(newBlock)
+                self.sendHash(newBlock.Id) # bank Id, blockId ,currentHash
+            elif answer == 1:
+                self.addBlock(newBlock)
+            elif answer == 2:
+                self.resolveConflicts(newBlock, True)
+            elif answer == 3:
+                self.addBlock(newBlock)
                 self.sendTransactions(block[0])
 
     # changes data in block and DB by the consensus
     def resolveConflicts(self, block, isNew):
         self.currentHush = self.Hash(block)
         answer = self.proofOfWork(block.Id)
-        if answer['ResponseType'] == 1:
-            deleteblockTransactions(block.Id)
+        if answer == 1:
+            deleteBlockTransactions(block.Id)
             addTransaction(block)
             if isNew:
-                addBlock(block)
+                self.addBlock(block)
             else:
-                updateBlock(block)
+                self.updateBlock(block)
             self.sendHash(block.Id)
-        if answer['ResponseType'] == 2:
+        if answer == 2:
             temp = url + "Transaction/CheckConsensus"
             payload = {'BlockchainNumber': block.Id}
             headers = {'Content-Type': 'application/json'}
@@ -100,27 +100,39 @@ class Chain:
 
     # a function to hash the block
     def Hash(self, newBlock):
-        block_string = json.dumps(newBlock).encode()
-        return hashlib.sha256(block_string).hexdigest()
+        tempString = {'blockId': newBlock.Id, 'transactions': newBlock.data, 'previousHash': newBlock.previousBlockHash }
+        blockString = json.dumps(tempString).encode()
+        return hashlib.sha256(blockString).hexdigest()
 
     # sends the current Hash to DB
     def sendHash(self, blockId):
         temp = url + "Transaction/SetHash"
-        payload = {"BankId": self.BankId, "BlockId": blockId, "Hash": self.currentHash}
+        payload = {"BankId": self.BankId, "BlockchainNumber": blockId, "Hash": self.currentHash}
         headers = {'Content-Type': 'application/json'}
         try:
             with no_ssl_verification():
                 response = requests.request('Post', url=temp, headers=headers, data=json.dumps(payload))
-                return response
         except requests.exceptions.RequestException as e:
             print(e)
-            return False
+
+    # Adds the new block to this bankDb
+    def addBlock(self, block):
+        args = [block.Id, self.currentHash, block.previousBlockHash]
+        sp = 'addBlock'
+        useDb(args, sp)
+        addTransaction(block)
+
+    # Updates the block in this bankDb
+    def updateBlock(self, block):
+        args = [block.Id, self.currentHash, block.previousBlockHash]
+        sp = 'updateBlock'
+        useDb(args, sp)
 
 
 # Sends transactions to DB
 def sendTransactions(block):
         temp = url + "Transaction/SetTransactions"
-        payload = {"transactionList" : block.data, "BlockId" : block.Id}
+        payload = {"transactionList": block.data, "BlockId": block.Id}
         headers = {'Content-Type': 'application/json'}
         try:
             with no_ssl_verification():
@@ -152,7 +164,7 @@ def checkTransactions(TransactionList, blockId):
 def addMoreTransactions(transactionUpdateList):
     connection = connect()
     cursor = connection.cursor()
-    query = "INSERT INTO transactionsperblock (transactionId, blockId) VALUES(%s, %s)"
+    query = "INSERT INTO transactionsperblock(transactionId, blockId) VALUES(%s, %s)"
     cursor.executemany(query, transactionUpdateList)
     connection.commit
     cursor.close()
@@ -168,33 +180,20 @@ def deleteMoreTransactions(transactionDeleteList):
     cursor.close()
 
 
-# Adds the new block to this bankDb
-def addBlock(block):
-    args = [block.Id, block.hush, block.previousBlockHash]
-    sp ='addBlock'
-    answer =UseDb(args, sp)
-    addTransaction(block)
-
-
 #  Adds transactions List to transactionperblock Table
 def addTransaction(block):
     blockList = list()
-    connection = connect()
-    cursor = connection.cursor()
-    query = "INSERT INTO transactionsperblock (transactionId, blockId) VALUES(%s, %s)"
     for transaction in block.data:
         args = [transaction['transactionId'],block.Id]
         blockList.append(args)
-    cursor.executemany(query, blockList)
-    connection.commit
-    cursor.close()
+    addMoreTransactions(blockList)
 
 
 # gets all the data of the blocks in the bankDb
 def getDbBlocks():
-    args = []
+    args = None
     sp = 'getAllBlocks'
-    answer = UseDb(args, sp)
+    answer = useReturnDb(args, sp)
     return answer
 
 
@@ -202,33 +201,43 @@ def getDbBlocks():
 def getTransactions(blockId):
     args = [blockId]
     sp = 'getTransactionsperBlock'
-    answer = UseDb(args, sp)
+    answer = useReturnDb(args, sp)
     return answer
-
-
-# Updates the block in this bankDb
-def updateBlock(block):
-    args = [block.Id, block.hush, block.previousBlockHash]
-    sp = 'updateBlock'
-    UseDb(args, sp)
 
 
 # Deletes all transaction that were in this block.
-def deleteblockTransactions(blockId):
+def deleteBlockTransactions(blockId):
     sp = 'deleteTransactions'
     args = [blockId]
-    answer = UseDb(args, sp)
+    useDb(args, sp)
 
 
 # A function get procedure name and argumens and use the stored procedure in his BankDB.
-def UseDb(args, sp):
+def useReturnDb(args, sp):
     connection = connect()
     cursor = connection.cursor()
-    cursor.callproc(sp, args)
-    answer = list(next(cursor.stored_results()))
+    try:
+        if args is None:
+             cursor.callproc(sp)
+        else:
+            cursor.callproc(sp, args)
+        answer = list(next(cursor.stored_results()))
+    except mysql.connector.Error as e:
+        print("Error while connecting to MySQL", e)
     connection.commit
     cursor.close()
     return answer
+
+
+def useDb(args, sp):
+    connection = connect()
+    cursor = connection.cursor()
+    try:
+        cursor.callproc(sp, args)
+    except mysql.connector.Error as e:
+        print("Error while connecting to MySQL", e)
+    connection.commit
+    cursor.close()
 
 
 def connect():
@@ -245,7 +254,6 @@ def connect():
 
 def main():
     chain = Chain()
-    newblock = Block(1,None)
     answer = chain.isBlockReady()
     chain.valid_chain(answer['blockchainNumber'])
 

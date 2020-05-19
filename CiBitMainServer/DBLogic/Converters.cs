@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Transactions;
 using CiBitMainServer.Models;
 using MySql.Data.MySqlClient;
@@ -38,7 +39,8 @@ namespace CiBitMainServer.DBLogic
         private const string proof = "proof";
         private const string newStatus = "newStatus";
         private const string firstTransactionOnBlock = "firstTransactionOnBlock";
-       
+        private const string Hash = "blockHash";
+        private const string Bank = "bank_Id";
 
 
         #endregion
@@ -187,19 +189,6 @@ namespace CiBitMainServer.DBLogic
             };
         }
 
-        internal static List<SpObject> CheckHashResponseConverter(TransactionDTO request)
-        {
-            return new List<SpObject>
-            {
-                new SpObject
-                {
-                    Name = blockchainNumber,
-                    value = request.BlockchainNumber.ToString(),
-                    ParamType = MySqlDbType.Int32
-                }
-            };
-        }
-
         public static List<SpObject> RemoveUserConverter(UserDTO request)
         {
             return GetUserConverter(request);
@@ -248,6 +237,7 @@ namespace CiBitMainServer.DBLogic
                 }
             };
         }
+
         public static List<SpObject> GetCoinResponseConverter(TransactionDTO request)
         {
             return new List<SpObject>
@@ -260,6 +250,7 @@ namespace CiBitMainServer.DBLogic
                 }
             };
         }
+
         public static List<SpObject> SetTransactionStatus(TransactionDTO request)
         {
             return new List<SpObject>
@@ -272,6 +263,7 @@ namespace CiBitMainServer.DBLogic
                 }
             };
         }
+
         public static List<SpObject> GetAllCoinResponseConverter(TransactionDTO request)
         {
             return new List<SpObject>
@@ -285,6 +277,7 @@ namespace CiBitMainServer.DBLogic
             };
         }
 
+
         public static List<SpObject> GetBlockConverter(TransactionDTO request)
         {
             return new List<SpObject>
@@ -295,6 +288,50 @@ namespace CiBitMainServer.DBLogic
                     value = request.BlockchainNumber.ToString(),
                     ParamType = MySqlDbType.Int32
                 }
+            };
+        }
+
+        public static List<SpObject>  setHashConverter(TransactionDTO request)
+        {
+            return new List<SpObject>
+            {
+                new SpObject
+                {
+                    Name = Hash,
+                    value = request.Hash.ToString(),
+                    ParamType = MySqlDbType.VarChar
+                },
+                new SpObject
+                {
+                    Name = blockchainNumber,
+                    value = request.BlockchainNumber.ToString(),
+                    ParamType = MySqlDbType.Int32
+                }
+            };
+        }
+
+        public static List<SpObject> HashfromBankResponseConverter(TransactionDTO request)
+        {
+            return new List<SpObject>
+            {
+                new SpObject
+                {
+                    Name = Bank,
+                    value = request.BankId,
+                    ParamType = MySqlDbType.VarChar
+                },
+                new SpObject
+                {
+                    Name = blockchainNumber,
+                    value = request.BlockchainNumber.ToString(),
+                    ParamType = MySqlDbType.Int32
+                },
+                new SpObject
+                {
+                    Name = Hash,
+                    value = request.Hash,
+                    ParamType = MySqlDbType.VarChar
+                }  
             };
         }
     }
