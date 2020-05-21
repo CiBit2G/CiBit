@@ -11,13 +11,13 @@ url = "https://localhost:44357/"
 
 class Chain:
     def __init__(self):
-        self.currentHash = 100
+        self.currentHash = 0
         self.blocks = list()   # blocknumber, proof, previousHush
         self.BankId = Id
 
     # a quick verification that chain's hash is valid till final block
     def valid_chain(self, lastBlockId):
-        num = 0
+        num = -1
         newBlocks = getDbBlocks()
         for block in newBlocks:
              self.currentHash = block[1]
@@ -35,8 +35,8 @@ class Chain:
                  self.resolveConflicts(newBlock, False)
              elif answer == 3:
                 self.sendTransactions(block[0])
-             num = block.Id
-        for i in range(num + 1, lastBlockId):
+             num = block[0]
+        for i in range(num + 1, lastBlockId + 1):
             newBlock = Block(i, self.currentHash)
             self.currentHash = self.Hash(newBlock)
             answer = self.proofOfWork(i)
@@ -53,7 +53,7 @@ class Chain:
 
     # changes data in block and DB by the consensus
     def resolveConflicts(self, block, isNew):
-        self.currentHush = self.Hash(block)
+        self.currentHash = self.Hash(block)
         answer = self.proofOfWork(block.Id)
         if answer == 1:
             deleteBlockTransactions(block.Id)
@@ -166,7 +166,7 @@ def addMoreTransactions(transactionUpdateList):
     cursor = connection.cursor()
     query = "INSERT INTO transactionsperblock(transactionId, blockId) VALUES(%s, %s)"
     cursor.executemany(query, transactionUpdateList)
-    connection.commit
+    connection.commit()
     cursor.close()
 
 
@@ -176,7 +176,7 @@ def deleteMoreTransactions(transactionDeleteList):
     cursor = connection.cursor()
     query = "Delete From transactionsperblock (transactionId, blockId) VALUES(%s, %s)"
     cursor.executemany(query, transactionDeleteList)
-    connection.commit
+    connection.commit()
     cursor.close()
 
 
@@ -184,7 +184,7 @@ def deleteMoreTransactions(transactionDeleteList):
 def addTransaction(block):
     blockList = list()
     for transaction in block.data:
-        args = [transaction['transactionId'],block.Id]
+        args = [transaction['transactionId'], block.Id]
         blockList.append(args)
     addMoreTransactions(blockList)
 
@@ -224,7 +224,7 @@ def useReturnDb(args, sp):
         answer = list(next(cursor.stored_results()))
     except mysql.connector.Error as e:
         print("Error while connecting to MySQL", e)
-    connection.commit
+    connection.commit()
     cursor.close()
     return answer
 
@@ -236,7 +236,7 @@ def useDb(args, sp):
         cursor.callproc(sp, args)
     except mysql.connector.Error as e:
         print("Error while connecting to MySQL", e)
-    connection.commit
+    connection.commit()
     cursor.close()
 
 

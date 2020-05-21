@@ -21,7 +21,7 @@ class Block:
         try:
             with no_ssl_verification():
                 response = requests.request('GET', url=temp, headers=headers, data=json.dumps(payload))
-            if response.status_code == 200:
+            if response.status_code == 200 and response.json() is not None:
                 answer = response.json()
                 self.fillData(answer['transactionId'], answer['amount'])
             return True
@@ -37,6 +37,7 @@ class Block:
             if self.getTransactions(i):
                 end -= 1
             i += 1
+
 
     # a function to get next transaction of the block from the server.
     def getTransactions(self, index):

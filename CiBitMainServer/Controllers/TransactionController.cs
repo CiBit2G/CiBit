@@ -74,7 +74,8 @@ namespace CiBitMainServer.Controllers
                     ResearchId = reader["researchId"].ToString(),
                     Date = DateTime.Parse(reader["transactionDate"].ToString()),
                     Amount = int.Parse(reader["coinAmount"].ToString()),
-                    Fragment = int.Parse(reader["fragment"].ToString())
+                    Fragment = int.Parse(reader["fragment"].ToString()),
+                    BlockchainNumber=request.BlockchainNumber
                 };
             }
             _context.Connection.Close();
@@ -120,8 +121,9 @@ namespace CiBitMainServer.Controllers
             var spObj = Converters.GetBlockConverter(Transactioninfo);
 
             var reader = _context.StoredProcedureSql("getBlockInfo", spObj);
-
             BlockInfoResponse response = null;
+            if (reader.Depth == 0 && request.BlockchainNumber == 0)
+                return response;
             while (reader.Read())
             {
                 response = new BlockInfoResponse()

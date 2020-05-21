@@ -1,4 +1,1 @@
-CheckConsensus - blockId - > transactionList
-CheckHash -blockId, currentHash - > chechkHashType (0,1,2,3)
-SetHash - bankId, blockId, Hash -> true/false
-SetTransactions - transactionList, blockId -> true/false
+blockReady -> לשנות שיסגור בלוק אחרון עם עבר התאריך.
