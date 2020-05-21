@@ -17,26 +17,26 @@ class Chain:
 
     # a quick verification that chain's hash is valid till final block
     def valid_chain(self, lastBlockId):
-        num = -1
+        num = 0
         newBlocks = getDbBlocks()
         for block in newBlocks:
-             self.currentHash = block[1]
              answer = self.proofOfWork(block[0])
              if answer == 0:
-                 newBlock = Block(block[0], block[2])
+                 newBlock = Block(block[0], self.currentHash)
                  self.currentHash = self.Hash(newBlock)
+                 self.sendHash(newBlock.Id)
                  if self.currentHash != block[1]:
                      deleteBlockTransactions(newBlock.Id)
                      addTransaction(newBlock)
                      self.updateBlock(newBlock)
-                     self.sendHash(newBlock.Id)
              elif answer == 2:
                  newBlock = Block(block[0], block[2])
                  self.resolveConflicts(newBlock, False)
              elif answer == 3:
                 self.sendTransactions(block[0])
-             num = block[0]
-        for i in range(num + 1, lastBlockId + 1):
+                self.currentHash = block[1]
+        num = len(newBlocks)
+        for i in range(num, lastBlockId + 1):
             newBlock = Block(i, self.currentHash)
             self.currentHash = self.Hash(newBlock)
             answer = self.proofOfWork(i)
@@ -71,7 +71,10 @@ class Chain:
                 with no_ssl_verification():
                     response = requests.request('GET', url=temp, headers=headers, data=json.dumps(payload))
                     if response.status_code == 200:
-                        checkTransactions(response['transactionList'], block.Id)
+                        answer = response.json()
+                        checkTransactions(answer['transactionList'], block.Id)
+                        self.currentHash = answer['Hash']
+                        self.updateHash(block.Id)
             except requests.exceptions.RequestException as e:
                 print(e)
 
@@ -128,6 +131,10 @@ class Chain:
         sp = 'updateBlock'
         useDb(args, sp)
 
+    def updateHash(self, Id):
+        args = [Id, self.currentHash]
+        sp = 'updateHash'
+        useDb(args, sp)
 
 # Sends transactions to DB
 def sendTransactions(block):
