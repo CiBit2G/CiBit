@@ -20,41 +20,43 @@ class Chain:
         num = 0
         newBlocks = getDbBlocks()
         for block in newBlocks:
-             answer = self.proofOfWork(block[0])
+             answer = self.proofOfWork(block[0], block[1])
              if answer == 0:
                  newBlock = Block(block[0], self.currentHash)
                  self.currentHash = self.Hash(newBlock)
-                 self.sendHash(newBlock.Id)
+                 self.sendHash(newBlock.Id, newBlock.previousBlockHash)
                  if self.currentHash != block[1]:
                      deleteBlockTransactions(newBlock.Id)
                      addTransaction(newBlock)
                      self.updateBlock(newBlock)
+             elif answer == 1:
+                 self.currentHash = block[1]
              elif answer == 2:
                  newBlock = Block(block[0], block[2])
                  self.resolveConflicts(newBlock, False)
              elif answer == 3:
-                self.sendTransactions(block[0])
+                sendTransactions(block[0])
                 self.currentHash = block[1]
         num = len(newBlocks)
         for i in range(num, lastBlockId + 1):
             newBlock = Block(i, self.currentHash)
             self.currentHash = self.Hash(newBlock)
-            answer = self.proofOfWork(i)
+            answer = self.proofOfWork(i, self.currentHash)
             if answer == 0:
                 self.addBlock(newBlock)
-                self.sendHash(newBlock.Id) # bank Id, blockId ,currentHash
+                self.sendHash(newBlock.Id, newBlock.previousBlockHash) # bank Id, blockId ,currentHash
             elif answer == 1:
                 self.addBlock(newBlock)
             elif answer == 2:
                 self.resolveConflicts(newBlock, True)
             elif answer == 3:
                 self.addBlock(newBlock)
-                self.sendTransactions(block[0])
+                sendTransactions(block[0])
 
     # changes data in block and DB by the consensus
     def resolveConflicts(self, block, isNew):
         self.currentHash = self.Hash(block)
-        answer = self.proofOfWork(block.Id)
+        answer = self.proofOfWork(block.Id, self.currentHash)
         if answer == 1:
             deleteBlockTransactions(block.Id)
             addTransaction(block)
@@ -62,7 +64,7 @@ class Chain:
                 self.addBlock(block)
             else:
                 self.updateBlock(block)
-            self.sendHash(block.Id)
+            self.sendHash(block.Id, block.previousBlockHash)
         if answer == 2:
             temp = url + "Transaction/CheckConsensus"
             payload = {'BlockchainNumber': block.Id}
@@ -79,9 +81,9 @@ class Chain:
                 print(e)
 
     # a function to check that the block is in-sync with server
-    def proofOfWork(self, blockId):
+    def proofOfWork(self, blockId, currentHash):
         temp = url + "Transaction/CheckHash/"
-        payload = {'BlockchainNumber': blockId, 'Hush': self.currentHash}
+        payload = {'BlockchainNumber': blockId, 'Hash': currentHash}
         headers = {'Content-Type': 'application/json'}
         try:
             with no_ssl_verification():
@@ -108,9 +110,9 @@ class Chain:
         return hashlib.sha256(blockString).hexdigest()
 
     # sends the current Hash to DB
-    def sendHash(self, blockId):
+    def sendHash(self, blockId, previousHash):
         temp = url + "Transaction/SetHash"
-        payload = {"BankId": self.BankId, "BlockchainNumber": blockId, "Hash": self.currentHash}
+        payload = {"BankId": self.BankId, "BlockchainNumber": blockId, "Hash": self.currentHash, "PreviousHash": previousHash}
         headers = {'Content-Type': 'application/json'}
         try:
             with no_ssl_verification():
@@ -131,15 +133,19 @@ class Chain:
         sp = 'updateBlock'
         useDb(args, sp)
 
-    def updateHash(self, Id):
-        args = [Id, self.currentHash]
+    def updateHash(self, blockId):
+        args = [blockId, self.currentHash]
         sp = 'updateHash'
         useDb(args, sp)
 
+
 # Sends transactions to DB
-def sendTransactions(block):
-        temp = url + "Transaction/SetTransactions"
-        payload = {"transactionList": block.data, "BlockId": block.Id}
+def sendTransactions(blockId):
+        if blockId == 0:
+            return
+        temp = url + "Transaction/SetTransaction"
+        transactionsDB = getTransactions(blockId)
+        payload = {"BlockchainNumber": blockId, "TransactionArr": transactionsDB}
         headers = {'Content-Type': 'application/json'}
         try:
             with no_ssl_verification():
@@ -206,10 +212,13 @@ def getDbBlocks():
 
 # gets all the transactions written in this block
 def getTransactions(blockId):
+    transactionList =list()
     args = [blockId]
     sp = 'getTransactionsperBlock'
-    answer = useReturnDb(args, sp)
-    return answer
+    answers = useReturnDb(args, sp)
+    for answer in answers:
+        transactionList.append(answer[0])
+    return transactionList
 
 
 # Deletes all transaction that were in this block.

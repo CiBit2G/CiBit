@@ -41,6 +41,7 @@ namespace CiBitMainServer.DBLogic
         private const string firstTransactionOnBlock = "firstTransactionOnBlock";
         private const string Hash = "blockHash";
         private const string Bank = "bank_Id";
+        private const string PreviousHash = "lastHash";
 
 
         #endregion
@@ -260,6 +261,12 @@ namespace CiBitMainServer.DBLogic
                     Name = TransactionId,
                     value = request.TransactionId.ToString(),
                     ParamType = MySqlDbType.Int32
+                },
+                new SpObject
+                {
+                    Name = newStatus,
+                    value = request.Status.ToString(),
+                    ParamType = MySqlDbType.Int32
                 }
             };
         }
@@ -297,15 +304,21 @@ namespace CiBitMainServer.DBLogic
             {
                 new SpObject
                 {
-                    Name = Hash,
-                    value = request.Hash.ToString(),
-                    ParamType = MySqlDbType.VarChar
-                },
-                new SpObject
-                {
                     Name = blockchainNumber,
                     value = request.BlockchainNumber.ToString(),
                     ParamType = MySqlDbType.Int32
+                },
+                new SpObject
+                {
+                    Name = Hash,
+                    value = request.Hash,
+                    ParamType = MySqlDbType.VarChar
+                },
+                 new SpObject
+                {
+                    Name = PreviousHash,
+                    value = request.PreviousHash,
+                    ParamType = MySqlDbType.VarChar
                 }
             };
         }

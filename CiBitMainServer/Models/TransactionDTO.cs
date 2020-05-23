@@ -14,11 +14,13 @@ namespace CiBitMainServer.Models
         public DateTime Date { get; set; }
         public int Amount { get; set; }
         public string Hash { get; set; }
+        public string PreviousHash { get; set; }
         public int BlockchainNumber { get; set; }
         public int Fragment { get; set; }
         public List<string> Coins { get; set; }
         public int Status { get; set; }
         public string BankId { get; set; }
+
 
         public TransactionDTO()
         {

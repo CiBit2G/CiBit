@@ -11,7 +11,9 @@ namespace CiBitUtil.Message.Request
         public string BankId { get; set; }
         public int BlockchainNumber { get; set; }
         public string Hash { get; set; }
-                
+
+        public string PreviousHash { get; set; }
+
         //public List<int> approvedTransactions {get; set;}
 
     }

@@ -160,13 +160,16 @@ namespace CiBitMainServer.Controllers
                 return ChechkHashType.NoConsensus;
             else if (response.Hash.CompareTo(request.Hash) == 0)
             {
+                if (request.BlockchainNumber == 0)
+                    return ChechkHashType.CorrectHash;
+
                 Transactioninfo = new TransactionDTO { BlockchainNumber = Transactioninfo.BlockchainNumber };
                 spObj = Converters.GetBlockConverter(Transactioninfo);
                 reader = _context.StoredProcedureSql("TransactionStatus", spObj);
                 int status = 0;
                 while (reader.Read())
                 {
-                    status = int.Parse(reader["proof"].ToString());
+                    status = int.Parse(reader["status"].ToString());
                 }
                 if (status == 0)
                     return ChechkHashType.UpdateTransaction;
@@ -199,18 +202,19 @@ namespace CiBitMainServer.Controllers
                     response.Add(new CheckConsensusResponse()
                     {
                         Hash = reader["proof"].ToString(),
-                        BankCount = int.Parse(reader["banks"].ToString())
+                        BankCount = int.Parse(reader["count"].ToString())
                     });
                 }
                 _context.Connection.Close();
                 var consensus = response.OrderByDescending(o => o.BankCount).FirstOrDefault();
-                var totalBanks = response.Count;
-                if ((response.Count >= 11) && (double)consensus.BankCount / (double)totalBanks > 0.8)
+                var totalHashForBlock = response.Sum(c => c.BankCount);
+                if ((totalHashForBlock >= 11) && (double)consensus.BankCount / (double)totalHashForBlock > 0.8)
                 {
-                    Transactioninfo = new TransactionDTO() { Hash = consensus.Hash, BlockchainNumber = request.BlockchainNumber};
+                    Transactioninfo = new TransactionDTO() {BlockchainNumber = request.BlockchainNumber, Hash = consensus.Hash, PreviousHash = request.PreviousHash};
                     spObj = Converters.setHashConverter(Transactioninfo);
                     reader = _context.StoredProcedureSql("SetHash", spObj);
                 }
+                _context.Connection.Close();
                 return true;
             }
             catch (Exception e)
@@ -261,7 +265,7 @@ namespace CiBitMainServer.Controllers
         {
             var Transactioninfo = TypeMapper.Mapper.Map<getBlockRequest, TransactionDTO>(request);
 
-            var spObj = Converters.GetCoinResponseConverter(Transactioninfo);
+            var spObj = Converters.GetBlockConverter(Transactioninfo);
 
             var reader = _context.StoredProcedureSql("GetTransactionIdByBlockNumber", spObj);
 
@@ -279,17 +283,15 @@ namespace CiBitMainServer.Controllers
             return response;
         }
 
-        public bool SetTransaction([FromBody] SetTransationsStatusRequest request)
+        public bool SetTransaction([FromBody]SetTransationsStatusRequest request)
         {
-            var Transactioninfo = new TransactionDTO { BlockchainNumber = request.BlockNumber };
+            var Transactioninfo = new TransactionDTO { BlockchainNumber = request.BlockchainNumber };
 
-            var spObj = Converters.GetCoinResponseConverter(Transactioninfo);
+            var spObj = Converters.GetBlockConverter(Transactioninfo);
 
             try
-            {
+            {             
                 var reader = _context.StoredProcedureSql("GetTransactionIdByBlockNumber", spObj);
-
-                _context.Connection.Close();
 
                 GetTransactionListReponse transactionList = new GetTransactionListReponse
                 {
@@ -300,6 +302,8 @@ namespace CiBitMainServer.Controllers
                 {
                     transactionList.TransactionList.Add(int.Parse(reader["transactionId"].ToString()));
                 }
+
+                _context.Connection.Close();
 
                 foreach (var transactionId in transactionList.TransactionList)
                 {
@@ -316,7 +320,7 @@ namespace CiBitMainServer.Controllers
                 }
                 return true;
             }
-            catch
+            catch(Exception e)
             {
                 return false;
             }

@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace CiBitUtil.Message.Request
 {
     public class SetTransationsStatusRequest
     {
-        public int BlockNumber { get; set; }
-        public List<int> TransactionList { get; set; }
+        [Required]
+        public int BlockchainNumber { get; set; }
+        public List<int> TransactionList;
+        public int[] TransactionArr { set => TransactionList = value.ToList(); }
     }
 }

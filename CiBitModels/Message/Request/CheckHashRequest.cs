@@ -5,7 +5,7 @@ namespace CiBitUtil.Message.Request
     public class CheckHashRequest
     {
         [Required]
-        public int BlockNumber { get; set; }
+        public int BlockchainNumber { get; set; }
 
         public string Hash { get; set; }
 
