@@ -74,9 +74,12 @@ class Chain:
                     response = requests.request('GET', url=temp, headers=headers, data=json.dumps(payload))
                     if response.status_code == 200:
                         answer = response.json()
-                        checkTransactions(answer['transactionList'], block.Id)
-                        self.currentHash = answer['Hash']
-                        self.updateHash(block.Id)
+                        self.currentHash = answer['hash']
+                        if isNew:
+                            self.addBlock(block)
+                        else:
+                            checkTransactions(answer['transactionList'], block.Id)
+                            self.updateHash(block.Id)
             except requests.exceptions.RequestException as e:
                 print(e)
 
@@ -103,13 +106,13 @@ class Chain:
             return -1
         return response.json()
 
-    # a function to hash the block
+    # a function to hash the current block
     def Hash(self, newBlock):
         tempString = {'blockId': newBlock.Id, 'transactions': newBlock.data, 'previousHash': newBlock.previousBlockHash }
         blockString = json.dumps(tempString).encode()
         return hashlib.sha256(blockString).hexdigest()
 
-    # sends the current Hash to DB
+    # sends the current Hash to server
     def sendHash(self, blockId, previousHash):
         temp = url + "Transaction/SetHash"
         payload = {"BankId": self.BankId, "BlockchainNumber": blockId, "Hash": self.currentHash, "PreviousHash": previousHash}
@@ -120,26 +123,27 @@ class Chain:
         except requests.exceptions.RequestException as e:
             print(e)
 
-    # Adds the new block to this bankDb
+    # Adds the new block to this BankDB
     def addBlock(self, block):
         args = [block.Id, self.currentHash, block.previousBlockHash]
         sp = 'addBlock'
         useDb(args, sp)
         addTransaction(block)
 
-    # Updates the block in this bankDb
+    # Updates the block in this BankDB
     def updateBlock(self, block):
         args = [block.Id, self.currentHash, block.previousBlockHash]
         sp = 'updateBlock'
         useDb(args, sp)
 
+    # Updates the Hash of current Block in BankDB
     def updateHash(self, blockId):
         args = [blockId, self.currentHash]
         sp = 'updateHash'
         useDb(args, sp)
 
 
-# Sends transactions to DB
+# Sends transactions to server
 def sendTransactions(blockId):
         if blockId == 0:
             return
@@ -163,14 +167,17 @@ def checkTransactions(TransactionList, blockId):
     transactionsDB = getTransactions(blockId)
     for transaction in transactionsDB:
         if transaction not in TransactionList:
-            args = [transaction, blockId]
+            args = (transaction, blockId)
             transactionDeleteList.append(args)
     for transaction in TransactionList:
         if transaction not in transactionsDB:
-            args = [transaction, blockId]
+            args = (transaction, blockId)
             transactionUpdateList.append(args)
-    addMoreTransactions(transactionUpdateList)
-    deleteMoreTransactions(transactionDeleteList)
+    try:
+        deleteMoreTransactions(transactionDeleteList)
+        addMoreTransactions(transactionUpdateList)
+    except mysql.connector.Error as e:
+        print("Error while connecting to MySQL", e)
 
 
 # adds transactions per consensus to DB
@@ -210,7 +217,7 @@ def getDbBlocks():
     return answer
 
 
-# gets all the transactions written in this block
+# gets all the transactions written in this block, return transaction inside a list.
 def getTransactions(blockId):
     transactionList =list()
     args = [blockId]
@@ -228,7 +235,7 @@ def deleteBlockTransactions(blockId):
     useDb(args, sp)
 
 
-# A function get procedure name and argumens and use the stored procedure in his BankDB.
+# A function that uses BankDb and return an answer.
 def useReturnDb(args, sp):
     connection = connect()
     cursor = connection.cursor()
@@ -245,6 +252,7 @@ def useReturnDb(args, sp):
     return answer
 
 
+# A function that uses BankDb without any answers.
 def useDb(args, sp):
     connection = connect()
     cursor = connection.cursor()
@@ -270,8 +278,8 @@ def connect():
 
 def main():
     chain = Chain()
-    answer = chain.isBlockReady()
-    chain.valid_chain(answer['blockchainNumber'])
+    # answer = chain.isBlockReady()
+    chain.valid_chain(4)
 
 
 if __name__ == '__main__':

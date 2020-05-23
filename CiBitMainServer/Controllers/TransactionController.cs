@@ -272,11 +272,13 @@ namespace CiBitMainServer.Controllers
             GetTransactionListReponse response = new GetTransactionListReponse
             {
                 TransactionList = new List<int>()
+
             };
 
             while (reader.Read())
             {
                 response.TransactionList.Add(int.Parse(reader["transactionId"].ToString()));
+                response.Hash = reader["proof"].ToString();
             }
             _context.Connection.Close();
 
