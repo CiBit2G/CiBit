@@ -41,16 +41,13 @@ class Chain:
         for i in range(num, lastBlockId + 1):
             newBlock = Block(i, self.currentHash)
             self.currentHash = self.Hash(newBlock)
+            self.addBlock(newBlock)
             answer = self.proofOfWork(i, self.currentHash)
             if answer == 0:
-                self.addBlock(newBlock)
                 self.sendHash(newBlock.Id, newBlock.previousBlockHash) # bank Id, blockId ,currentHash
-            elif answer == 1:
-                self.addBlock(newBlock)
             elif answer == 2:
                 self.resolveConflicts(newBlock, True)
             elif answer == 3:
-                self.addBlock(newBlock)
                 sendTransactions(block[0])
 
     # changes data in block and DB by the consensus
@@ -60,10 +57,7 @@ class Chain:
         if answer == 1:
             deleteBlockTransactions(block.Id)
             addTransaction(block)
-            if isNew:
-                self.addBlock(block)
-            else:
-                self.updateBlock(block)
+            self.updateBlock(block)
             self.sendHash(block.Id, block.previousBlockHash)
         if answer == 2:
             temp = url + "Transaction/CheckConsensus"
@@ -75,11 +69,8 @@ class Chain:
                     if response.status_code == 200:
                         answer = response.json()
                         self.currentHash = answer['hash']
-                        if isNew:
-                            self.addBlock(block)
-                        else:
-                            checkTransactions(answer['transactionList'], block.Id)
-                            self.updateHash(block.Id)
+                        checkTransactions(answer['transactionList'], block.Id)
+                        self.updateHash(block.Id)
             except requests.exceptions.RequestException as e:
                 print(e)
 
@@ -278,8 +269,8 @@ def connect():
 
 def main():
     chain = Chain()
-    # answer = chain.isBlockReady()
-    chain.valid_chain(4)
+    answer = chain.isBlockReady()
+    chain.valid_chain(answer['blockchainNumber'])
 
 
 if __name__ == '__main__':

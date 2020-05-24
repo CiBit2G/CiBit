@@ -106,7 +106,6 @@ namespace CiBitMainServer.Controllers
                 response = new BlockReadyResponse()
                 {
                     BlockchainNumber = int.Parse(reader["lastBlock"].ToString()),
-                    Hash = reader["blockHash"].ToString(),
                 };
             }
             _context.Connection.Close();

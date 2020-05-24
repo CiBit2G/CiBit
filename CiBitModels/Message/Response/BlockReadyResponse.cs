@@ -2,8 +2,8 @@
 
 namespace CiBitUtil.Message.Response
 {
-    public class BlockReadyResponse : GetTransactionRequest
+    public class BlockReadyResponse
     {
-        public string Hash { get; set; }
+        public int BlockchainNumber { get; set; }
     }
 }
