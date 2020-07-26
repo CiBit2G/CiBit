@@ -1,0 +1,63 @@
+﻿@page
+@model CiBitWebApplication.Pages.BankConfirmUserModel
+@{
+    ViewData["Title"] = "Confirm User";
+}
+
+<div style="left:100px; height:460px">
+    <h2>Confirm User</h2>
+    <div>
+       <table id="myTable" class="table" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.UserInfo.Date)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.UserInfo.CiBitId)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.UserInfo.FullName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.UserInfo.Email)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.UserInfo.University)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.UserInfo.Status)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.UserList)
+                    {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CiBitId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FullName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.University)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Status)
+
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+    </div>
+</div>
+
+

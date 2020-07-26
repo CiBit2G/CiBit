@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace CiBitUtil.Message.Request
 {
-    public class AddUserRequest : IValidatableObject
+    public class AddUserRequest : BaseWebRequest, IValidatableObject
     {
         [Required]
         [StringLength(maximumLength: 45, MinimumLength =2)]
@@ -37,7 +37,7 @@ namespace CiBitUtil.Message.Request
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            var passRegex = new Regex(@"^[0-9a-zA-Z!@#$%^&*(){}?/*-+_+]{6,45}$");
+            var passRegex = new Regex(@"^[0-9a-zA-Z!@#$%^&*(){}?/*-+_=]{6,45}$");
 
             if (!passRegex.Match(Password).Success)
             {

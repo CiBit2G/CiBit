@@ -1,0 +1,49 @@
+﻿@page
+@model CiBitWebApplication.Pages.BankConfirmResearchModel
+@{
+    ViewData["Title"] = "Confirm Research";
+}
+
+<div style="left:100px; height:460px">
+    <h2>Confirm Research</h2>
+    <div>
+        <table id="myTable" class="table" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Research.DateOfResearch)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Research.CiBitId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Research.ReseachName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Research.Status)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ResearchList)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DateOfResearch)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CiBitId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ReseachName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Status)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

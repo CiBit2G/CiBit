@@ -1,0 +1,26 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Welcome to CiBit";
+}
+
+<div style="height:460px;">
+    <table border="0">
+        <tr>
+            <td height="50"><div><h1>Welcome to CiBit</h1></div></td>
+        </tr>
+        <tr>
+            <td height="50"><div><h3>Sign In As:</h3></div></td>
+        </tr>
+        <tr>
+            <td height="50" width="600">
+                <div>
+                    <form method="post">
+                        <input type="submit" id="bank" style="color:black" width="100" value="Bank" asp-page-handler="Bank" />
+                        <input type="submit" id="user" style="color:black" width="100" value="User" asp-page-handler="User" />
+                    </form>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

@@ -39,13 +39,21 @@ namespace CiBitUtil.Validation
 
         public string CreateCibitId()
         {
-            return RandomString((int)((random.NextDouble() * 3) + 6));
+            var first = RandomStringNoNumbers();
+            var last = RandomString((int)((random.NextDouble() * 3) + 6));
+            return first + last;
         }
 
         private static string RandomString(int length)
         {
             const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+        private static string RandomStringNoNumbers()
+        {
+            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            return new string(Enumerable.Repeat(chars, 1)
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 

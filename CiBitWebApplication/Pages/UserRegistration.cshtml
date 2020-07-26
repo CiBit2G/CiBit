@@ -1,0 +1,116 @@
+﻿@page
+@model CiBitWebApplication.Pages.UserRegistrationModel
+@{
+    ViewData["Title"] = "Registration";
+}
+
+<div style="height:460px">
+    <h1>Registration</h1>
+    <form asp-page-handler="ProcessRequest" method="post">
+        <table>
+            <tr>
+                <td>
+                    <span>First Name: </span>
+                </td>
+                <td style="color:black">
+                    <input type="text" asp-for="FirstName" class="input-group-text">
+                </td>
+                <td style="color:red">
+                    <label>@Model.ErrorMsgFn</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Middle Name: </span>
+                </td>
+                <td style="color:black">
+                    <input type="text" asp-for="MiddleName" class="input-group-text">
+                </td>
+                <td style="color:red">
+                    <label>@Model.ErrorMsgMn</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Surname: </span>
+                </td>
+                <td style="color:black">
+                    <input type="text" asp-for="Surname" class="input-group-text">
+                </td>
+                <td style="color:red">
+                    <label>@Model.ErrorMsgSn</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Date of birth: </span>
+                </td>
+                <td style="color:black">
+                    <input type="date" asp-for="DOB" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                </td>
+                <td style="color:red">
+                    <label>@Model.ErrorMsgDob</label>
+                </td>
+            <tr>
+                <td>
+                    <span>Password: </span>
+                </td>
+                <td style="color:black">
+                    <input type="password" asp-for="Password" class="input-group-text">
+                </td>
+                <td style="color:red">
+                    <label>@Model.ErrorMsgPass</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Confirm Password: </span>
+                </td>
+                <td style="color:black">
+                    <input type="password" asp-for="ConfirmPassword" class="input-group-text">
+                </td>
+                <td style="color:red">
+                    <label >@Model.ErrorMsgCoPass</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Email: </span>
+                </td>
+                <td style="color:black">
+                    <input type="text" asp-for="Email" class="input-group-text">
+                </td>
+                <td style="color:red">
+                    <label>@Model.ErrorMsgEm</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>University: </span>
+                </td>
+                <td style="color:black">
+                    <input type="text" asp-for="University" class="input-group-text">
+                </td>
+                <td style="color:red">
+                    <label >@Model.ErrorMsgUni</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Article: </span>
+                </td>
+                <td style="color:black">
+                    <input type="text" asp-for="Article" class="input-group-text">
+                </td>
+                <td style="color:red">
+                    <label>@Model.ErrorMsgArt</label>
+                </td>
+            </tr>
+        </table>
+        <div class="form-group">
+        </div>
+        <div class="d-flex center-block login_container">
+            <button type="submit" name="button" style="color:black" class="btn">Submit</button>
+        </div>
+    </form>
+    </div>

@@ -54,6 +54,7 @@ namespace CiBitMainServer.Controllers
             return true;
         }
 
+        //Used in Blockchain
         public GetTransactionReponse GetTransaction([FromBody]GetTransactionRequest request)
         {
             var Transactioninfo = TypeMapper.Mapper.Map<GetTransactionRequest, TransactionDTO>(request);
@@ -96,6 +97,7 @@ namespace CiBitMainServer.Controllers
         }
 
         //GET: Transaction/AddTransaction/BlockReady
+        //Used in Blockchain
         public BlockReadyResponse BlockReady()
         {
             var reader = _context.StoredProcedureSql("GetBlockReady", null);
@@ -113,10 +115,10 @@ namespace CiBitMainServer.Controllers
             return response;
         }
 
-
-        public BlockInfoResponse BlockInfo([FromBody] getBlockRequest request)
+        //Used in Blockchain
+        public BlockInfoResponse BlockInfo([FromBody] GetBlockRequest request)
         {
-            var Transactioninfo = TypeMapper.Mapper.Map<getBlockRequest, TransactionDTO>(request);
+            var Transactioninfo = TypeMapper.Mapper.Map<GetBlockRequest, TransactionDTO>(request);
             var spObj = Converters.GetBlockConverter(Transactioninfo);
 
             var reader = _context.StoredProcedureSql("getBlockInfo", spObj);
@@ -137,6 +139,7 @@ namespace CiBitMainServer.Controllers
             return response;
         }
 
+        //Used in Blockchain
         public ChechkHashType CheckHash([FromBody]CheckHashRequest request)
         {
             var Transactioninfo = TypeMapper.Mapper.Map<CheckHashRequest, TransactionDTO>(request);
@@ -178,6 +181,7 @@ namespace CiBitMainServer.Controllers
             return ChechkHashType.Conflict;
         }
 
+        //Used in Blockchain
         public bool SetHash([FromBody]SetHashRequest request)
         {
             var Transactioninfo = TypeMapper.Mapper.Map<SetHashRequest, TransactionDTO>(request);
@@ -216,12 +220,13 @@ namespace CiBitMainServer.Controllers
                 _context.Connection.Close();
                 return true;
             }
-            catch (Exception e)
+            catch 
             {
                 return false;
             }
         }
 
+        //Used in Blockchain
         public bool CoinExist([FromBody]GetCoinRequest request)
         {
             var Transactioninfo = TypeMapper.Mapper.Map<GetCoinRequest, TransactionDTO>(request);
@@ -241,28 +246,30 @@ namespace CiBitMainServer.Controllers
             return false;
         }
 
-        public bool ConfirmCoins([FromBody]GetAllCoinsRequest request)
+        //public bool ConfirmCoins([FromBody]GetAllCoinsRequest request)
+        //{
+        //    var Transactioninfo = TypeMapper.Mapper.Map<GetAllCoinsRequest, TransactionDTO>(request);
+
+        //    var spObj = Converters.GetCoinResponseConverter(Transactioninfo);
+
+        //    var reader = _context.StoredProcedureSql("getCoin", spObj);
+
+        //    string answer = null;
+        //    while (reader.Read())
+        //    {
+        //        answer = reader["coinId"].ToString();
+        //    }
+        //    _context.Connection.Close();
+        //    if (answer != null)
+        //        return true;
+        //    return false;
+        //}
+
+        //Used in Blockchain
+
+        public GetTransactionListReponse CheckConsensus([FromBody]GetBlockRequest request)
         {
-            var Transactioninfo = TypeMapper.Mapper.Map<GetAllCoinsRequest, TransactionDTO>(request);
-
-            var spObj = Converters.GetCoinResponseConverter(Transactioninfo);
-
-            var reader = _context.StoredProcedureSql("getCoin", spObj);
-
-            string answer = null;
-            while (reader.Read())
-            {
-                answer = reader["coinId"].ToString();
-            }
-            _context.Connection.Close();
-            if (answer != null)
-                return true;
-            return false;
-        }
-
-        public GetTransactionListReponse CheckConsensus([FromBody]getBlockRequest request)
-        {
-            var Transactioninfo = TypeMapper.Mapper.Map<getBlockRequest, TransactionDTO>(request);
+            var Transactioninfo = TypeMapper.Mapper.Map<GetBlockRequest, TransactionDTO>(request);
 
             var spObj = Converters.GetBlockConverter(Transactioninfo);
 
@@ -284,6 +291,7 @@ namespace CiBitMainServer.Controllers
             return response;
         }
 
+        //Used in Blockchain
         public bool SetTransaction([FromBody]SetTransationsStatusRequest request)
         {
             var Transactioninfo = new TransactionDTO { BlockchainNumber = request.BlockchainNumber };
@@ -321,7 +329,7 @@ namespace CiBitMainServer.Controllers
                 }
                 return true;
             }
-            catch(Exception e)
+            catch
             {
                 return false;
             }
