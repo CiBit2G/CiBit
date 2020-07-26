@@ -18,15 +18,19 @@ namespace CiBitMainServer.DBLogic
             return Convert.ToBase64String(saltedValue);
         }
 
-        public static bool VerifyToken(string token)
+        public static bool VerifyToken(string token, out string id)
         {
             var saltedValue = Encoding.UTF8.GetString(Convert.FromBase64String(token));
             var len = DateTime.Now.ToString().Count();
             var date = DateTime.Parse(saltedValue.Remove(len));
-            var id = saltedValue.Substring(len);
+            id = saltedValue.Substring(len);
             if (date.AddMinutes(5).CompareTo(DateTime.Now) < 0)
                 return false;
-            return IsUserExist(id);           
+            if (IsUserExist(id))
+                return true;
+            else
+                id = string.Empty;
+            return false;
         }
 
         private static bool IsUserExist(string cibitId)

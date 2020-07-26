@@ -51,11 +51,11 @@ namespace CiBitWebApplication.Pages
                     ErrorMsg = "Login Failed: CiBitId or Password is incorrect.";
                 else if(LoginResponse.IsBank)
                 {
-                    return RedirectToPage("/BankConfirmUser", new { LoginResponse.Token, LoginRequest.CibitId });
+                    return RedirectToPage("/BankConfirmUser", new { LoginResponse.Token});
                 }
                 else
                 {
-                    return RedirectToPage("/UserHome", new { LoginResponse.Token, LoginRequest.CibitId });
+                    return RedirectToPage("/UserHome", new { LoginResponse.Token});
                 }
             }
             else
