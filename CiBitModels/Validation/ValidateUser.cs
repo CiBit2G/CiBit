@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 namespace CiBitUtil.Validation
 {
@@ -39,14 +40,22 @@ namespace CiBitUtil.Validation
 
         public string CreateCibitId()
         {
-            var first = RandomStringNoNumbers();
-            var last = RandomString((int)((random.NextDouble() * 3) + 6));
-            return first + last;
+            var Regex = new Regex(@"^[a-zA-Z][a-zA-Z0-9_-]{5,19}$");
+            string first, last, id;
+
+            do
+            {
+                first = RandomStringNoNumbers();
+                last = RandomString((int)((random.NextDouble() * 15) + 6));
+                id =  first + last;
+            } while (!Regex.Match(id).Success);
+
+            return id;
         }
 
         private static string RandomString(int length)
         {
-            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }

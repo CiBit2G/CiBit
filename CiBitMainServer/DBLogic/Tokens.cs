@@ -18,14 +18,15 @@ namespace CiBitMainServer.DBLogic
             return Convert.ToBase64String(saltedValue);
         }
 
-        public bool VerifyToken(string token)
+        public static bool VerifyToken(string token)
         {
             var saltedValue = Encoding.UTF8.GetString(Convert.FromBase64String(token));
-            var date = DateTime.Parse(saltedValue);
-            if (date.AddMonths(5).CompareTo(DateTime.Now) < 0)
-                return false;
             var len = DateTime.Now.ToString().Count();
-            return IsUserExist(saltedValue.Substring(len - 1));           
+            var date = DateTime.Parse(saltedValue.Remove(len));
+            var id = saltedValue.Substring(len);
+            if (date.AddMinutes(5).CompareTo(DateTime.Now) < 0)
+                return false;
+            return IsUserExist(id);           
         }
 
         private static bool IsUserExist(string cibitId)
@@ -36,6 +37,8 @@ namespace CiBitMainServer.DBLogic
             var reader = Controllers.UsersController._context.StoredProcedureSql("getUser", spObj);
 
             GetUserResponse response = new GetUserResponse();
+
+            Controllers.UsersController._context.Connection.Close();
 
             return response != null;
         }
