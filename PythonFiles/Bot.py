@@ -1,9 +1,9 @@
 import mysql.connector
-import datetime
 import scholarly
 import logging
 import sys
 from CoinGenrator import generateCoin
+
 
 
 logger = logging.getLogger('testbot')
@@ -21,7 +21,7 @@ class Search:
         self.newPublications = dict()
 
 #   Creates a dictionary to help organize the publications from Google Scholar's database
-    def createDict(self,user):
+    def createDict(self, user):
         sum = 0
         for pub in user.publications:
             try:
@@ -31,7 +31,6 @@ class Search:
                 else:
                     self.newPublications[pub.bib['title'].lower()] = 0
             except KeyError as e:
-                sum -= pub.citedby
                 logger.info(e)
         return sum
 
@@ -46,16 +45,6 @@ class Search:
         self.connection.commit()
         cursor.close
         return sum
-
-# searches the user for the first time and add all the articles he got to the database and counts all the citations from his aritcles.
-    def addUser(self, author, cibitId):
-        check = 0
-        newAuthor = next((scholarly.search_author(author))).fill()
-        check = self.createDict(newAuthor)
-        sum = self.addNewArticles(self.newPublications, cibitId)
-        if check == sum:
-            print(sum)
-        self.createCoins(sum, cibitId)
 
 # compare between the two list we got of articles and find what article need to be updated.
     def compareArticles(self, articles, cibitId):
@@ -78,7 +67,11 @@ class Search:
     def checkUser(self, user):
         name = user[1] + ' ' + user[2] + ', ' + user[4]
         print("start checking User: " + name)
-        newAuthor = next((scholarly.search_author(name))).fill()
+        try:
+            newAuthor = next((scholarly.search_author(name))).fill()
+        except Exception as e:
+            print(e)
+            return 0
         sum = self.createDict(newAuthor)
         newCitations = (sum - user[5]) if user[5] is not None else sum
         print("amount of citations that are not in our database " + str(newCitations))
@@ -89,9 +82,11 @@ class Search:
         articles = list(next(cursor.stored_results()))
         sum = self.compareArticles(articles, user[0])
         print("added new citations to existing articles " +str(sum))
+        addSum = 0
         if len(self.newPublications) > 0:
-            sum += self.addNewArticles(self.newPublications, user[0])
-        print("added new citations with new articles " + str(sum))
+            addSum = self.addNewArticles(self.newPublications, user[0])
+            sum += addSum
+        print("added new citations with new articles " + str(addSum))
         newCitations -= sum
         print("amount of of citations left, doubles in Google Scholar " + str(newCitations))
         print("finish checking User:"+ name + "\n")
@@ -99,9 +94,20 @@ class Search:
              self.createCoins(sum, user[0])
         cursor.close()
 
+# searches the user for the first time and add all the articles he got to the database and counts all the citations from his articles.
+    def addUser(self, author, cibitId):
+        check = 0
+        newAuthor = next((scholarly.search_author(author))).fill()
+        check = self.createDict(newAuthor)
+        sum = self.addNewArticles(self.newPublications, cibitId)
+        if check == sum:
+            print(sum)
+        self.createCoins(sum, cibitId)
+
 # Creates a new coin list with no duplicate keys in the database and the list.
     def createCoins(self, amount, cibitId):
         i = 0
+        counter = 0
         fragment = amount
         newCoinList = list()
         cursor = self.connection.cursor()
@@ -110,6 +116,7 @@ class Search:
         while i < amount:
             coinId = generateCoin(cibitId)
             if coinId not in oldCoinList and coinId not in newCoinList:
+                counter += 1
                 i += 1
                 args = (coinId, cibitId)
                 newCoinList.append(args)
@@ -120,6 +127,7 @@ class Search:
                 newCoinList.clear()
         self.createTransaction(fragment, cibitId,newCoinList, 0)
         cursor.close()
+        return counter
 
 # Creates a new transaction and enter all the Coins, as well as the shared table to the database.
     def createTransaction(self, amount, cibitId, newCoinList, fragment):
@@ -161,7 +169,7 @@ class Search:
                 self.checkUser(author)
         cursor.close()
 
-
+# Creates a steady connection with MySQL DB(cibitdb) so it will stay open till bot finished it's tasks.
 def connect():
     try:
         connection = mysql.connector.connect(host='localhost',

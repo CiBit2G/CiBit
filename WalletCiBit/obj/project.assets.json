@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\user\\Desktop\\FinalProject\\CiBit\\WalletCiBit\\WalletCiBit.csproj",
+      "projectUniqueName": "C:\\Users\\user\\Documents\\GitHub\\CiBit\\WalletCiBit\\WalletCiBit.csproj",
       "projectName": "WalletCiBit",
-      "projectPath": "C:\\Users\\user\\Desktop\\FinalProject\\CiBit\\WalletCiBit\\WalletCiBit.csproj",
+      "projectPath": "C:\\Users\\user\\Documents\\GitHub\\CiBit\\WalletCiBit\\WalletCiBit.csproj",
       "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\user\\Desktop\\FinalProject\\CiBit\\WalletCiBit\\obj\\",
+      "outputPath": "C:\\Users\\user\\Documents\\GitHub\\CiBit\\WalletCiBit\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -65,7 +65,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.100\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
       }
     }
   }

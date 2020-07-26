@@ -144,8 +144,8 @@ namespace CiBitMainServer.Controllers
                 var spObj = Converters.CreateUserConverter(userinfo);
                 var reader = context.StoredProcedureSql("CreateUser", spObj);
 
-                //var bot = new RunPythonBot();
-                //bot.run_cmd(pyFullPath, userinfo.CibitId);
+                var bot = new RunPythonBot();
+                bot.run_cmd(pyFullPath, userinfo.CibitId);
 
                 context.Connection.Close();
                 return true;
