@@ -2,7 +2,7 @@
 
 namespace CiBitUtil.Message.Request
 {
-    public class GetUserRequest
+    public class GetUserRequest : BaseWebRequest
     {
         [CiBitId]
         public string CibitId { get; set; }

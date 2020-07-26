@@ -29,6 +29,9 @@ namespace CiBitMainServer.Controllers
             if (!ModelState.IsValid)
                 throw new Exception(ModelState.ErrorCount.ToString());
 
+            if(!(new Tokens().VerifyToken(request.Token)))
+                throw new Exception("Invalid Token, Or Token had expiered.");
+
             var userinfo = TypeMapper.Mapper.Map<GetUserRequest, UserDTO>(request);
 
             var spObj = Converters.GetUserConverter(userinfo);

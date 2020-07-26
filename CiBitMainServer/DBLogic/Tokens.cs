@@ -28,7 +28,7 @@ namespace CiBitMainServer.DBLogic
             return IsUserExist(saltedValue.Substring(len - 1));           
         }
 
-        public static bool IsUserExist(string cibitId)
+        private static bool IsUserExist(string cibitId)
         {
             var request = new GetUserRequest() { CibitId = cibitId };
             var userinfo = TypeMapper.Mapper.Map<GetUserRequest, UserDTO>(request);
