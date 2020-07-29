@@ -33,18 +33,21 @@ namespace CiBitMainServer.DBLogic
             return false;
         }
 
-        private static bool IsUserExist(string cibitId)
+        public static bool IsUserExist(string cibitId)
         {
+            bool IsExist = false;
             var request = new GetUserRequest() { CibitId = cibitId };
             var userinfo = TypeMapper.Mapper.Map<GetUserRequest, UserDTO>(request);
             var spObj = Converters.GetUserConverter(userinfo);
             var reader = Controllers.UsersController._context.StoredProcedureSql("getUser", spObj);
 
-            GetUserResponse response = new GetUserResponse();
+            while(reader.Read())
+            {
+                IsExist = true;
+            }
 
             Controllers.UsersController._context.Connection.Close();
-
-            return response != null;
+            return IsExist;
         }
     }
 }

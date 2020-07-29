@@ -24,6 +24,7 @@ namespace CiBitMainServer.Controllers
         }
 
         // GET: Users/GetUser/GetUserRequest
+        [HttpPost]
         public GetUserResponse GetUser([FromBody]GetUserRequest request)
         {
             if (!ModelState.IsValid)
@@ -129,7 +130,7 @@ namespace CiBitMainServer.Controllers
         // POST: Users/CreateUser/CreateUserRequest
         [HttpPost]
         public bool CreateUser([FromBody]CreateUserRequest request)
-        {
+            {
             if (!ModelState.IsValid)
                 throw new Exception(ModelState.ErrorCount.ToString());
 
@@ -141,13 +142,18 @@ namespace CiBitMainServer.Controllers
                 var userinfo = TypeMapper.Mapper.Map<CreateUserRequest, UserDTO>(request);
 
                 userinfo.Password = hash.Hash(userinfo.Password); //hash Password
-                userinfo.CibitId = hash.CreateCibitId();
+
+                do
+                {
+                    userinfo.CibitId = hash.CreateCibitId();
+                } while (Tokens.IsUserExist(userinfo.CibitId)); // Verify CiBitId is unique.
+
                 userinfo.ArticleName = userinfo.ArticleName.ToLower();
                 var spObj = Converters.CreateUserConverter(userinfo);
                 var reader = context.StoredProcedureSql("CreateUser", spObj);
 
-                var bot = new RunPythonBot();
-                bot.run_cmd(pyFullPath, userinfo.CibitId);
+                //var bot = new RunPythonBot();
+                //bot.run_cmd(pyFullPath, userinfo.CibitId);
 
                 context.Connection.Close();
                 return true;

@@ -71,7 +71,13 @@ class Search:
             newAuthor = next((scholarly.search_author(name))).fill()
         except Exception as e:
             print(e)
-            return 0
+            email = user[3].split('@')[1]
+            name = user[1] + ' ' + user[2] + ', ' + email
+            try:
+                newAuthor = next((scholarly.search_author(name))).fill()
+            except Exception as e:
+                print(e)
+                return 0
         sum = self.createDict(newAuthor)
         newCitations = (sum - user[5]) if user[5] is not None else sum
         print("amount of citations that are not in our database " + str(newCitations))
