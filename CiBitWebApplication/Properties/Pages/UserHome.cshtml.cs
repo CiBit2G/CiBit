@@ -25,24 +25,37 @@ namespace CiBitWebApplication.Pages
         public GetUserTransactionResponse Transaction { get; set; }
 
         [BindProperty]
-        public GetUserResponse UserTransation { get; set; }
+        public GetUserResponse UserTransation { get; set; } = null;
+
+        [BindProperty]
+        public string FullName
+        {
+            get
+            {
+                if (UserTransation == null)
+                    return "";
+                return UserTransation.user.FName + " " + UserTransation.user.LName;
+            }
+        }
+
+        [BindProperty]
+        public bool Loading { get; set; }
 
         public UserHomeModel(IHttpClientFactory clientFactory)
         {
             ClientFactory = clientFactory;
         }
 
-        public List<GetUserTransactionResponse> TransactionList { get; set; }
-
         public async void OnGetAsync()
         {
+            Loading = true;
+
             string pathName = @"Users/GetUser/";
 
             var _httpClient = ClientFactory.CreateClient("cibit");
 
-            GetUserRequest request = new GetUserRequest
+            BaseWebRequest request = new BaseWebRequest
             {
-                CibitId = "",
                 Token = Token
             };
 
@@ -55,6 +68,8 @@ namespace CiBitWebApplication.Pages
             {
                 UserTransation = await httpResponse.Content.ReadFromJsonAsync<GetUserResponse>();
             }
+
+            Loading = false;
         }
     }
 }

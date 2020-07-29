@@ -171,7 +171,7 @@ namespace CiBitMainServer.Controllers
                 int status = 0;
                 while (reader.Read())
                 {
-                    status = int.Parse(reader["status"].ToString());
+                    status = int.Parse(reader["t_status"].ToString());
                 }
                 if (status == 0)
                     return ChechkHashType.UpdateTransaction;
