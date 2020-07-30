@@ -6,7 +6,7 @@ import hashlib
 import json
 
 Id = "bank1Test"
-url = "https://localhost:44357/"
+url = "https://localhost:5001/"
 
 
 class Chain:

@@ -3,7 +3,7 @@ import json
 from CoinGenrator import verifyCoins
 from NoSSL import no_ssl_verification
 
-url = "https://localhost:44357/"
+url = "https://localhost:5001/"
 
 
 class Block:
