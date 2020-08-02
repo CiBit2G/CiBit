@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace CiBitUtil.Message.Request
 {
-    public class AddUserRequest : BaseWebRequest, IValidatableObject
+    public class AddUserRequest : IValidatableObject
     {
         [Required]
         [StringLength(maximumLength: 45, MinimumLength =2)]

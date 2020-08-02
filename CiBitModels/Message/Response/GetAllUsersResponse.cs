@@ -5,11 +5,11 @@ namespace CiBitUtil.Message.Response
 {
     public class GetAllUsersResponse
     {
-        public List<User> Users { get; set; }
+        public List<GetUserConfirmResponse> Users { get; set; }
 
         public GetAllUsersResponse()
         {
-            Users = new List<User>();
+            Users = new List<GetUserConfirmResponse>();
         }
     }
 }

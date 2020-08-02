@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
-using System.Transactions;
 using CiBitMainServer.Models;
 using MySql.Data.MySqlClient;
 
@@ -172,6 +169,30 @@ namespace CiBitMainServer.DBLogic
             {
                 Name = cibitId,
                 value = request.CiBitId,
+                ParamType = MySqlDbType.VarChar
+            }
+            };
+        }
+
+        public static List<SpObject> CreateBankConverter(BankDTO request)
+        {
+            return new List<SpObject> {
+             new SpObject
+            {
+                Name = cibitId,
+                value = request.CiBitId,
+                ParamType = MySqlDbType.VarChar
+            },
+            new SpObject
+            {
+                Name = password,
+                value = request.Password,
+                ParamType = MySqlDbType.VarChar
+            },
+                new SpObject
+            {
+                Name = university,
+                value = request.UniName,
                 ParamType = MySqlDbType.VarChar
             }
             };
@@ -347,7 +368,6 @@ namespace CiBitMainServer.DBLogic
                 }  
             };
         }
-    }
-
     #endregion
+    }
 }

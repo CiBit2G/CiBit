@@ -1,0 +1,62 @@
+﻿@page
+@model CiBitWebApplication.Pages.BankRegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div style="height:460px">
+    <h1>Registration</h1>
+    <form asp-page-handler="ProcessRequest" method="post">
+        <table>
+            <tr>
+                <td>
+                    <span>CiBitId: </span>
+                </td>
+                <td style="color:black">
+                    <input type="text" asp-for="CiBitId" class="input-group-text">
+                </td>
+                <td style="color:red">
+                    <label>@Model.ErrorMsgCb</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>University: </span>
+                </td>
+                <td style="color:black">
+                    <input type="text" asp-for="University" class="input-group-text">
+                </td>
+                <td style="color:red">
+                    <label>@Model.ErrorMsgUni</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Password: </span>
+                </td>
+                <td style="color:black">
+                    <input type="password" asp-for="Password" class="input-group-text">
+                </td>
+                <td style="color:red">
+                    <label>@Model.ErrorMsgPass</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>Confirm Password: </span>
+                </td>
+                <td style="color:black">
+                    <input type="password" asp-for="ConfirmPassword" class="input-group-text">
+                </td>
+                <td style="color:red">
+                    <label>@Model.ErrorMsgCoPass</label>
+                </td>
+            </tr>
+        </table>
+        <div class="form-group">
+        </div>
+        <div class="d-flex center-block login_container">
+            <button type="submit" name="button" style="color:black" class="btn">Submit</button>
+        </div>
+    </form>
+</div>

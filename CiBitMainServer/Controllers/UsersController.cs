@@ -25,7 +25,7 @@ namespace CiBitMainServer.Controllers
 
         // GET: Users/GetUser/GetUserRequest
         [HttpPost]
-        public GetUserResponse GetUser([FromBody]GetUserRequest request)
+        public GetUserResponse GetUser([FromBody]BaseWebRequest request)
         {
             if (!ModelState.IsValid)
                 throw new Exception(ModelState.ErrorCount.ToString());
@@ -33,9 +33,13 @@ namespace CiBitMainServer.Controllers
             if (!Tokens.VerifyToken(request.Token, out string ciBitId))
                 throw new Exception("Invalid Token, Or Token had expiered.");
 
-            request.CibitId = ciBitId;
+            GetUserRequest userRequest= new GetUserRequest
+            {
+                Token = request.Token,
+                CibitId = ciBitId
+            };
 
-            var userinfo = TypeMapper.Mapper.Map<GetUserRequest, UserDTO>(request);
+            var userinfo = TypeMapper.Mapper.Map<GetUserRequest, UserDTO>(userRequest);
 
             var spObj = Converters.GetUserConverter(userinfo);
 
@@ -103,23 +107,38 @@ namespace CiBitMainServer.Controllers
             return response;
         }
 
-        // GET: Users/GetAllUsers/
-        public GetAllUsersResponse GetAllUsers()
+        // POST: Users/GetAllUsers/
+        [HttpPost]
+        public GetAllUsersResponse GetAllUsers(BaseWebRequest request)
         {
-            var reader = _context.StoredProcedureSql("getUsers", null);
+
+            if (!ModelState.IsValid)
+                throw new Exception(ModelState.ErrorCount.ToString());
+
+            if (!Tokens.VerifyToken(request.Token, out string ciBitId))
+                throw new Exception("Invalid Token, Or Token had expiered.");
+
+            GetUserRequest userRequest = new GetUserRequest
+            {
+                Token = request.Token,
+                CibitId = ciBitId
+            };
+
+            var reader = _context.StoredProcedureSql("newUsersPerBank", null);
 
             GetAllUsersResponse response = new GetAllUsersResponse();
 
             while (reader.Read())
             {
-                response.Users.Add(new User()
+                response.Users.Add(new GetUserConfirmResponse()
                 {
-                    CibitId = reader["cibitId"].ToString(),
-                    FName = reader["fName"].ToString(),
-                    LName = reader["lName"].ToString(),
+
+                    CiBitId = reader["cibitId"].ToString(),
+                    FullName = reader["fName"].ToString() + " " + reader["lName"].ToString(),
                     Email = reader["email"].ToString(),
                     University = reader["university"].ToString(),
-                    CitationAmount = (int.TryParse(reader["citationAmount"].ToString(),out int number)) ? number : 0
+                    Status = reader["u_status"].ToString(),
+                    Date = DateTime.Now  // Add created Date timr o user table 
                 });
             }
 
@@ -159,6 +178,33 @@ namespace CiBitMainServer.Controllers
                 return true;
             }
             catch 
+            {
+                return false;
+            }
+        }
+
+        [HttpPost]
+        public bool CreateBank([FromBody]CreateBankRequest request)
+        {
+            if (!ModelState.IsValid)
+                throw new Exception(ModelState.ErrorCount.ToString());
+
+            try
+            {
+                var context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
+                var hash = new ValidateUser();
+
+                var userinfo = TypeMapper.Mapper.Map<CreateBankRequest, BankDTO>(request);
+
+                userinfo.Password = hash.Hash(userinfo.Password); //hash Password
+
+                var spObj = Converters.CreateBankConverter(userinfo);
+                var reader = context.StoredProcedureSql("AddBank", spObj);
+
+                context.Connection.Close();
+                return true;
+            }
+            catch
             {
                 return false;
             }
