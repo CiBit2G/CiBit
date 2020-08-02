@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
@@ -6,8 +7,10 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CiBitUtil.Message.Request;
+using CiBitUtil.Message.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CiBitWebApplication.Pages
 {
@@ -73,16 +76,47 @@ namespace CiBitWebApplication.Pages
 
         public bool CreateUserResponse { get; set; }
 
-        #endregion
+        [BindProperty(SupportsGet = true)]
+        public GetBankNamesResponse UniversitiesList { get; set; }
 
+        public List<SelectListItem> SelectList
+        {
+            get
+            {
+                var result = new List<SelectListItem>();
+                foreach (var item in UniversitiesList.Universities)
+                {
+                    result.Add(new SelectListItem(item, item));
+                }
+                return result;
+            }
+        }
+        #endregion
+         
         public UserRegistrationModel(IHttpClientFactory clientFactory)
         {
             ClientFactory = clientFactory;
         }
 
-        public void OnGet()
+        public async void OnGetAsync()
         {
 
+            string pathName = @"Users/CreateUser/";
+
+            var _httpClient = ClientFactory.CreateClient("cibit");
+
+            var httpResponse =
+                await _httpClient.GetAsync($"{pathName}");
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                UniversitiesList = await httpResponse.Content.ReadFromJsonAsync<GetBankNamesResponse>();
+            }
+            else
+            {
+                UniversitiesList = new GetBankNamesResponse();
+                UniversitiesList.Universities = new List<string>();
+            }
         }
 
         public async Task OnPostProcessRequestAsync()

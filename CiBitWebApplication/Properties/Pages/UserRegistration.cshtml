@@ -70,7 +70,7 @@
                     <input type="password" asp-for="ConfirmPassword" class="input-group-text">
                 </td>
                 <td style="color:red">
-                    <label >@Model.ErrorMsgCoPass</label>
+                    <label>@Model.ErrorMsgCoPass</label>
                 </td>
             </tr>
             <tr>
@@ -86,27 +86,27 @@
             </tr>
             <tr>
                 <td>
-                    <span>University: </span>
+                    <span>University:</span>
                 </td>
                 <td style="color:black">
-                    <input type="text" asp-for="University" class="input-group-text">
-                </td>
+                    @Html.DropDownListFor(x => Model.University, Model.SelectList ,"Select university", 1)
+)
                 <td style="color:red">
-                    <label >@Model.ErrorMsgUni</label>
+                    <label>@Model.ErrorMsgUni</label>
                 </td>
-            </tr>
-            <tr>
-                <td>
-                    <span>Article: </span>
-                </td>
-                <td style="color:black">
-                    <input type="text" asp-for="Article" class="input-group-text">
-                </td>
-                <td style="color:red">
-                    <label>@Model.ErrorMsgArt</label>
-                </td>
-            </tr>
-        </table>
+                </tr>
+                <tr>
+                    <td>
+                        <span>Article: </span>
+                    </td>
+                    <td style="color:black">
+                        <input type="text" asp-for="Article" class="input-group-text">
+                    </td>
+                    <td style="color:red">
+                        <label>@Model.ErrorMsgArt</label>
+                    </td>
+                </tr>
+            </table>
         <div class="form-group">
         </div>
         <div class="d-flex center-block login_container">

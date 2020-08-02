@@ -155,7 +155,6 @@ namespace CiBitMainServer.Controllers
 
             try
             {
-                var context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
                 var hash = new ValidateUser();
 
                 var userinfo = TypeMapper.Mapper.Map<CreateUserRequest, UserDTO>(request);
@@ -169,12 +168,12 @@ namespace CiBitMainServer.Controllers
 
                 userinfo.ArticleName = userinfo.ArticleName.ToLower();
                 var spObj = Converters.CreateUserConverter(userinfo);
-                var reader = context.StoredProcedureSql("CreateUser", spObj);
+                var reader = _context.StoredProcedureSql("CreateUser", spObj);
 
                 //var bot = new RunPythonBot();
                 //bot.run_cmd(pyFullPath, userinfo.CibitId);
 
-                context.Connection.Close();
+                _context.Connection.Close();
                 return true;
             }
             catch 
@@ -191,7 +190,6 @@ namespace CiBitMainServer.Controllers
 
             try
             {
-                var context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb;
                 var hash = new ValidateUser();
 
                 var userinfo = TypeMapper.Mapper.Map<CreateBankRequest, BankDTO>(request);
@@ -199,9 +197,9 @@ namespace CiBitMainServer.Controllers
                 userinfo.Password = hash.Hash(userinfo.Password); //hash Password
 
                 var spObj = Converters.CreateBankConverter(userinfo);
-                var reader = context.StoredProcedureSql("AddBank", spObj);
+                var reader = _context.StoredProcedureSql("AddBank", spObj);
 
-                context.Connection.Close();
+                _context.Connection.Close();
                 return true;
             }
             catch
@@ -210,30 +208,53 @@ namespace CiBitMainServer.Controllers
             }
         }
 
+
+        [HttpGet]
+        public GetBankNamesResponse GetBankName()
+        {
+            try
+            {
+                var reader = _context.StoredProcedureSql("getBanksNames", null);
+
+                GetBankNamesResponse response = new GetBankNamesResponse();
+
+                response.Universities = new List<string>();
+
+                while (reader.Read())
+                {
+                    response.Universities.Add(reader["b_name"].ToString());
+                }
+
+                _context.Connection.Close();
+                return response;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         // DELETE: Users/RemoveUser/RemoveUserRequest
         [HttpPost]
         public bool RemoveUser([FromBody]RemoveUserRequest request)
         {
-            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb; ;
-
             var userinfo = TypeMapper.Mapper.Map<RemoveUserRequest, UserDTO>(request);
 
             var spObj = Converters.RemoveUserConverter(userinfo);
-            var reader = context.StoredProcedureSql("RemoveUser", spObj);
+            var reader = _context.StoredProcedureSql("RemoveUser", spObj);
 
-            context.Connection.Close();
+            _context.Connection.Close();
             return true;
         }
 
         [HttpPost]
         public GetLoginResponse Login([FromBody]LoginRequest request)
         {
-            CibitDb context = HttpContext.RequestServices.GetService(typeof(CibitDb)) as CibitDb; ;
 
             var userinfo = TypeMapper.Mapper.Map<GetUserRequest, UserDTO>(request);
 
             var spObj = Converters.RemoveUserConverter(userinfo);
-            var reader = context.StoredProcedureSql("LoginInfo", spObj);
+            var reader = _context.StoredProcedureSql("LoginInfo", spObj);
 
             var response = new GetLoginResponse();
             string pass = null;
@@ -247,8 +268,8 @@ namespace CiBitMainServer.Controllers
             {
                 response.IsBank = true;
 
-                context.Connection.Close();
-                reader = context.StoredProcedureSql("BankLoginInfo", spObj);
+                _context.Connection.Close();
+                reader = _context.StoredProcedureSql("BankLoginInfo", spObj);
 
                 while (reader.Read())
                 {
@@ -264,7 +285,7 @@ namespace CiBitMainServer.Controllers
             if (isPass)
                 response.Token = Tokens.CreateToken(request.CibitId);
 
-            context.Connection.Close();
+            _context.Connection.Close();
             return response;
         }
     }
