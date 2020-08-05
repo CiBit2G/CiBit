@@ -45,6 +45,8 @@ namespace CiBitWebApplication.Pages
 
         #region Properties
 
+        public bool Loading { get; set; }
+
         [BindProperty]
         public string FirstName { get; set; }
 
@@ -100,6 +102,7 @@ namespace CiBitWebApplication.Pages
 
         public async void OnGetAsync()
         {
+            Loading = true;
 
             string pathName = @"Users/CreateUser/";
 
@@ -117,6 +120,8 @@ namespace CiBitWebApplication.Pages
                 UniversitiesList = new GetBankNamesResponse();
                 UniversitiesList.Universities = new List<string>();
             }
+
+            Loading = false;
         }
 
         public async Task OnPostProcessRequestAsync()

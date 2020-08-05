@@ -2,6 +2,10 @@
 @model CiBitWebApplication.Pages.UserRegistrationModel
 @{
     ViewData["Title"] = "Registration";
+
+    while(Model.Loading)
+    {
+    }
 }
 
 <div style="height:460px">
