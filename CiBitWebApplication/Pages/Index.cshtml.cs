@@ -16,7 +16,6 @@ namespace CiBitWebApplication.Pages
         
         public IActionResult OnPostUser()
         {
-
             return RedirectToPage("/login", new { Identity = "user" });
         }
 

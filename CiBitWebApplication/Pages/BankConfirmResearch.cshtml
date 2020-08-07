@@ -2,6 +2,9 @@
 @model CiBitWebApplication.Pages.BankConfirmResearchModel
 @{
     ViewData["Title"] = "Confirm Research";
+    while(Model.Loading)
+    {
+    }
 }
 
 <div style="left:100px; height:460px">
@@ -25,7 +28,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.ResearchList)
+                @foreach (var item in Model.ResearchList.Research)
                 {
                     <tr>
                         <td>

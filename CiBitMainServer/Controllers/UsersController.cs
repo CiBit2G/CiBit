@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using CiBitUtil.Models;
 using CiBitUtil.Message.Request;
 using CiBitUtil.Message.Response;
@@ -109,7 +108,7 @@ namespace CiBitMainServer.Controllers
 
         // POST: Users/GetAllUsers/
         [HttpPost]
-        public GetAllUsersResponse GetAllUsers(BaseWebRequest request)
+        public GetAllUsersResponse GetAllUsers([FromBody]BaseWebRequest request)
         {
 
             if (!ModelState.IsValid)

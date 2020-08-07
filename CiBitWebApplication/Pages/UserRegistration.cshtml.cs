@@ -104,7 +104,7 @@ namespace CiBitWebApplication.Pages
         {
             Loading = true;
 
-            string pathName = @"Users/CreateUser/";
+            string pathName = @"Users/GetBankName/";
 
             var _httpClient = ClientFactory.CreateClient("cibit");
 
