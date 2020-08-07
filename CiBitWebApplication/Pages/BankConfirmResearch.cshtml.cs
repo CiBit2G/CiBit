@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using CiBitUtil.Message.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using CiBitUtil.Message.Request;
 
 namespace CiBitWebApplication.Pages
 {
@@ -36,7 +37,7 @@ namespace CiBitWebApplication.Pages
 
             var _httpClient = ClientFactory.CreateClient("cibit");
 
-            GetResearchRequest request = new GetResearchRequest
+            GetResearchRequest request = new GetResearchRequest()
             {
                 Token = Token
             };

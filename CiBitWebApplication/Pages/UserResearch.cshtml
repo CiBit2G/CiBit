@@ -1,0 +1,45 @@
+﻿@page
+@model CiBitWebApplication.Pages.UserResearchModel
+@{
+    ViewData["Title"] = "AddResearch";
+}
+
+div style="height:460px">
+<h1>Transaction</h1>
+<form>
+    <table>
+        <tr>
+            <td>
+                <span>Asked by [CiBit ID]:</span>
+            </td>
+            <td>
+                <input type="text" name="userId" class="input-group-text">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span>Research Name:</span>
+            </td>
+            <td>
+                <input type="text" name="research" class="input-group-text">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span>Research Idea:</span>
+            </td>
+            <td>
+                <input type="text" name="Idea" class="input-group-text">
+            </td>
+        </tr>
+    </table>
+    <div class="form-group">
+    </div>
+    <div class="d-flex center-block login_container">
+        <button type="submit" name="button" style="color:black" class="btn">Send</button>
+    </div>
+</form>
+</div>
+
+
+
