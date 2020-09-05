@@ -24,10 +24,6 @@ namespace CiBitWebApplication.Pages
         [BindProperty]
         public bool Loading { get; set; }
 
-        public BankConfirmUserModel(IHttpClientFactory clientFactory)
-        {
-            ClientFactory = clientFactory;
-        }
 
         public async void OnGetAsync()
         {

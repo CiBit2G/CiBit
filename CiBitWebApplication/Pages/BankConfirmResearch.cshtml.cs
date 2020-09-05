@@ -28,10 +28,6 @@ namespace CiBitWebApplication.Pages
 
         public GetAllResearchConfirmResponse ResearchList { get; set; }
 
-        public BankConfirmResearchModel(IHttpClientFactory clientFactory)
-        {
-            ClientFactory = clientFactory;
-        }
 
         public async void OnGetAsync()
         {

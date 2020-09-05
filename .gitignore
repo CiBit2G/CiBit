@@ -38,7 +38,3 @@ _ReSharper*/
 .vs/
 
 .vs/CiBitServer/v16/.suo
-CiBitWebApplication/obj/project.assets.json
-CiBitModels/obj/project.assets.json
-CiBitModels/obj/CiBitUtil.csproj.nuget.g.props
-CiBitMainServer/obj/CiBitMainServer.csproj.nuget.g.props
