@@ -23,6 +23,7 @@ namespace CiBitUtil.Validation
 
         public bool Verify(string savedHash, string key )
         {
+            var pass = Hash(key);
             /* Extract the bytes */
             byte[] hashBytes = Convert.FromBase64String(savedHash);
             /* Get the salt */

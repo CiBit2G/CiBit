@@ -2,7 +2,7 @@
 
 namespace CiBitUtil.Message.Response
 {
-    public class GetAllResearchConfirmResponse
+    public class GetAllResearchConfirmResponse : Request.BaseWebRequest
     {
         public List<GetResearchConfirmResponse> Research { get; set; }
 

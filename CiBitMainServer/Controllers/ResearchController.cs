@@ -18,7 +18,8 @@ namespace CiBitMainServer.Controllers
             _context = context;
         }
 
-        // INSERT: Research/CreateResearch/CreateResearchRequest
+        // POST: Research/CreateResearch/CreateResearchRequest
+        [HttpPost]
         public bool CreateResearch([FromBody]CreateResearchRequest request)
         {
             var userinfo = TypeMapper.Mapper.Map<CreateResearchRequest, ResearchDTO>(request);
@@ -31,7 +32,7 @@ namespace CiBitMainServer.Controllers
         }
 
         [HttpPost]
-        public GetResearchConfirmListResponse GetAllUsers([FromBody]BaseWebRequest request)
+        public GetResearchConfirmListResponse GetAllResearchs([FromBody]BaseWebRequest request)
         {
 
             if (!ModelState.IsValid)
@@ -46,7 +47,9 @@ namespace CiBitMainServer.Controllers
                 CibitId = ciBitId
             };
 
-            var reader = _context.StoredProcedureSql("ResearchConfirmByBank", null);
+            var bankInfo = TypeMapper.Mapper.Map<GetUserRequest, BankDTO>(userRequest);
+            var spObj = Converters.GetBankConverter(bankInfo);
+            var reader = _context.StoredProcedureSql("ResearchConfirmByBank", spObj);
 
             GetResearchConfirmListResponse response = new GetResearchConfirmListResponse();
 

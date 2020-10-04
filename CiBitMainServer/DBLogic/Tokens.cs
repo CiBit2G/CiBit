@@ -47,6 +47,14 @@ namespace CiBitMainServer.DBLogic
             }
 
             Controllers.UsersController._context.Connection.Close();
+            var bankInfo = TypeMapper.Mapper.Map<GetUserRequest, BankDTO>(request);
+            spObj = Converters.GetBankConverter(bankInfo);
+            reader = Controllers.UsersController._context.StoredProcedureSql("getBank", spObj);
+            while (reader.Read())
+            {
+                IsExist = true;
+            }
+            Controllers.UsersController._context.Connection.Close();
             return IsExist;
         }
     }

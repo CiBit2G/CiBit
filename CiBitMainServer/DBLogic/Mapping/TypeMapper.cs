@@ -54,6 +54,7 @@ namespace CiBitMainServer.Mapping
             #endregion
 
             #region Bank
+            CreateMap<GetUserRequest, BankDTO>();
             CreateMap<CreateBankRequest, BankDTO>();
             #endregion
         }

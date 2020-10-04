@@ -211,6 +211,19 @@ namespace CiBitMainServer.DBLogic
             };
         }
 
+        public static List<SpObject> GetBankConverter(BankDTO request)
+        {
+            return new List<SpObject>
+            {
+                new SpObject
+            {
+                Name = cibitId,
+                value = request.CiBitId,
+                ParamType = MySqlDbType.VarChar
+            }
+            };
+        }
+
         public static List<SpObject> RemoveUserConverter(UserDTO request)
         {
             return GetUserConverter(request);

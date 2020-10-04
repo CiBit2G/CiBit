@@ -28,12 +28,16 @@ namespace CiBitWebApplication.Pages
 
         public GetAllResearchConfirmResponse ResearchList { get; set; }
 
+        public BankConfirmResearchModel(IHttpClientFactory clientFactory)
+        {
+            ClientFactory = clientFactory;
+        }
 
         public async void OnGetAsync()
         {
             Loading = true;
 
-            string pathName = @"Users/GetUser/";
+            string pathName = @"Research/GetAllResearchs/";
 
             var _httpClient = ClientFactory.CreateClient("cibit");
 
@@ -51,6 +55,8 @@ namespace CiBitWebApplication.Pages
             {
                 ResearchList = await httpResponse.Content.ReadFromJsonAsync<GetAllResearchConfirmResponse>();
             }
+
+            Token = ResearchList.Token;
 
             Loading = false;
         }
