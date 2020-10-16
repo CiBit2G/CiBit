@@ -6,5 +6,8 @@ namespace CiBitUtil.Message.Request
     {
         [CiBitId]
         public string CiBitId { get; set; }
+
+        [CiBitId]
+        public string Abstract { get; set; }
     }
 }

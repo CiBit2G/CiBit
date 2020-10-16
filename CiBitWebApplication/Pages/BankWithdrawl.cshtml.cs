@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using CiBitUtil.Message.Request;
 using CiBitUtil.Message.Response;
+using CiBitUtil.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -17,9 +18,9 @@ namespace CiBitWebApplication.Pages
         public string Token { get; set; }
 
         [BindProperty]
-        public GetUserConfirmResponse UserInfo { get; set; }
+        public Withdrawl WithdrawlInfo { get; set; }
 
-        public GetAllUsersResponse UserList { get; set; }
+        public GetWithdrawlTransactionsReponse WithdrawlTransactionsList { get; set; }
 
         [BindProperty]
         public bool Loading { get; set; }
@@ -33,7 +34,7 @@ namespace CiBitWebApplication.Pages
         {
             Loading = true;
 
-            string pathName = @"Users/GetUser/";
+            string pathName = @"Transaction/GetWithdrawlTransactions/";
 
             var _httpClient = ClientFactory.CreateClient("cibit");
 
@@ -49,7 +50,7 @@ namespace CiBitWebApplication.Pages
 
             if (httpResponse.IsSuccessStatusCode)
             {
-                UserList = await httpResponse.Content.ReadFromJsonAsync<GetAllUsersResponse>();
+                WithdrawlTransactionsList = await httpResponse.Content.ReadFromJsonAsync<GetWithdrawlTransactionsReponse>();
             }
 
             Loading = false;

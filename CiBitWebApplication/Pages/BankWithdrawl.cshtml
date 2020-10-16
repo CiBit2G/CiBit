@@ -14,43 +14,43 @@
             <thead>
                 <tr>
                     <th>
-                        @Html.DisplayNameFor(model => model.UserInfo.Date)
+                        @Html.DisplayNameFor(model => model.WithdrawlInfo.Date)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.UserInfo.CiBitId)
+                        @Html.DisplayNameFor(model => model.WithdrawlInfo.SenderId)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.UserInfo.FullName)
+                        @Html.DisplayNameFor(model => model.WithdrawlInfo.FullName)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.UserInfo.Email)
+                        @Html.DisplayNameFor(model => model.WithdrawlInfo.Reason)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.UserInfo.University)
+                        @Html.DisplayNameFor(model => model.WithdrawlInfo.Amount)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.UserInfo.Status)
+                        @Html.DisplayNameFor(model => model.WithdrawlInfo.Status)
                     </th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.UserList.Users)
+                @foreach (var item in Model.WithdrawlTransactionsList.Withdrawls)
                 {
                     <tr>
                         <td>
                             @Html.DisplayFor(modelItem => item.Date)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.CiBitId)
+                            @Html.DisplayFor(modelItem => item.SenderId)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.FullName)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Email)
+                            @Html.DisplayFor(modelItem => item.Reason)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.University)
+                            @Html.DisplayFor(modelItem => item.Amount)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Status)

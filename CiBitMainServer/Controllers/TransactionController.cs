@@ -96,6 +96,48 @@ namespace CiBitMainServer.Controllers
             return response;
         }
 
+        // POST: Transaction/GetWithdrawlTransactions/GetWithdrawlRequest
+        public GetWithdrawlTransactionsReponse GetWithdrawlTransactions([FromBody]GetWithdrawlRequest request)
+        {
+            if (!ModelState.IsValid)
+                throw new Exception(ModelState.ErrorCount.ToString());
+
+            if (!Tokens.VerifyToken(request.Token, out string ciBitId))
+                throw new Exception("Invalid Token, Or Token had expiered.");
+
+            GetUserRequest userRequest = new GetUserRequest
+            {
+                Token = request.Token,
+                CibitId = ciBitId
+            };
+
+            var Transactioninfo = TypeMapper.Mapper.Map<GetUserRequest, BankDTO>(userRequest);
+
+            var spObj = Converters.GetBankConverter(Transactioninfo);
+
+            var reader = _context.StoredProcedureSql("getWithdrawlPerBank", spObj);
+
+            GetWithdrawlTransactionsReponse response = new GetWithdrawlTransactionsReponse();
+
+            while (reader.Read())
+            {
+                response.Withdrawls.Add(new Withdrawl()
+                {
+                    Date = DateTime.Parse(reader["createdDateTime"].ToString()),
+                    Amount = int.Parse(reader["amount"].ToString()),
+                    Reason = reader["reason"].ToString(),
+                    Status = int.Parse(reader["w_status"].ToString()),
+                    FullName = reader["FullName"].ToString(),
+                });
+            }
+
+            if (response.Withdrawls == null)
+                return null;
+
+            _context.Connection.Close();
+            return response;
+        }
+
         //GET: Transaction/AddTransaction/BlockReady
         //Used in Blockchain
         public BlockReadyResponse BlockReady()
