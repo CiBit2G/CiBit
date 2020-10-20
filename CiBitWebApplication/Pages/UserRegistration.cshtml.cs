@@ -47,6 +47,9 @@ namespace CiBitWebApplication.Pages
 
         public bool Loading { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public string Token { get; set; }
+
         [BindProperty]
         public string FirstName { get; set; }
 

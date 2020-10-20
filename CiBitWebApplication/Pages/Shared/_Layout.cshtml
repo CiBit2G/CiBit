@@ -17,29 +17,49 @@
     </environment>
 </head>
 <body style="color:white; background-color:black" >
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container" >
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-page="/Index" class="navbar-brand" style="padding:0px">
-                    <img src="~/images/CiBitgif.gif" style="padding:0px" height="50"/>
-                </a>
-            </div> 
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-page="/Index">Home</a></li>
-                    <li><a asp-page="/About">About</a></li>
-                    <li><a asp-page="/Contact">Contact</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
+    @{ 
+        if (!string.IsNullOrEmpty((string)ViewData["User"]))
+        {
+            <nav class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container" >
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                           <span class="sr-only">Toggle navigation</span>
+                           <span class="icon-bar"></span>
+                           <span class="icon-bar"></span>
+                           <span class="icon-bar"></span>
+                       </button>
+                       <a asp-page="/Index" class="navbar-brand" style="padding:0px">
+                           <img src="~/images/CiBitgif.gif" style="padding:0px" height="50"/>
+                       </a>
+                   </div> 
+                   <div class="navbar-collapse collapse">
+                       <ul class="nav navbar-nav">
+                           <li><a asp-page="/Index">Home</a></li>
+                           <li><a asp-page="/About">About</a></li>
+                           <li><a asp-page="/Contact">Contact</a></li>
+                           @{
+                               if (string.Equals((string)ViewData["User"], "User"))
+                               {
+                                   <li><a asp-page="/UserHome?Token=@{ViewData["Token"].ToString();}">Home</a></li>
+                                   <li><a asp-page="/UserNewTransaction?Token=@{ViewData["Token"].ToString();}">New Transaction</a></li>
+                                   <li><a asp-page="/UserResearch?Token=@{ViewData["Token"].ToString();}">New Research</a></li>
+                                   <li><a asp-page="/UserTransactionList?Token=@{ViewData["Token"].ToString();}">Transaction History</a></li>
+                                   <li><a asp-page="/UserSettings?Token=@{ViewData["Token"].ToString();}">Settings</a></li>
+                               }
+                               else if (string.Equals((string)ViewData["User"], "Bank"))
+                               {
+                                   <li><a asp-page="/BankConfirmUser?Token=@{ViewData["Token"].ToString();}">Confirm User</a></li>
+                                   <li><a asp-page="/BankConfirmResearch?Token=@{ViewData["Token"].ToString();}">Confirm Research</a></li>
+                                   <li><a asp-page="/BankWithdrawl?Token=@{ViewData["Token"].ToString();}">Confirm Withdrawl</a></li>
+                               }
+                           }
+                    </ul>
+                    </div>
+                </div>
+            </nav>
+        }
+    }
     <partial name="_CookieConsentPartial" />
 
     <div class="container body-content">

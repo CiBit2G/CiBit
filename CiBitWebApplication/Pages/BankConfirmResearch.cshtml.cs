@@ -17,6 +17,8 @@ namespace CiBitWebApplication.Pages
     {
         private static IHttpClientFactory ClientFactory { get; set; }
 
+        public string IsUser;
+
         [BindProperty]
         public bool Loading { get; set; }
 
@@ -56,7 +58,7 @@ namespace CiBitWebApplication.Pages
                 ResearchList = await httpResponse.Content.ReadFromJsonAsync<GetAllResearchConfirmResponse>();
             }
 
-            Token = ResearchList.Token;
+            //Token = ResearchList.Token;
 
             Loading = false;
         }

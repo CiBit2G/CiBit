@@ -2,6 +2,9 @@
 @model CiBitWebApplication.Pages.BankWithdrawlModel
 @{
     ViewData["Title"] = "BankWithdrawl";
+    ViewData["User"] = "Bank";
+    ViewData["Token"] = Model.Token;
+
     while (Model.Loading)
     {
     }

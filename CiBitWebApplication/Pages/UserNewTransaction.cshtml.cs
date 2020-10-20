@@ -9,6 +9,9 @@ namespace CiBitWebApplication.Pages
 {
     public class UserNewTransactionModel : PageModel
     {
+        [BindProperty(SupportsGet = true)]
+        public string Token { get; set; }
+
         public void OnGet()
         {
 

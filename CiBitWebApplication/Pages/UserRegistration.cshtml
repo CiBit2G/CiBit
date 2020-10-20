@@ -2,8 +2,11 @@
 @model CiBitWebApplication.Pages.UserRegistrationModel
 @{
     ViewData["Title"] = "Registration";
+    ViewData["User"] = "User";
+    ViewData["Token"] = Model.Token;
 
-    while(Model.Loading)
+
+    while (Model.Loading)
     {
     }
 }

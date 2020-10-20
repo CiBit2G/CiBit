@@ -2,9 +2,8 @@
 @model CiBitWebApplication.Pages.UserTransactionListModel
 @{
     ViewData["Title"] = "UserTransactionList";
-}
-@{
-    ViewData["Title"] = "Home";
+    ViewData["User"] = "User";
+    ViewData["Token"] = Model.Token;
 
     while (Model.Loading)
     {
@@ -13,7 +12,6 @@
 <div style="left:100px; height:460px">
     <div style="height:100px; left:300px">
         <span style="width: 100px; font-size:20px">Balance: </span>
-        <span style="width: 100px; font-size:20px">@Model.UserTransation.user.CitationAmount</span>
         <i class="glyphicon glyphicon-bitcoin"></i>
     </div>
     <div>

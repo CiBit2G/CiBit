@@ -2,6 +2,8 @@
 @model CiBitWebApplication.Pages.UserHomeModel
 @{
     ViewData["Title"] = "Home";
+    ViewData["User"] = "User";
+    ViewData["Token"] = Model.Token;
 
     while (Model.Loading )
     {

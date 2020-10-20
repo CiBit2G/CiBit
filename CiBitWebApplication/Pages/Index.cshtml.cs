@@ -14,15 +14,15 @@ namespace CiBitWebApplication.Pages
 
         }
         
-        public IActionResult OnPostUser()
+        public IActionResult OnPostLogin()
         {
-            return RedirectToPage("/login", new { Identity = "user" });
+            return RedirectToPage("/login");
         }
 
-        public IActionResult OnPostBank()
+        public IActionResult OnPostRegister()
         {
 
-            return RedirectToPage("/login",new { Identity = "bank" });
+            return RedirectToPage("/UserRegistration");
         }
     }
 }
