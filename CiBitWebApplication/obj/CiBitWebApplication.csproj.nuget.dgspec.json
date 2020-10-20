@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\user\\Documents\\GitHub\\CiBit\\CiBitWebApplication\\CiBitWebApplication.csproj": {}
+    "C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\CiBitWebApplication\\CiBitWebApplication.csproj": {}
   },
   "projects": {
-    "C:\\Users\\user\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj": {
+    "C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\user\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj",
+        "projectUniqueName": "C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj",
         "projectName": "CiBitUtil",
-        "projectPath": "C:\\Users\\user\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj",
-        "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\user\\Documents\\GitHub\\CiBit\\CiBitModels\\obj\\",
+        "projectPath": "C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj",
+        "packagesPath": "C:\\Users\\guybo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\CiBitModels\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\guybo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -58,24 +55,21 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\user\\Documents\\GitHub\\CiBit\\CiBitWebApplication\\CiBitWebApplication.csproj": {
+    "C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\CiBitWebApplication\\CiBitWebApplication.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\user\\Documents\\GitHub\\CiBit\\CiBitWebApplication\\CiBitWebApplication.csproj",
+        "projectUniqueName": "C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\CiBitWebApplication\\CiBitWebApplication.csproj",
         "projectName": "CiBitWebApplication",
-        "projectPath": "C:\\Users\\user\\Documents\\GitHub\\CiBit\\CiBitWebApplication\\CiBitWebApplication.csproj",
-        "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\user\\Documents\\GitHub\\CiBit\\CiBitWebApplication\\obj\\",
+        "projectPath": "C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\CiBitWebApplication\\CiBitWebApplication.csproj",
+        "packagesPath": "C:\\Users\\guybo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\CiBitWebApplication\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\guybo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -88,8 +82,8 @@
         "frameworks": {
           "netcoreapp2.1": {
             "projectReferences": {
-              "C:\\Users\\user\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj": {
-                "projectPath": "C:\\Users\\user\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj"
+              "C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj": {
+                "projectPath": "C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj"
               }
             }
           }
@@ -139,7 +133,7 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
         }
       }
     }
