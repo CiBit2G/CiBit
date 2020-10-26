@@ -13411,23 +13411,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Shaked Pen Graitzer\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\guybo\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Shaked Pen Graitzer\\Documents\\GitHub\\CiBit\\CiBitMainServer\\CiBitMainServer.csproj",
+      "projectUniqueName": "C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\CiBitMainServer\\CiBitMainServer.csproj",
       "projectName": "CiBitMainServer",
-      "projectPath": "C:\\Users\\Shaked Pen Graitzer\\Documents\\GitHub\\CiBit\\CiBitMainServer\\CiBitMainServer.csproj",
-      "packagesPath": "C:\\Users\\Shaked Pen Graitzer\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Shaked Pen Graitzer\\Documents\\GitHub\\CiBit\\CiBitMainServer\\obj\\",
+      "projectPath": "C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\CiBitMainServer\\CiBitMainServer.csproj",
+      "packagesPath": "C:\\Users\\guybo\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\CiBitMainServer\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Shaked Pen Graitzer\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\guybo\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -13440,8 +13436,8 @@
       "frameworks": {
         "netcoreapp2.1": {
           "projectReferences": {
-            "C:\\Users\\Shaked Pen Graitzer\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj": {
-              "projectPath": "C:\\Users\\Shaked Pen Graitzer\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj"
+            "C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj": {
+              "projectPath": "C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\CiBitModels\\CiBitUtil.csproj"
             }
           }
         }
@@ -13471,6 +13467,7 @@
             "version": "[2.1.2, )"
           },
           "Microsoft.NETCore.App": {
+            "suppressParent": "All",
             "target": "Package",
             "version": "[2.1.0, )",
             "autoReferenced": true
@@ -13493,10 +13490,16 @@
           }
         },
         "imports": [
-          "net461"
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
         ],
         "assetTargetFallback": true,
-        "warn": true
+        "warn": true,
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
       }
     }
   }
