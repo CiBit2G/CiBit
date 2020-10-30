@@ -83,11 +83,13 @@ namespace CiBitMainServer.Controllers
             response.TransactionList = new List<GetUserTransactionResponse>();
 
             int sum = 0;
-
+            int transactionLimit = 5;
             foreach (var item in transactionList)
             {
                 if (item.Fragment == 0)
                 {
+                    if (transactionLimit = 0)
+                        break;
                     response.TransactionList.Add(new GetUserTransactionResponse
                     {
                         Date = item.TransactionDate,
@@ -98,9 +100,10 @@ namespace CiBitMainServer.Controllers
                         Status = item.Status
                     });
                     sum = 0;
+                    transactionLimit--;
                 }
                 else
-                    sum += item.Amount;
+                    sum += item.Amount;  
             }
 
             return response;
