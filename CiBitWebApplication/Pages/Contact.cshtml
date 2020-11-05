@@ -3,17 +3,39 @@
 @{
     ViewData["Title"] = "Contact";
 }
-<h2>@ViewData["Title"]</h2>
-<h3>@Model.Message</h3>
+<style>
+    .wrap-div {
+        height: 460px;
+    }
 
-<address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
+    .wrap-title {
+        display: flex;
+        justify-content: center;
+    }
 
-<address>
-    <strong>Support:</strong> <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address>
+    .wrap-info {
+        margin: auto;
+        text-align: center;
+    }
+</style>
+
+<div class="wrap-div">
+    <div class="wrap-title">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="wrap-info">
+        <h3>@Model.Message</h3>
+
+        <address>
+            One Microsoft Way<br />
+            Redmond, WA 98052-6399<br />
+            <abr title="Phone">Pohne:</abr>
+            425-555-0100
+        </address>
+
+        <address>
+            <strong>Support:</strong> <a href="mailto:Support@example.com">Support@example.com</a><br />
+            <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
+        </address>
+    </div>
+</div>

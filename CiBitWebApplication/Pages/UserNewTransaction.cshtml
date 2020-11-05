@@ -6,11 +6,51 @@
     ViewData["Token"] = Model.Token;
 
 }
+<style>
+    .wrap-div {
+        height: 460px;
+    }
 
-<div style="height:460px">
-    <h1>Transaction</h1>
+    .info-td {
+        color: black;
+    }
+
+    .btn {
+        color: black;
+        width: 150px;
+    }
+
+    .error-td {
+        color: red;
+    }
+
+    .wrap-title, .wrap-div .wrap-btn {
+        display: flex;
+        justify-content: center;
+    }
+
+    .wrap-form {
+        margin: auto;
+    }
+
+
+    .input-group-text {
+        width: 250px
+    }
+
+    .wrap-div .wrap-btn {
+        margin-left: 5px;
+    }
+    .input-group-text{
+        margin: 10px 0px;
+    }
+</style>
+<div class="wrap-div">
+    <div class="wrap-title">
+        <h1>Create a new transaction</h1>
+    </div>
     <form>
-        <table>
+        <table class="wrap-form">
             <tr>
                 <td>
                     <span>Sent to [CiBit ID]:</span>
@@ -38,7 +78,7 @@
         </table>
         <div class="form-group">
         </div>
-        <div class="d-flex center-block login_container">
+        <div class="d-flex center-block login_container wrap-btn">
             <button type="submit" name="button" style="color:black" class="btn">Send</button>
         </div>
     </form>

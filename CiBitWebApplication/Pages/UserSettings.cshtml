@@ -10,19 +10,59 @@
     {
     }
 }
+<style>
+    .wrap-div {
+        height: 460px;
+    }
 
-<div style="height:460px">
-    <h1>Settings</h1>
+    .info-td {
+        color: black;
+    }
+
+    .btn {
+        color: black;
+        width: 150px;
+    }
+
+    .error-td {
+        color: red;
+    }
+
+    .wrap-title, .wrap-div .wrap-btn {
+        display: flex;
+        justify-content: center;
+    }
+
+    .wrap-form {
+        margin: auto;
+    }
+
+
+    .input-group-text, select {
+        width: 300px;
+        margin: 10px 0px;
+        height:22px;
+    }
+
+    .wrap-div .wrap-btn {
+        margin-right: 130px;
+    }
+</style>
+
+<div class="wrap-div">
+    <div class="wrap-title">
+        <h1>Settings</h1>
+    </div>
     <form asp-page-handler="ProcessRequest" method="post">
-        <table>
+        <table class="wrap-form">
             <tr>
                 <td>
                     <span>Password: </span>
                 </td>
-                <td style="color:black">
+                <td class="info-td">
                     <input type="password" asp-for="Password" class="input-group-text">
                 </td>
-                <td style="color:red">
+                <td class="error-td">
                     <label>@Model.ErrorMsgPass</label>
                 </td>
             </tr>
@@ -30,10 +70,10 @@
                 <td>
                     <span>Confirm Password: </span>
                 </td>
-                <td style="color:black">
+                <td class="info-td">
                     <input type="password" asp-for="ConfirmPassword" class="input-group-text">
                 </td>
-                <td style="color:red">
+                <td class="error-td">
                     <label>@Model.ErrorMsgCoPass</label>
                 </td>
             </tr>
@@ -41,10 +81,10 @@
                 <td>
                     <span>Email: </span>
                 </td>
-                <td style="color:black">
+                <td class="info-td">
                     <input type="text" asp-for="Email" class="input-group-text">
                 </td>
-                <td style="color:red">
+                <td class="error-td">
                     <label>@Model.ErrorMsgEm</label>
                 </td>
             </tr>
@@ -52,18 +92,18 @@
                 <td>
                     <span>University:</span>
                 </td>
-                <td style="color:black">
+                <td class="info-td">
                     @Html.DropDownListFor(x => Model.University, Model.SelectList, "Select university", 1)
                     )
-                <td style="color:red">
+                <td class="error-td">
                     <label>@Model.ErrorMsgUni</label>
                 </td>
             </tr>
         </table>
         <div class="form-group">
         </div>
-        <div class="d-flex center-block login_container">
-            <button type="submit" name="button" style="color:black" class="btn">Submit</button>
+        <div class="d-flex center-block login_container wrap-btn">
+            <button type="submit" name="button" class="info-td">Submit</button>
         </div>
     </form>
 </div>

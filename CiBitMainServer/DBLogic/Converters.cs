@@ -46,6 +46,7 @@ namespace CiBitMainServer.DBLogic
         #region Research
 
         private const string researchName = "r_name";
+        private const string info = "info";
 
         #endregion
 
@@ -169,6 +170,12 @@ namespace CiBitMainServer.DBLogic
             {
                 Name = cibitId,
                 value = request.CiBitId,
+                ParamType = MySqlDbType.VarChar
+            },
+            new SpObject
+            {
+                Name = info,
+                value = request.Abstract,
                 ParamType = MySqlDbType.VarChar
             }
             };

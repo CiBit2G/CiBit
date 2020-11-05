@@ -88,7 +88,7 @@ namespace CiBitMainServer.Controllers
             {
                 if (item.Fragment == 0)
                 {
-                    if (transactionLimit = 0)
+                    if (transactionLimit == 0)
                         break;
                     response.TransactionList.Add(new GetUserTransactionResponse
                     {

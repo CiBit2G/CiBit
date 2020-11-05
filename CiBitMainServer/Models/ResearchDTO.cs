@@ -10,5 +10,7 @@ namespace CiBitMainServer.Models
         public string ResearchName { get; set; }
         public string CiBitId { get; set; }
 
+        public string Abstract { get; set; }
+
     }
 }

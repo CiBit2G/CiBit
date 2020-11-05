@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CiBitUtil.Message.Request
 {
-    public class AddResearchRequest : IValidatableObject
+    public class AddResearchRequest : BaseWebRequest, IValidatableObject
     {
         [Required]
         public string ResearchName { get; set; }

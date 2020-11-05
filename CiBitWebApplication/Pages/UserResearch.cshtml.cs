@@ -35,7 +35,7 @@ namespace CiBitWebApplication.Pages
         public string Token { get; set; }
 
         [BindProperty]
-        public string CiBitId { get; set; }
+        public string PostToken { get; set; }
 
         [BindProperty]
         public string ResearchName { get; set; }
@@ -54,6 +54,8 @@ namespace CiBitWebApplication.Pages
 
         public async Task OnPostProcessRequestAsync()
         {
+            Token = PostToken;
+
             if (!CheckDetails())
                 return;
 
@@ -62,6 +64,7 @@ namespace CiBitWebApplication.Pages
             var _httpClient = ClientFactory.CreateClient("cibit");
 
             var todoItemJson = new StringContent(JsonSerializer.Serialize(CreateResearch), Encoding.UTF8, "application/json");
+
 
             var httpResponse =
                 await _httpClient.PostAsync($"{pathName}", todoItemJson);
@@ -92,9 +95,9 @@ namespace CiBitWebApplication.Pages
             
             CreateResearch = new CreateResearchRequest
             {
-                CiBitId = CiBitId,
                 ResearchName = ResearchName,
-                Abstract = Abstract
+                Abstract = Abstract,
+                //Token = PostToekn
             };
 
             return CreateResearch != null && IsValid;

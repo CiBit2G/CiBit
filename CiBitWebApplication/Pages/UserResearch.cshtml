@@ -3,29 +3,66 @@
 @{
     ViewData["Title"] = "AddResearch";
     ViewData["User"] = "User";
-
+    ViewData["Token"] = Model.Token;
+    var token = Model.Token;
 }
+<style>
+    .wrap-div{
+        height:460px;
+    }
+    .info-td {
+        color: black;
+    }
 
-<div style="height:460px">
-    <h1>Add new research</h1>
+    .btn {
+        color: black;
+        width: 150px;
+    }
+
+    .error-td {
+        color: red;
+    }
+    .wrap-title, .wrap-div .wrap-btn {
+        display: flex;
+        justify-content: center;
+    }
+    .wrap-form{
+        margin:auto;
+    }
+    .description {
+        height:300px;
+    }
+    .input-group-text{
+        margin: 8px 0px;
+        width:600px;
+    }
+    .wrap-div .wrap-btn{
+        margin-right:355px;
+    }
+</style>
+
+<div class="wrap-div">
+    <div class="wrap-title">
+        <h1>Add new research</h1>
+    </div>
     <form asp-page-handler="ProcessRequest" method="post">
-        <table>
-            <tr>
-                <td>
-                    <span>CiBit ID: </span>
+        <table class="wrap-form">
+            <tr class="hidden">
+                <td class="info-td">
+                    <input type="text" asp-for="PostToken" value="@token" class="input-group-text" disabled="disabled">
                 </td>
-                <td style="color:black">
-                    <input type="text" asp-for="CiBitId" class="input-group-text">
+                <td class="error-td">
+                    <label>@Model.ErrorMsgRsch</label>
                 </td>
             </tr>
             <tr>
                 <td>
                     <span>Research Title: </span>
                 </td>
-                <td style="color:black">
+                <td class="info-td">
                     <input type="text" asp-for="ResearchName" class="input-group-text">
                 </td>
-                <td style="color:red">
+                <td class="error-td">
                     <label>@Model.ErrorMsgRsch</label>
                 </td>
             </tr>
@@ -33,15 +70,15 @@
                 <td>
                     <span>Abstract: </span>
                 </td>
-                <td style="color:black">
-                    <input type="text" asp-for="Abstract" style="height:300px; width:auto;min-width:600px" class="input-group-text">
+                <td class="info-td">
+                    <input type="text" asp-for="Abstract" class="input-group-text description">
                 </td>
             </tr>
         </table>
         <div class="form-group">
         </div>
-        <div class="d-flex center-block login_container">
-            <button type="submit" name="button" style="color:black" class="btn">Submit</button>
+        <div class="d-flex center-block login_container wrap-btn">
+            <button type="submit"  class="btn">Submit</button>
         </div>
     </form>
 </div>

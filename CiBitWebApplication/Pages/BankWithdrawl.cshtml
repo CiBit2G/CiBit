@@ -9,59 +9,75 @@
     {
     }
 }
+<style>
+    .wrap-div {
+        height: 460px;
+        left: 100px;
+    }
 
-<div style="left:100px; height:460px">
-    <h2>Confirm User</h2>
-    <div>
-        <table id="myTable" class="table" cellspacing="0">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.WithdrawlInfo.Date)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.WithdrawlInfo.SenderId)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.WithdrawlInfo.FullName)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.WithdrawlInfo.Reason)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.WithdrawlInfo.Amount)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.WithdrawlInfo.Status)
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.WithdrawlTransactionsList.Withdrawls)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Date)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SenderId)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.FullName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Reason)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Amount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Status)
+    .table {
+        margin: auto;
+    }
 
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    .wrap-title {
+        display: flex;
+        justify-content: center;
+    }
+</style>
+
+<div class="wrap-div">
+    <div class="wrap-title">
+        <h1>Confirm Withdrawl</h1>
     </div>
-</div>
+                <table id="myTable" class="table" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.WithdrawlInfo.Date)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.WithdrawlInfo.SenderId)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.WithdrawlInfo.FullName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.WithdrawlInfo.Reason)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.WithdrawlInfo.Amount)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.WithdrawlInfo.Status)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.WithdrawlTransactionsList.Withdrawls)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Date)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SenderId)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FullName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Reason)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Amount)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Status)
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>

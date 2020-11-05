@@ -2,7 +2,6 @@
 @model CiBitWebApplication.Pages.UserRegistrationModel
 @{
     ViewData["Title"] = "Registration";
-    ViewData["User"] = "User";
     ViewData["Token"] = Model.Token;
 
 
@@ -10,19 +9,51 @@
     {
     }
 }
+<style>
+    .wrap-div {
+        height: 460px;
+    }
+    .info-td{
+        color:black;
+    }
+    .btn {
+        color:black;
+        width:150px;
+    }
+    .error-td{
+        color:red;
+    }
+    .wrap-title, .wrap-div .wrap-btn {
+        display: flex;
+        justify-content: center;
+    }
+    .input-group-text, select, .form-control {
+        margin: 7px 0px;
+        width: 299px;
+        height: 22px;
+    }
+    .wrap-div .wrap-btn {
+        margin-right:40px;
+    }
+    .wrap-form {
+        margin: auto;
+    }
+</style>
 
-<div style="height:460px">
-    <h1>Registration</h1>
+<div class="wrap-div">
+    <div class="wrap-title">
+        <h1>Registration</h1>
+    </div>
     <form asp-page-handler="ProcessRequest" method="post">
-        <table>
+        <table class="wrap-form">
             <tr>
                 <td>
                     <span>First Name: </span>
                 </td>
-                <td style="color:black">
+                <td class="info-td">
                     <input type="text" asp-for="FirstName" class="input-group-text">
                 </td>
-                <td style="color:red">
+                <td class="error-td">
                     <label>@Model.ErrorMsgFn</label>
                 </td>
             </tr>
@@ -30,10 +61,10 @@
                 <td>
                     <span>Middle Name: </span>
                 </td>
-                <td style="color:black">
+                <td class="info-td">
                     <input type="text" asp-for="MiddleName" class="input-group-text">
                 </td>
-                <td style="color:red">
+                <td class="error-td">
                     <label>@Model.ErrorMsgMn</label>
                 </td>
             </tr>
@@ -41,10 +72,10 @@
                 <td>
                     <span>Surname: </span>
                 </td>
-                <td style="color:black">
+                <td class="info-td">
                     <input type="text" asp-for="Surname" class="input-group-text">
                 </td>
-                <td style="color:red">
+                <td class="error-td">
                     <label>@Model.ErrorMsgSn</label>
                 </td>
             </tr>
@@ -52,10 +83,10 @@
                 <td>
                     <span>Date of birth: </span>
                 </td>
-                <td style="color:black">
+                <td class="info-td">
                     <input type="date" asp-for="DOB" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
                 </td>
-                <td style="color:red">
+                <td class="error-td">
                     <label>@Model.ErrorMsgDob</label>
                 </td>
             </tr>
@@ -63,10 +94,10 @@
                 <td>
                     <span>Password: </span>
                 </td>
-                <td style="color:black">
+                <td class="info-td">
                     <input type="password" asp-for="Password" class="input-group-text">
                 </td>
-                <td style="color:red">
+                <td class="error-td">
                     <label>@Model.ErrorMsgPass</label>
                 </td>
             </tr>
@@ -74,10 +105,10 @@
                 <td>
                     <span>Confirm Password: </span>
                 </td>
-                <td style="color:black">
+                <td class="info-td">
                     <input type="password" asp-for="ConfirmPassword" class="input-group-text">
                 </td>
-                <td style="color:red">
+                <td class="error-td">
                     <label>@Model.ErrorMsgCoPass</label>
                 </td>
             </tr>
@@ -85,10 +116,10 @@
                 <td>
                     <span>Email: </span>
                 </td>
-                <td style="color:black">
+                <td class="info-td">
                     <input type="text" asp-for="Email" class="input-group-text">
                 </td>
-                <td style="color:red">
+                <td class="error-td">
                     <label>@Model.ErrorMsgEm</label>
                 </td>
             </tr>
@@ -96,10 +127,10 @@
                 <td>
                     <span>University:</span>
                 </td>
-                <td style="color:black">
+                <td class="info-td">
                     @Html.DropDownListFor(x => Model.University, Model.SelectList ,"Select university", 1)
 )
-                <td style="color:red">
+                <td class="error-td">
                     <label>@Model.ErrorMsgUni</label>
                 </td>
                 </tr>
@@ -107,18 +138,18 @@
                     <td>
                         <span>Article: </span>
                     </td>
-                    <td style="color:black">
+                    <td class="info-td">
                         <input type="text" asp-for="Article" class="input-group-text">
                     </td>
-                    <td style="color:red">
+                    <td class="error-td">
                         <label>@Model.ErrorMsgArt</label>
                     </td>
                 </tr>
             </table>
         <div class="form-group">
         </div>
-        <div class="d-flex center-block login_container">
-            <button type="submit" name="button" style="color:black" class="btn">Submit</button>
+        <div class="d-flex center-block login_container wrap-btn">
+            <button type="submit" name="button" class="btn">Submit</button>
         </div>
     </form>
     </div>

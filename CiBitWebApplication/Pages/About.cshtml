@@ -3,7 +3,26 @@
 @{
     ViewData["Title"] = "About";
 }
-<h2>@ViewData["Title"]</h2>
-<h3>@Model.Message</h3>
+<style>
+    .wrap-div {
+        height: 460px;
+    }
+    .wrap-title {
+        display: flex;
+        justify-content: center;
+    }
+    .wrap-info{
+        margin:auto;
+        text-align:center;
+    }
+</style>
+<div class="wrap-div">
+    <div class="wrap-title">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="wrap-info">
+        <h3>@Model.Message</h3>
 
-<p>Use this area to provide additional information.</p>
+        <p>Use this area to provide additional information.</p>
+    </div>
+</div>

@@ -22,10 +22,23 @@ namespace CiBitMainServer.Controllers
         [HttpPost]
         public bool CreateResearch([FromBody]CreateResearchRequest request)
         {
+            if (!ModelState.IsValid)
+                throw new Exception(ModelState.ErrorCount.ToString());
+
+            if (!Tokens.VerifyToken(request.Token, out string ciBitId))
+                throw new Exception("Invalid Token, Or Token had expiered.");
+
+            GetUserRequest userRequest = new GetUserRequest
+            {
+                Token = request.Token,
+                CibitId = ciBitId
+            };
+
             var userinfo = TypeMapper.Mapper.Map<CreateResearchRequest, ResearchDTO>(request);
+            userinfo.CiBitId = userRequest.CibitId;
 
             var spObj = Converters.CreateResearchConverter(userinfo);
-            var reader = _context.StoredProcedureSql("CreateReasarch", spObj);
+            var reader = _context.StoredProcedureSql("CreateResearch", spObj);
 
             _context.Connection.Close();
             return true;

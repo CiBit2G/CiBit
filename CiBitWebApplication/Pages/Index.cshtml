@@ -3,21 +3,45 @@
 @{
     ViewData["Title"] = "Welcome to CiBit";
 }
-
-<div style="height:460px;">
-    <table border="0">
+<style>
+    .outer-div{
+        height: 460px;
+    }
+    table {
+        margin: auto;
+        border: 0px;
+        text-align: center;
+    }
+    .start-option {
+        color: black;
+        width:100px;
+        margin:10px;
+    }
+    .start-options {
+        height:50px; 
+        width:600px;
+    }
+    .logo {
+        height: 150px;
+    }
+    .welcome{
+        height:50px;
+    }
+</style>
+<div class="outer-div">
+    <table>
         <tr>
-            <td height="50"><div><h1>Welcome to CiBit</h1></div></td>
+            <td class="welcome"><div><h1>Welcome to CiBit</h1></div></td>
         </tr>
         <tr>
-            <td><div><img style="height:150px" src="~/images/CiBitgif.gif" /></div></td>
+            <td><div><img class="logo" src="~/images/CiBitgif.gif" /></div></td>
         </tr>
         <tr>
-            <td height="50" width="600">
+            <td class="start-options">
                 <div>
                     <form method="post">
-                        <input type="submit" id="login" style="color:black" width="100" value="Login" asp-page-handler="Login" />
-                        <input type="submit" id="register" style="color:black" width="100" value="Register" asp-page-handler="Register" />
+                        <input type="submit" id="login" class="start-option" value="Login" asp-page-handler="Login" />
+                        <input type="submit" id="register" class="start-option" value="Register" asp-page-handler="Register" />
                     </form>
                 </div>
             </td>
