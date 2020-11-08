@@ -80,10 +80,12 @@ namespace CiBitWebApplication.Pages
                 if (CreateBankResponse)
                 {
                     //TODO Show Message success: wait for Bank confirmation.
+                    RedirectToPage("/index");
                 }
             }
             else
             {
+                RedirectToPage("/BankRegister");
             }
         }
 

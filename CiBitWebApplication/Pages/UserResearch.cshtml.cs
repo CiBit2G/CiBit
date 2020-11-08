@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CiBitUtil.Message.Request;
-using CiBitUtil.Message.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CiBitWebApplication.Pages
 {
@@ -35,9 +30,6 @@ namespace CiBitWebApplication.Pages
         public string Token { get; set; }
 
         [BindProperty]
-        public string PostToken { get; set; }
-
-        [BindProperty]
         public string ResearchName { get; set; }
 
         [BindProperty]
@@ -54,8 +46,6 @@ namespace CiBitWebApplication.Pages
 
         public async Task OnPostProcessRequestAsync()
         {
-            Token = PostToken;
-
             if (!CheckDetails())
                 return;
 
@@ -97,7 +87,7 @@ namespace CiBitWebApplication.Pages
             {
                 ResearchName = ResearchName,
                 Abstract = Abstract,
-                //Token = PostToekn
+                Token = Token
             };
 
             return CreateResearch != null && IsValid;

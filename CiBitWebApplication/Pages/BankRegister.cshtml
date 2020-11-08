@@ -3,60 +3,102 @@
 @{
     ViewData["Title"] = "Register";
 }
+<style>
+    .wrap-div {
+        height: 460px;
+    }
 
-<div style="height:460px">
-    <h1>Registration</h1>
-    <form asp-page-handler="ProcessRequest" method="post">
-        <table>
-            <tr>
-                <td>
-                    <span>CiBitId: </span>
-                </td>
-                <td style="color:black">
-                    <input type="text" asp-for="CiBitId" class="input-group-text">
-                </td>
-                <td style="color:red">
-                    <label>@Model.ErrorMsgCb</label>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <span>University: </span>
-                </td>
-                <td style="color:black">
-                    <input type="text" asp-for="University" class="input-group-text">
-                </td>
-                <td style="color:red">
-                    <label>@Model.ErrorMsgUni</label>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <span>Password: </span>
-                </td>
-                <td style="color:black">
-                    <input type="password" asp-for="Password" class="input-group-text">
-                </td>
-                <td style="color:red">
-                    <label>@Model.ErrorMsgPass</label>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <span>Confirm Password: </span>
-                </td>
-                <td style="color:black">
-                    <input type="password" asp-for="ConfirmPassword" class="input-group-text">
-                </td>
-                <td style="color:red">
-                    <label>@Model.ErrorMsgCoPass</label>
-                </td>
-            </tr>
-        </table>
-        <div class="form-group">
-        </div>
-        <div class="d-flex center-block login_container">
-            <button type="submit" name="button" style="color:black" class="btn">Submit</button>
-        </div>
-    </form>
-</div>
+    .info-td {
+        color: black;
+    }
+
+    .btn {
+        color: black;
+        width: 150px;
+    }
+
+    .error-td {
+        color: red;
+    }
+
+    .wrap-title, .wrap-div .wrap-btn {
+        display: flex;
+        justify-content: center;
+    }
+
+    .wrap-form {
+        margin: auto;
+    }
+
+    .description {
+        height: 300px;
+    }
+
+    .input-group-text {
+        margin: 8px 0px;
+        width: 600px;
+    }
+
+    .wrap-div .wrap-btn {
+        margin-right: 335px;
+    }
+</style>
+
+<div class="wrap-div">
+    <div class="wrap-title">
+        <h1>Registration</h1>
+    </div>
+        <form asp-page-handler="ProcessRequest" method="post">
+            <table class="wrap-form">
+                <tr>
+                    <td>
+                        <span>CiBitId: </span>
+                    </td>
+                    <td class="info-td">
+                        <input type="text" asp-for="CiBitId" class="input-group-text">
+                    </td>
+                    <td class="error-td">
+                        <label>@Model.ErrorMsgCb</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span>University: </span>
+                    </td>
+                    <td class="info-td">
+                        <input type="text" asp-for="University" class="input-group-text">
+                    </td>
+                    <td class="error-td">
+                        <label>@Model.ErrorMsgUni</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span>Password: </span>
+                    </td>
+                    <td class="info-td">
+                        <input type="password" asp-for="Password" class="input-group-text">
+                    </td>
+                    <td class="error-td">
+                        <label>@Model.ErrorMsgPass</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span>Confirm Password: </span>
+                    </td>
+                    <td class="info-td">
+                        <input type="password" asp-for="ConfirmPassword" class="input-group-text">
+                    </td>
+                    <td class="error-td">
+                        <label>@Model.ErrorMsgCoPass</label>
+                    </td>
+                </tr>
+            </table>
+            <div class="form-group">
+            </div>
+            <div class="d-flex center-block login_container wrap-btn">
+                <button type="submit" name="button" class="btn">Submit</button>
+            </div>
+        </form>
+    </div>

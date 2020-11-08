@@ -210,6 +210,18 @@ namespace CiBitMainServer.Controllers
             }
         }
 
+        [HttpGet]
+        public string GetCiBitId()
+        {
+            string cibitId;
+            var hash = new ValidateUser();
+            do
+            {
+                cibitId = hash.CreateCibitId();
+            } while (Tokens.IsUserExist(cibitId)); // Verify CiBitId is unique.
+
+            return cibitId;
+        }
 
         [HttpGet]
         public GetBankNamesResponse GetBankName()

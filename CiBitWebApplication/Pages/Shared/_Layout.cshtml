@@ -41,27 +41,45 @@
                         </a>
                     </div>
                     <div class="navbar-collapse collapse">
-                            <ul class="nav navbar-nav">
-                                @{
-                                    if (string.Equals((string)ViewData["User"], "User"))
-                                    {
-                                        <li>@RenderPage(string.Format("{0}={1}", "/UserHome?Token", ViewData["Token"]), "Home")</li>
-                                        <li>@RenderPage(string.Format("{0}={1}", "/UserNewTransaction?Token", ViewData["Token"]), "New Transaction")</li>
-                                        <li>@RenderPage(string.Format("{0}={1}", "/UserResearch?Token", ViewData["Token"]), "New Research")</li>
-                                        <li>@RenderPage(string.Format("{0}={1}", "/UserTransactionList?Token", ViewData["Token"]), "Transaction History")</li>
-                                        <li>@RenderPage(string.Format("{0}={1}", "/UserSettings?Token", ViewData["Token"]), "Settings")</li>
-                                    }
-                                    else if (string.Equals((string)ViewData["User"], "Bank"))
-                                    {
-                                        <li>@RenderPage(string.Format("{0}={1}", "/BankConfirmUser?Token", ViewData["Token"]), "Confirm User")</li>
-                                        <li>@RenderPage(string.Format("{0}={1}", "/BankConfirmResearch?Token", ViewData["Token"]), "Confirm Research")</li>
-                                        <li>@RenderPage(string.Format("{0}={1}", "/BankWithdrawl?Token", ViewData["Token"]), "Confirm Withdrawl")</li>
-                                    }
+                        <ul class="nav navbar-nav">
+                            @{
+                                if (string.Equals((string)ViewData["User"], "User"))
+                                {
+                                    <li>@RenderPage(string.Format("{0}={1}", "/UserHome?Token", ViewData["Token"]), "Home")</li>
+                                    <li>@RenderPage(string.Format("{0}={1}", "/UserNewTransaction?Token", ViewData["Token"]), "New Transaction")</li>
+                                    <li>@RenderPage(string.Format("{0}={1}", "/UserResearch?Token", ViewData["Token"]), "New Research")</li>
+                                    <li>@RenderPage(string.Format("{0}={1}", "/UserTransactionList?Token", ViewData["Token"]), "Transaction History")</li>
+                                    <li>@RenderPage(string.Format("{0}={1}", "/UserSettings?Token", ViewData["Token"]), "Settings")</li>
                                 }
-                                <li><a asp-page="/About">About</a></li>
-                                <li><a asp-page="/Contact">Contact</a></li>
-                                <li><a asp-page="/Index">Logout</a></li>
-                            </ul>
+                                else if (string.Equals((string)ViewData["User"], "Bank"))
+                                {
+                                    <li>@RenderPage(string.Format("{0}={1}", "/BankConfirmUser?Token", ViewData["Token"]), "Confirm User")</li>
+                                    <li>@RenderPage(string.Format("{0}={1}", "/BankConfirmResearch?Token", ViewData["Token"]), "Confirm Research")</li>
+                                    <li>@RenderPage(string.Format("{0}={1}", "/BankWithdrawl?Token", ViewData["Token"]), "Confirm Withdrawl")</li>
+                                }
+                            }
+                            <li><a asp-page="/About">About</a></li>
+                            <li><a asp-page="/Contact">Contact</a></li>
+                            <li><a asp-page="/Index">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        }
+        else if(!string.Equals((string)ViewData["Title"], "Login") && !string.Equals((string)ViewData["Title"], "Welcome to CiBit"))
+        {
+            <nav class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a asp-page="/Index" class="navbar-brand" style="padding:0px">
+                            <img src="~/images/CiBitgif.gif" style="padding:0px" height="50" />
+                        </a>
                     </div>
                 </div>
             </nav>
@@ -99,6 +117,6 @@
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 
-    @RenderSection("Scripts", required: false)
+     @RenderSection("Scripts", required: false)
 </body>
 </html>

@@ -46,15 +46,8 @@
         <h1>Add new research</h1>
     </div>
     <form asp-page-handler="ProcessRequest" method="post">
+        <input type="hidden" asp-for="Token" value="@Model.Token" />
         <table class="wrap-form">
-            <tr class="hidden">
-                <td class="info-td">
-                    <input type="text" asp-for="PostToken" value="@token" class="input-group-text" disabled="disabled">
-                </td>
-                <td class="error-td">
-                    <label>@Model.ErrorMsgRsch</label>
-                </td>
-            </tr>
             <tr>
                 <td>
                     <span>Research Title: </span>
@@ -71,14 +64,14 @@
                     <span>Abstract: </span>
                 </td>
                 <td class="info-td">
-                    <input type="text" asp-for="Abstract" class="input-group-text description">
+                    <textarea asp-for="Abstract" class="input-group-text description"></textarea>
                 </td>
             </tr>
         </table>
         <div class="form-group">
         </div>
         <div class="d-flex center-block login_container wrap-btn">
-            <button type="submit"  class="btn">Submit</button>
+            <button type="submit" class="btn">Submit</button>
         </div>
     </form>
 </div>

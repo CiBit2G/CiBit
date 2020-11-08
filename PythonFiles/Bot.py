@@ -4,10 +4,8 @@ import logging
 import sys
 from CoinGenrator import generateCoin
 
-
-
 logger = logging.getLogger('testbot')
-hdlr = logging.FileHandler('C:\\Users\\user\\Desktop\\Projects\\FinalProject\CiBit\\testbot.log')
+hdlr = logging.FileHandler('C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\testbot.log')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)
@@ -20,12 +18,12 @@ class Search:
         self.connection = connect()
         self.newPublications = dict()
 
-#   Creates a dictionary to help organize the publications from Google Scholar's database
+    #   Creates a dictionary to help organize the publications from Google Scholar's database
     def createDict(self, user):
         sum = 0
         for pub in user.publications:
             try:
-                if hasattr(pub,'citedby'):
+                if hasattr(pub, 'citedby'):
                     self.newPublications[pub.bib['title'].lower()] = pub.citedby
                     sum += pub.citedby
                 else:
@@ -34,7 +32,7 @@ class Search:
                 logger.info(e)
         return sum
 
-#   Adds all the new articles to the database.
+    #   Adds all the new articles to the database.
     def addNewArticles(self, articles, cibitId):
         sum = 0
         cursor = self.connection.cursor()
@@ -43,10 +41,10 @@ class Search:
             sum += value
             cursor.callproc('CreateArticle', args)
         self.connection.commit()
-        cursor.close
+        cursor.close()
         return sum
 
-# compare between the two list we got of articles and find what article need to be updated.
+    # compare between the two list we got of articles and find what article need to be updated.
     def compareArticles(self, articles, cibitId):
         cursor = self.connection.cursor()
         sum = 0
@@ -54,8 +52,8 @@ class Search:
             try:
                 count = self.newPublications[art[2]]
                 if count > art[3]:
-                    cursor.callproc('UpdateCitation', [cibitId, art[1], count-art[3]])
-                    sum += (count-art[3])
+                    cursor.callproc('UpdateCitation', [cibitId, art[1], count - art[3]])
+                    sum += (count - art[3])
                 del self.newPublications[art[2]]
             except KeyError as e:
                 logger.info(e)
@@ -63,7 +61,7 @@ class Search:
         cursor.close()
         return sum
 
-# checks each user for new citations also adds new articles if there is.
+    # checks each user for new citations also adds new articles if there is.
     def checkUser(self, user):
         name = user[1] + ' ' + user[2] + ', ' + user[4]
         print("start checking User: " + name)
@@ -87,7 +85,7 @@ class Search:
         cursor.callproc('getArticles', [user[0]])
         articles = list(next(cursor.stored_results()))
         sum = self.compareArticles(articles, user[0])
-        print("added new citations to existing articles " +str(sum))
+        print("added new citations to existing articles " + str(sum))
         addSum = 0
         if len(self.newPublications) > 0:
             addSum = self.addNewArticles(self.newPublications, user[0])
@@ -95,12 +93,13 @@ class Search:
         print("added new citations with new articles " + str(addSum))
         newCitations -= sum
         print("amount of of citations left, doubles in Google Scholar " + str(newCitations))
-        print("finish checking User:"+ name + "\n")
+        print("finish checking User:" + name + "\n")
         if sum != 0:
-             self.createCoins(sum, user[0])
+            self.createCoins(sum, user[0])
         cursor.close()
 
-# searches the user for the first time and add all the articles he got to the database and counts all the citations from his articles.
+    # searches the user for the first time and add all the articles he got to the database
+    # and counts all the citations from his articles.
     def addUser(self, author, cibitId):
         check = 0
         newAuthor = next((scholarly.search_author(author))).fill()
@@ -110,7 +109,7 @@ class Search:
             print(sum)
         self.createCoins(sum, cibitId)
 
-# Creates a new coin list with no duplicate keys in the database and the list.
+    # Creates a new coin list with no duplicate keys in the database and the list.
     def createCoins(self, amount, cibitId):
         i = 0
         counter = 0
@@ -131,15 +130,15 @@ class Search:
                 self.createTransaction(100, cibitId, newCoinList, fragment)
                 oldCoinList += newCoinList
                 newCoinList.clear()
-        self.createTransaction(fragment, cibitId,newCoinList, 0)
+        self.createTransaction(fragment, cibitId, newCoinList, 0)
         cursor.close()
         return counter
 
-# Creates a new transaction and enter all the Coins, as well as the shared table to the database.
+    # Creates a new transaction and enter all the Coins, as well as the shared table to the database.
     def createTransaction(self, amount, cibitId, newCoinList, fragment):
         cursor = self.connection.cursor()
         transactionList = list()
-        transactionId = 0;
+        transactionId = 0
         args = [None, cibitId, None, amount, fragment, transactionId]
         result = cursor.callproc('AddNewCoinsTransaction', args)
         transactionId = result[-1]
@@ -154,7 +153,7 @@ class Search:
         self.connection.commit()
         cursor.close()
 
-# a function that gets the new user and find all the details known about him in google scholar
+    # a function that gets the new user and find all the details known about him in google scholar
     def newUser(self, cibitId):
         cursor = self.connection.cursor()
         cursor.callproc('getUser', [cibitId])
@@ -162,7 +161,7 @@ class Search:
         name = user[1] + ' ' + user[2] + ', ' + user[4]
         self.addUser(name, cibitId)
 
-# a function that gets all the users in the database and send each one to check for new citations
+    # a function that gets all the users in the database and send each one to check for new citations
     def monthlyUpdate(self):
         cursor = self.connection.cursor()
         cursor.callproc('getUsers')
@@ -175,14 +174,15 @@ class Search:
                 self.checkUser(author)
         cursor.close()
 
+
 # Creates a steady connection with MySQL DB(cibitdb) so it will stay open till bot finished it's tasks.
 def connect():
     try:
         connection = mysql.connector.connect(host='localhost',
-                                         database='cibitdb',
-                                         user='bot',
-                                         password='qwe32110',
-                                         auth_plugin='mysql_native_password')
+                                             database='cibitdb',
+                                             user='bot',
+                                             password='qwe32110',
+                                             auth_plugin='mysql_native_password')
         return connection
     except mysql.connector.Error as e:
         print("Error while connecting to MySQL", e)
@@ -210,8 +210,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-#API1 for checking new changes in the last month.
-#API2 for recieving a cibit id from the server and updating tables.
-#serice with timer - call API1

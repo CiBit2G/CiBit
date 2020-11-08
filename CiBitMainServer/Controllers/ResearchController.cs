@@ -81,5 +81,39 @@ namespace CiBitMainServer.Controllers
             return response;
         }
 
+        [HttpPost]
+        public GetResearchListResponse GetAllUserResearchs([FromBody] BaseWebRequest request)
+        {
+
+            if (!ModelState.IsValid)
+                throw new Exception(ModelState.ErrorCount.ToString());
+
+            if (!Tokens.VerifyToken(request.Token, out string ciBitId))
+                throw new Exception("Invalid Token, Or Token had expiered.");
+
+            GetUserRequest userRequest = new GetUserRequest
+            {
+                Token = request.Token,
+                CibitId = ciBitId
+            };
+
+            var bankInfo = TypeMapper.Mapper.Map<GetUserRequest, BankDTO>(userRequest);
+            var spObj = Converters.GetBankConverter(bankInfo);
+            var reader = _context.StoredProcedureSql("GetResearchListByUser", spObj);
+
+            GetResearchListResponse response = new GetResearchListResponse();
+
+            while (reader.Read())
+            {
+                response.ResearchNamesList.Add(
+                
+                    int.Parse(reader["researchId"].ToString()),
+                    reader["researchName"].ToString()
+                );
+            }
+
+            _context.Connection.Close();
+            return response;
+        }
     }
 }

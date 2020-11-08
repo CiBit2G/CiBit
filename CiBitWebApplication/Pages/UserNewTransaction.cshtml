@@ -6,6 +6,23 @@
     ViewData["Token"] = Model.Token;
 
 }
+
+@*@section scripts{
+    <script>
+    $(function () {
+        $("#receiver").on("focusout ", function() {
+            var categoryId = $(this).val();
+            $("#SubCategoryId").empty();
+            $("#SubCategoryId").append("<option value=''>Select SubCategory</option>");
+            $.getJSON(`?handler=SubCategories&categoryId=${categoryId}`, (data) => {
+                $.each(data, function (i, item) {
+                    $("#SubCategoryId").append(`<option value="${item.subCategoryId}">${item.subCategoryName}</option>`);
+                });
+            });
+        });
+    });
+    </script>*@
+}
 <style>
     .wrap-div {
         height: 460px;
@@ -41,7 +58,8 @@
     .wrap-div .wrap-btn {
         margin-left: 5px;
     }
-    .input-group-text{
+
+    .input-group-text {
         margin: 10px 0px;
     }
 </style>
@@ -49,14 +67,15 @@
     <div class="wrap-title">
         <h1>Create a new transaction</h1>
     </div>
-    <form>
+    <form asp-page-handler="ProcessRequest" method="post">
+        <input type="hidden" asp-for="Token" value="@Model.Token" />
         <table class="wrap-form">
             <tr>
                 <td>
                     <span>Sent to [CiBit ID]:</span>
                 </td>
                 <td>
-                    <input type="text" name="receiver" class="input-group-text">
+                    <input type="text" id="receiver" asp-for="ReceiverId" class="input-group-text">
                 </td>
             </tr>
             <tr>
@@ -64,7 +83,8 @@
                     <span>Research:</span>
                 </td>
                 <td>
-                    <input type="text" name="research" class="input-group-text">
+                    @Html.DropDownListFor(x => Model.Research, Model.SelectList, "Select research", 1)
+
                 </td>
             </tr>
             <tr>
@@ -72,7 +92,7 @@
                     <span>Amount:</span>
                 </td>
                 <td>
-                    <input type="text" name="amount" class="input-group-text">
+                    <input type="text" asp-for="Amount" class="input-group-text">
                 </td>
             </tr>
         </table>
