@@ -20,7 +20,7 @@ namespace CiBitMainServer.Controllers
 
         // POST: Research/CreateResearch/CreateResearchRequest
         [HttpPost]
-        public bool CreateResearch([FromBody]CreateResearchRequest request)
+        public CreateResearchResponse CreateResearch([FromBody]CreateResearchRequest request)
         {
             if (!ModelState.IsValid)
                 throw new Exception(ModelState.ErrorCount.ToString());
@@ -33,7 +33,7 @@ namespace CiBitMainServer.Controllers
                 Token = request.Token,
                 CibitId = ciBitId
             };
-
+            var response = new CreateResearchResponse();
             var userinfo = TypeMapper.Mapper.Map<CreateResearchRequest, ResearchDTO>(request);
             userinfo.CiBitId = userRequest.CibitId;
 
@@ -41,7 +41,10 @@ namespace CiBitMainServer.Controllers
             var reader = _context.StoredProcedureSql("CreateResearch", spObj);
 
             _context.Connection.Close();
-            return true;
+            response.IsSuccessful= true;
+            response.Token = Tokens.CreateToken(userinfo.CiBitId);
+
+            return response;
         }
 
         [HttpPost]

@@ -41,6 +41,8 @@ namespace CiBitWebApplication.Pages
         [BindProperty]
         public string ErrorMsgArt { get; set; }
 
+        public string ErrorMsg { get; set; }
+
         #endregion
 
         #region Properties
@@ -127,10 +129,10 @@ namespace CiBitWebApplication.Pages
             Loading = false;
         }
 
-        public async Task OnPostProcessRequestAsync()
+        public async Task<IActionResult> OnPostProcessRequestAsync()
         {
             if (!CheckDetails())
-                return;
+                ErrorMsg = "Detailes are not valid";
 
             string pathName = @"Users/CreateUser/";
 
@@ -147,12 +149,14 @@ namespace CiBitWebApplication.Pages
 
                 if(CreateUserResponse)
                 {
-                    //TODO Show Message success: wait for Bank confirmation.
+                    return RedirectToPage("/RegisterComplete");
                 }
             }
             else
             {
+                ErrorMsg = "Registeration Failed";
             }
+            return RedirectToPage("/UserRegistration");
         }
 
         private bool CheckDetails()

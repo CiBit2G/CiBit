@@ -1,0 +1,39 @@
+﻿@page
+@model CiBitWebApplication.Pages.RegisterCompleteModel
+@{
+    ViewData["Title"] = "Thank You For Registering";
+}
+<style>
+    .outer-div {
+        height: 460px;
+    }
+
+    table {
+        margin: auto;
+        border: 0px;
+        text-align: center;
+    }
+
+
+    .logo {
+        height: 350px;
+    }
+
+    .thank {
+        height: 50px;
+    }
+</style>
+<div class="outer-div">
+    <table>
+        <tr>
+            <td class="thank"><div><h1>Thank You For Registering to CiBit</h1></div></td>
+        </tr>
+        <tr>
+            <td>
+                <div>
+                    <a asp-page="/Index" style="padding:0px"> <img class="logo" src="~/images/CiBitgif.gif" /></a>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

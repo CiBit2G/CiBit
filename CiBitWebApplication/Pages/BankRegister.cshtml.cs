@@ -28,6 +28,7 @@ namespace CiBitWebApplication.Pages
         [BindProperty]
         public string ErrorMsgUni { get; set; }
 
+        public string ErrorMsg { get; set; }
         #endregion
 
         #region Properties
@@ -59,10 +60,10 @@ namespace CiBitWebApplication.Pages
 
         }
 
-        public async Task OnPostProcessRequestAsync()
+        public async Task<IActionResult> OnPostProcessRequestAsync()
         {
             if (!CheckDetails())
-                return;
+                ErrorMsg = "Details are not valid"; ;
 
             string pathName = @"Users/CreateBank/";
 
@@ -80,13 +81,14 @@ namespace CiBitWebApplication.Pages
                 if (CreateBankResponse)
                 {
                     //TODO Show Message success: wait for Bank confirmation.
-                    RedirectToPage("/index");
+                    return RedirectToPage("/RegisterComplete");
                 }
             }
             else
             {
-                RedirectToPage("/BankRegister");
+                ErrorMsg = "Faild To Register";
             }
+            return RedirectToPage("/BankRegister");
         }
 
         private bool CheckDetails()

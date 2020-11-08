@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using CiBitUtil.Message.Request;
+using CiBitUtil.Message.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -44,10 +45,10 @@ namespace CiBitWebApplication.Pages
             ClientFactory = clientFactory;
         }
 
-        public async Task OnPostProcessRequestAsync()
+        public async Task<IActionResult> OnPostProcessRequestAsync()
         {
             if (!CheckDetails())
-                return;
+                ErrorMsgRsch = "Research name is not valid";
 
             string pathName = @"Research/CreateResearch/";
 
@@ -61,16 +62,18 @@ namespace CiBitWebApplication.Pages
 
             if (httpResponse.IsSuccessStatusCode)
             {
-                var CreateResearchResponse = await httpResponse.Content.ReadFromJsonAsync<bool>();
+                var ResearchResponse = await httpResponse.Content.ReadFromJsonAsync<CreateResearchResponse>();
 
-                if (CreateResearchResponse)
+                if (ResearchResponse.IsSuccessful)
                 {
-                    //TODO Show Message success: wait for Bank confirmation.
+                    return RedirectToPage("/UserResearch", new { ResearchResponse.Token });
                 }
             }
             else
             {
+                ErrorMsgRsch = "Failed To Add Research";
             }
+            return RedirectToPage("/UserResearch");
         }
 
         private bool CheckDetails()
