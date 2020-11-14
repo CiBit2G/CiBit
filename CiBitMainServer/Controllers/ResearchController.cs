@@ -85,23 +85,16 @@ namespace CiBitMainServer.Controllers
         }
 
         [HttpPost]
-        public GetResearchListResponse GetAllUserResearchs([FromBody] BaseWebRequest request)
+        public GetResearchListResponse GetAllUserResearchs([FromBody] GetResearchListRequest request)
         {
-
             if (!ModelState.IsValid)
                 throw new Exception(ModelState.ErrorCount.ToString());
 
             if (!Tokens.VerifyToken(request.Token, out string ciBitId))
                 throw new Exception("Invalid Token, Or Token had expiered.");
 
-            GetUserRequest userRequest = new GetUserRequest
-            {
-                Token = request.Token,
-                CibitId = ciBitId
-            };
-
-            var bankInfo = TypeMapper.Mapper.Map<GetUserRequest, BankDTO>(userRequest);
-            var spObj = Converters.GetBankConverter(bankInfo);
+            var userInfo = TypeMapper.Mapper.Map<GetResearchListRequest, UserDTO>(request);
+            var spObj = Converters.GetUserConverter(userInfo);
             var reader = _context.StoredProcedureSql("GetResearchListByUser", spObj);
 
             GetResearchListResponse response = new GetResearchListResponse();
@@ -110,7 +103,7 @@ namespace CiBitMainServer.Controllers
             {
                 response.ResearchNamesList.Add(
                 
-                    int.Parse(reader["researchId"].ToString()),
+                    reader["researchId"].ToString(),
                     reader["researchName"].ToString()
                 );
             }

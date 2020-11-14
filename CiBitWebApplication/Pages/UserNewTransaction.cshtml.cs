@@ -10,6 +10,7 @@ using CiBitUtil.Message.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace CiBitWebApplication.Pages
 {
@@ -31,11 +32,75 @@ namespace CiBitWebApplication.Pages
         public string ReceiverId { get; set; }
 
         [BindProperty]
+        public bool TransactionType { get; set; }
+
+        [BindProperty]
         public string Research { get; set; }
+
+        [BindProperty]
+        public string UserName { get; set; }
+
+        [BindProperty]
+        public int ResearchId
+        {
+            get
+            {
+                return int.Parse(ResearchList.ResearchNamesList.FirstOrDefault(x => x.Value.Equals(Research)).Key);
+           }
+        }
 
         public int Amount { get; set; }
 
         public AddTransactionRequest NewTransaction{ get; set; }
+
+        private static IHttpClientFactory ClientFactory { get; set; }
+
+        public GetResearchListResponse ResearchList { get; set; }
+
+        public GetUserListResponse UserList { get; set; }
+
+        public List<SelectListItem> ResearchSelectList
+        {
+            get
+            {
+                var result = new List<SelectListItem>();
+                if (ResearchList == null)
+                    return result;
+                var researchNameList = ResearchList.ResearchNamesList.Values.ToList();
+                foreach (var item in researchNameList)
+                {
+                    result.Add(new SelectListItem(item, item));
+                }
+                return result;
+            }
+        }
+
+
+        public List<SelectListItem> UserSelectList
+        {
+            get
+            {
+                var result = new List<SelectListItem>();
+                if (UserList == null)
+                    return result;
+                var userNameList = UserList.UserNamesList.Values.ToList();
+                foreach (var item in userNameList)
+                {
+                    result.Add(new SelectListItem(item, item));
+                }
+                return result;
+            }
+        }
+
+        public List<string> UrlList { get; set; }
+        [BindProperty]
+        public string JsonBaseWebRequest
+        {
+            get
+            {
+                return JsonSerializer.Serialize(new BaseWebRequest { Token = Token });
+            }
+        }
         #endregion
 
         #region Error Messages
@@ -47,39 +112,124 @@ namespace CiBitWebApplication.Pages
 
         #endregion
 
-        private static IHttpClientFactory ClientFactory { get; set; }
-
-        public GetResearchListResponse ResearchList { get; set; }
-
-        public List<SelectListItem> SelectList
-        {
-            get
-            {
-                var result = new List<SelectListItem>();
-                var researchNameList = ResearchList.ResearchNamesList.Values.ToList();
-                foreach (var item in researchNameList)
-                {
-                    result.Add(new SelectListItem(item, item));
-                }
-                return result;
-            }
-        }
-
         public UserNewTransactionModel(IHttpClientFactory clientFactory)
         {
             ClientFactory = clientFactory;
+            UrlList = new List<string>
+            {
+                {"https://localhost:5001/Users/GetUserList"},
+                {"https://localhost:5001/Users/GetUserBank" },
+                {"https://localhost:5001/Research/GetUserList"}
+            };
         }
 
-        /*public async Task OnPostProcessRequestAsync()
+        public async Task<JsonResult> OnGetUserBank(string token)
+        {
+            string pathName = @"Users/GetUserBank/";
+
+            var _httpClient = ClientFactory.CreateClient("cibit");
+
+            var todoItemJson = new StringContent(JsonSerializer.Serialize(new BaseWebRequest { Token = token}), Encoding.UTF8, "application/json");
+
+            var httpResponse =
+                await _httpClient.PostAsync($"{pathName}", todoItemJson);
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                UserList = await httpResponse.Content.ReadFromJsonAsync<GetUserListResponse>();
+            }
+            else
+            {
+            }
+
+            return new JsonResult(UserList.UserNamesList.Values.ToList());
+        }
+
+        public async Task<JsonResult> OnGetUsersList()
+        {
+            string pathName = @"Users/GetUserList/";
+
+            var _httpClient = ClientFactory.CreateClient("cibit");
+
+            var todoItemJson = new StringContent(JsonSerializer.Serialize(new BaseWebRequest { Token = Token }), Encoding.UTF8, "application/json");
+
+            var httpResponse =
+                await _httpClient.PostAsync($"{pathName}", todoItemJson);
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                UserList = await httpResponse.Content.ReadFromJsonAsync<GetUserListResponse>();
+            }
+            else
+            {
+            }
+            return new JsonResult(UserList.UserNamesList.Values.ToList());
+
+        }
+
+        public async Task<JsonResult> OnGetList()
+        {
+            string pathName = @"Users/GetUserList/";
+
+            var _httpClient = ClientFactory.CreateClient("cibit");
+
+            var todoItemJson = new StringContent(JsonSerializer.Serialize(new BaseWebRequest { Token = Token }), Encoding.UTF8, "application/json");
+
+            var httpResponse =
+                await _httpClient.PostAsync($"{pathName}", todoItemJson);
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                UserList = await httpResponse.Content.ReadFromJsonAsync<GetUserListResponse>();
+            }
+            else
+            {
+            }
+
+            return new JsonResult(UserList?.UserNamesList);
+        }
+
+
+        public async Task<JsonResult> OnGetResearchList(string token, string id, string list)
+        {
+            string pathName = @"Research/GetAllUserResearchs/";
+
+            var _httpClient = ClientFactory.CreateClient("cibit");
+
+            var userDict = JsonSerializer.Deserialize<Dictionary<string, string>>(list);
+
+            var request = new GetResearchListRequest
+            {
+                Token = Token,
+                CibitId = userDict.FirstOrDefault(x => x.Value.Equals(id)).Key
+            };
+
+            var todoItemJson = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+
+            var httpResponse =
+                await _httpClient.PostAsync($"{pathName}", todoItemJson);
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                ResearchList = await httpResponse.Content.ReadFromJsonAsync<GetResearchListResponse>();
+            }
+            else
+            {
+            }
+
+            return ResearchList == null ? null : new JsonResult(ResearchList.ResearchNamesList.Values.ToList());
+        }
+
+        public async Task OnPostProcessRequestAsync()
         {
             if (!CheckDetails())
                 return;
 
-            string pathName = @"Research/CreateResearch/";
+            string pathName = @"Transaction/NewTransaction/";
 
             var _httpClient = ClientFactory.CreateClient("cibit");
 
-            var todoItemJson = new StringContent(JsonSerializer.Serialize(CreateTransaction), Encoding.UTF8, "application/json");
+            var todoItemJson = new StringContent(JsonSerializer.Serialize(NewTransaction), Encoding.UTF8, "application/json");
 
 
             var httpResponse =
@@ -87,9 +237,9 @@ namespace CiBitWebApplication.Pages
 
             if (httpResponse.IsSuccessStatusCode)
             {
-                var CreateResearchResponse = await httpResponse.Content.ReadFromJsonAsync<bool>();
+                var TransactionResponse = await httpResponse.Content.ReadFromJsonAsync<bool>();
 
-                if (CreateResearchResponse)
+                if (TransactionResponse)
                 {
                     //TODO Show Message success: wait for Bank confirmation.
                 }
@@ -98,13 +248,13 @@ namespace CiBitWebApplication.Pages
             {
             }
         }
-        */
+        
 
       private bool CheckDetails()
         {
             bool IsValid = true;
 
-            if (string.IsNullOrWhiteSpace(ReceiverId))
+            if (string.IsNullOrWhiteSpace(ReceiverId) && ResearchId < 0)
             {
                 IsValid = false;
                 ErrorMsgRsch = InvalidValue;
@@ -114,7 +264,8 @@ namespace CiBitWebApplication.Pages
             {
                 Amount = Amount,
                 ReceiverId = ReceiverId,
-                ResearchId = "re"
+                ResearchId = ResearchId,
+                Token = Token
             };
 
             return NewTransaction != null && IsValid;

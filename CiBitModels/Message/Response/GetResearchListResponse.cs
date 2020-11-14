@@ -7,11 +7,11 @@ namespace CiBitUtil.Message.Response
 {
     public class GetResearchListResponse
     {
-        public Dictionary<int, string> ResearchNamesList { get; set; }
+        public Dictionary<string, string> ResearchNamesList { get; set; }
 
         public GetResearchListResponse()
         {
-            ResearchNamesList = new Dictionary<int, string>();
+            ResearchNamesList = new Dictionary<string, string>();
         }
     }
 }

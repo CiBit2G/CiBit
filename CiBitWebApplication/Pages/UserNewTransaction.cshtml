@@ -7,21 +7,82 @@
 
 }
 
-@*@section scripts{
+@section scripts{
+    <script src="~/lib/jquery/jquery2.min.js"></script>
     <script>
-    $(function () {
-        $("#receiver").on("focusout ", function() {
-            var categoryId = $(this).val();
-            $("#SubCategoryId").empty();
-            $("#SubCategoryId").append("<option value=''>Select SubCategory</option>");
-            $.getJSON(`?handler=SubCategories&categoryId=${categoryId}`, (data) => {
-                $.each(data, function (i, item) {
-                    $("#SubCategoryId").append(`<option value="${item.subCategoryId}">${item.subCategoryName}</option>`);
+        var selected;
+        var url;
+        var settings;
+        var list = "@Model.UserList?.UserNamesList";
+        var id = "@Model.UserName";
+        var amount;
+        var research;
+        var receiver;
+
+        function Check() {
+            amount =$("#Amount").val();
+            research = $("#Research option:selected").val();
+            receiver = $("#UserName option:selected").val();
+            if (selected == 0) {
+                if (amount > 0 && receiver !== null && receiver !== "")
+                    $("#submit").attr("disabled", false);
+                else
+                    $("#submit").attr("disabled", true);
+            }
+            else if (selected == 1) {
+                if (amount > 0 && id !== null && id !== "" && research !== null && research !== "")
+                    $("#submit").attr("disabled", false);
+                else
+                    $("#submit").attr("disabled", true);
+
+            }
+            else
+                $("#submit").attr("disabled", true);
+        }
+
+        function UpdateReciver() {
+            selected = $("#type option:selected").val();
+            $("#UserName").empty();
+
+            if (selected == 0) {
+                $("#UserName").append("<option value=''>Select Bank</option>");
+                $.getJSON(`?handler=UserBank&Token=${"@Model.Token"}`, (data) => {
+                    $.each(data, function (i, user) {
+                        $("#UserName").append(`<option value="${user}">${user}</option>`)
+                    });
                 });
-            });
-        });
-    });
-    </script>*@
+                $("#UserName option:eq(1)").attr('selected', true);
+                $("#ResearchInfo").hide();
+            }
+            else {
+                $("#UserName").append("<option value=''>Select User</option>");
+                $.getJSON(`?handler=UsersList&Token=${"@Model.Token"}`, (data) => {
+                    $.each(data, function (i, user) {
+                        $("#UserName").append(`<option value="${user}">${user}</option>`)
+                    });
+                });
+                $.getJSON(`?handler=List&Token=${"@Model.Token"}`, (data) => {
+                    list = JSON.stringify(data);
+                });
+            }
+            Check();
+        }
+
+        function UpdateResearch() {
+            id = $("#UserName option:selected").val();
+            $("#Research").empty();
+            $("#Research").append("<option value=''>Select Research</option>");
+            if (selected == 1) {
+                $.getJSON(`?handler=ResearchList&Token=${"@Model.Token"}&id=${id}&List=${list}`, (data) => {
+                    $.each(data, function (i, research) {
+                        $("#Research").append(`<option value="${research}">${research}</option>`)
+                    });
+                });   
+            }
+            Check();
+        }
+
+    </script>
 }
 <style>
     .wrap-div {
@@ -50,18 +111,19 @@
         margin: auto;
     }
 
-
-    .input-group-text {
-        width: 250px
-    }
-
     .wrap-div .wrap-btn {
-        margin-left: 5px;
+        margin-right: 45px;
     }
 
     .input-group-text {
         margin: 10px 0px;
     }
+    input, select, .input-group-text {
+        color: black;
+        margin: 8px 0px;
+        width: 300px;
+    }
+
 </style>
 <div class="wrap-div">
     <div class="wrap-title">
@@ -72,19 +134,34 @@
         <table class="wrap-form">
             <tr>
                 <td>
-                    <span>Sent to [CiBit ID]:</span>
+                    <span>Transaction Type:</span>
                 </td>
                 <td>
-                    <input type="text" id="receiver" asp-for="ReceiverId" class="input-group-text">
+                    <select id="type" onchange="UpdateReciver()" asp-for="TransactionType">
+                        <option value="">Select Type</option>
+                        <option value="0">New Withdral</option>
+                        <option value="1">New Trasaction</option>
+                    </select>
                 </td>
             </tr>
             <tr>
                 <td>
+                    <span>Sent to:</span>
+                </td>
+                <td>
+                    <select asp-for="UserName" onchange="UpdateResearch()" asp-items="Model.UserSelectList">
+                        <option value="">Select User</option>
+                    </select>
+                </td>
+            </tr>
+            <tr id="ResearchInfo">
+                <td>
                     <span>Research:</span>
                 </td>
                 <td>
-                    @Html.DropDownListFor(x => Model.Research, Model.SelectList, "Select research", 1)
-
+                    <select asp-for="Research" onchange="Check()" asp-items="Model.ResearchSelectList">
+                        <option value="">Select research</option>
+                    </select>
                 </td>
             </tr>
             <tr>
@@ -92,14 +169,14 @@
                     <span>Amount:</span>
                 </td>
                 <td>
-                    <input type="text" asp-for="Amount" class="input-group-text">
+                    <input type="text"  onblur="Check()" asp-for="Amount" class="input-group-text">
                 </td>
             </tr>
         </table>
         <div class="form-group">
         </div>
         <div class="d-flex center-block login_container wrap-btn">
-            <button type="submit" name="button" style="color:black" class="btn">Send</button>
+            <button id="submit" type="submit" name="button" style="color:black" class="btn" disabled="disabled">Send</button>
         </div>
     </form>
 </div>

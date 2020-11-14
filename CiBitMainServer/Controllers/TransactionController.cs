@@ -376,5 +376,19 @@ namespace CiBitMainServer.Controllers
                 return false;
             }
         }
+
+        public bool NewTransaction([FromBody] AddTransactionRequest request)
+        {
+            var verify = new ValidateUser();
+            var userinfo = TypeMapper.Mapper.Map<AddTransactionRequest, TransactionDTO>(request);
+
+            //TODO: verify CoinID with pythone API
+
+            var spObj = Converters.AddTransactionConverter(userinfo);
+            var reader = _context.StoredProcedureSql("AddTransaction", spObj);
+
+            _context.Connection.Close();
+            return true;
+        }
     }
 }

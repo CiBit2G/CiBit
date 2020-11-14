@@ -148,6 +148,76 @@ namespace CiBitMainServer.Controllers
             return response;
         }
 
+        [HttpPost]
+        public GetUserListResponse GetUserList([FromBody] BaseWebRequest request)
+        {
+            if (!ModelState.IsValid)
+                throw new Exception(ModelState.ErrorCount.ToString());
+
+            if (!Tokens.VerifyToken(request.Token, out string ciBitId))
+                throw new Exception("Invalid Token, Or Token had expiered.");
+
+            GetUserRequest userRequest = new GetUserRequest
+            {
+                Token = request.Token,
+                CibitId = ciBitId
+            };
+
+            var userinfo = TypeMapper.Mapper.Map<GetUserRequest, UserDTO>(userRequest);
+
+            var spObj = Converters.GetUserConverter(userinfo);
+
+            var reader = _context.StoredProcedureSql("GetAllOtherConfirmedUsers", spObj);
+
+            GetUserListResponse response = new GetUserListResponse();
+
+            while (reader.Read())
+            {
+                response.UserNamesList.Add(
+                    reader["cibitId"].ToString(),
+                    reader["fName"].ToString() + " " + reader["lName"].ToString()
+                );
+            }
+
+            _context.Connection.Close();
+            return response;
+        }
+
+        [HttpPost]
+        public GetUserListResponse GetUserBank([FromBody] BaseWebRequest request)
+        {
+            if (!ModelState.IsValid)
+                throw new Exception(ModelState.ErrorCount.ToString());
+
+            if (!Tokens.VerifyToken(request.Token, out string ciBitId))
+                throw new Exception("Invalid Token, Or Token had expiered.");
+
+            GetUserRequest userRequest = new GetUserRequest
+            {
+                Token = request.Token,
+                CibitId = ciBitId
+            };
+
+            var userinfo = TypeMapper.Mapper.Map<GetUserRequest, UserDTO>(userRequest);
+
+            var spObj = Converters.GetUserConverter(userinfo);
+
+            var reader = _context.StoredProcedureSql("GetUserBank", spObj);
+
+            GetUserListResponse response = new GetUserListResponse();
+
+            while (reader.Read())
+            {
+                response.UserNamesList.Add(
+                    reader["bankId"].ToString(),
+                    reader["b_name"].ToString()
+                );
+            }
+
+            _context.Connection.Close();
+            return response;
+        }
+
         // POST: Users/CreateUser/CreateUserRequest
         [HttpPost]
         public bool CreateUser([FromBody]CreateUserRequest request)

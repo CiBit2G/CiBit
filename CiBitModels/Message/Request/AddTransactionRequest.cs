@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CiBitUtil.Message.Request
 {
-    public class AddTransactionRequest: IValidatableObject
+    public class AddTransactionRequest: BaseWebRequest, IValidatableObject
     {
         [Required]
         [CiBitId]
@@ -16,7 +16,7 @@ namespace CiBitUtil.Message.Request
         public string ReceiverId { get; set; }
 
         [Required]
-        public string ResearchId { get; set; }
+        public int ResearchId { get; set; }
 
         [Required]
         public int Amount { get; set; }

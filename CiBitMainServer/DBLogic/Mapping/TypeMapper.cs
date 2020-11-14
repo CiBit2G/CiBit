@@ -43,7 +43,7 @@ namespace CiBitMainServer.Mapping
             #endregion
 
             #region Research
-            CreateMap<CreateResearchRequest, ResearchDTO>();
+            CreateMap<CreateResearchRequest, ResearchDTO>(); 
             #endregion
 
             #region User
@@ -51,6 +51,8 @@ namespace CiBitMainServer.Mapping
             CreateMap<CreateUserRequest, UserDTO>();
             CreateMap<RemoveUserRequest, UserDTO>();
             CreateMap<GetUserRequest, UserDTO>();
+            CreateMap<GetResearchListRequest, UserDTO>();
+
             #endregion
 
             #region Bank
