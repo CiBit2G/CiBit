@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -18,8 +19,6 @@ namespace CiBitWebApplication.Pages
     {
         private readonly string InvalidValue = "Invalid Value!";
 
-        [BindProperty(SupportsGet = true)]
-      
 
         #region Properties
 
@@ -28,37 +27,28 @@ namespace CiBitWebApplication.Pages
         [BindProperty(SupportsGet = true)]
         public string Token { get; set; }
 
-        [BindProperty]
-        public string ReceiverId { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public int TransactionType { get; set; }
 
-        [BindProperty]
-        public bool TransactionType { get; set; }
+        [BindProperty(SupportsGet = true)]
 
-        [BindProperty]
         public string Research { get; set; }
 
-        [BindProperty]
-        public string UserName { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string UserId { get; set; }
 
-        [BindProperty]
-        public int ResearchId
-        {
-            get
-            {
-                return int.Parse(ResearchList.ResearchNamesList.FirstOrDefault(x => x.Value.Equals(Research)).Key);
-           }
-        }
-
+        [BindProperty(SupportsGet = true)]
         public int Amount { get; set; }
 
-        public AddTransactionRequest NewTransaction{ get; set; }
+
+        public NewTransactionRequest NewTransaction{ get; set; }
 
         private static IHttpClientFactory ClientFactory { get; set; }
-
+        [BindProperty(SupportsGet = true)]
         public GetResearchListResponse ResearchList { get; set; }
-
+        [BindProperty(SupportsGet = true)]
         public GetUserListResponse UserList { get; set; }
-
+        [BindProperty(SupportsGet = true)]
         public List<SelectListItem> ResearchSelectList
         {
             get
@@ -75,7 +65,7 @@ namespace CiBitWebApplication.Pages
             }
         }
 
-
+        [BindProperty(SupportsGet = true)]
         public List<SelectListItem> UserSelectList
         {
             get
@@ -91,7 +81,7 @@ namespace CiBitWebApplication.Pages
                 return result;
             }
         }
-
+        [BindProperty(SupportsGet = true)]
         public List<string> UrlList { get; set; }
         [BindProperty]
         public string JsonBaseWebRequest
@@ -108,7 +98,6 @@ namespace CiBitWebApplication.Pages
         [BindProperty]
         public string ErrorMsgRsch { get; set; }
 
-        
 
         #endregion
 
@@ -141,8 +130,12 @@ namespace CiBitWebApplication.Pages
             else
             {
             }
-
-            return new JsonResult(UserList.UserNamesList.Values.ToList());
+            var JsonList = new
+            {
+                IdList = UserList.UserNamesList.Keys.ToList(),
+                NameList = UserList.UserNamesList.Values.ToList()
+            };
+            return new JsonResult(JsonList);
         }
 
         public async Task<JsonResult> OnGetUsersList()
@@ -163,45 +156,26 @@ namespace CiBitWebApplication.Pages
             else
             {
             }
-            return new JsonResult(UserList.UserNamesList.Values.ToList());
+            var JsonList = new
+            {
+                IdList = UserList.UserNamesList.Keys.ToList(),
+                NameList = UserList.UserNamesList.Values.ToList()
+            };
+            return new JsonResult(JsonList);
 
         }
 
-        public async Task<JsonResult> OnGetList()
-        {
-            string pathName = @"Users/GetUserList/";
-
-            var _httpClient = ClientFactory.CreateClient("cibit");
-
-            var todoItemJson = new StringContent(JsonSerializer.Serialize(new BaseWebRequest { Token = Token }), Encoding.UTF8, "application/json");
-
-            var httpResponse =
-                await _httpClient.PostAsync($"{pathName}", todoItemJson);
-
-            if (httpResponse.IsSuccessStatusCode)
-            {
-                UserList = await httpResponse.Content.ReadFromJsonAsync<GetUserListResponse>();
-            }
-            else
-            {
-            }
-
-            return new JsonResult(UserList?.UserNamesList);
-        }
-
-
-        public async Task<JsonResult> OnGetResearchList(string token, string id, string list)
+        public async Task<JsonResult> OnGetResearchList(string token, string id)
         {
             string pathName = @"Research/GetAllUserResearchs/";
 
             var _httpClient = ClientFactory.CreateClient("cibit");
 
-            var userDict = JsonSerializer.Deserialize<Dictionary<string, string>>(list);
 
             var request = new GetResearchListRequest
             {
                 Token = Token,
-                CibitId = userDict.FirstOrDefault(x => x.Value.Equals(id)).Key
+                CibitId = id
             };
 
             var todoItemJson = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
@@ -216,8 +190,12 @@ namespace CiBitWebApplication.Pages
             else
             {
             }
-
-            return ResearchList == null ? null : new JsonResult(ResearchList.ResearchNamesList.Values.ToList());
+            var JsonList = new
+            {
+                IdList = ResearchList.ResearchNamesList.Keys.ToList(),
+                NameList = ResearchList.ResearchNamesList.Values.ToList()
+            };
+            return new JsonResult(JsonList);
         }
 
         public async Task OnPostProcessRequestAsync()
@@ -225,8 +203,7 @@ namespace CiBitWebApplication.Pages
             if (!CheckDetails())
                 return;
 
-            string pathName = @"Transaction/NewTransaction/";
-
+            string pathName = (TransactionType == 1) ? @"Transaction/NewTransaction/" : @"Transaction/NewWithdrawal/";
             var _httpClient = ClientFactory.CreateClient("cibit");
 
             var todoItemJson = new StringContent(JsonSerializer.Serialize(NewTransaction), Encoding.UTF8, "application/json");
@@ -253,23 +230,39 @@ namespace CiBitWebApplication.Pages
       private bool CheckDetails()
         {
             bool IsValid = true;
+            if(TransactionType == 1)
+            { 
+                if (string.IsNullOrWhiteSpace(Research) && string.IsNullOrWhiteSpace(UserId))
+                {
+                    IsValid = false;
+                    ErrorMsgRsch = InvalidValue;
+                }
+                NewTransaction = new NewTransactionRequest
+                {
+                    Amount = Amount,
+                    ReceiverId = UserId,
+                    ResearchId = Research,
+                    Token = Token
+                };
 
-            if (string.IsNullOrWhiteSpace(ReceiverId) && ResearchId < 0)
-            {
-                IsValid = false;
-                ErrorMsgRsch = InvalidValue;
+                return NewTransaction != null && IsValid;
             }
-
-            NewTransaction = new AddTransactionRequest
+            else
             {
-                Amount = Amount,
-                ReceiverId = ReceiverId,
-                ResearchId = ResearchId,
-                Token = Token
-            };
+                if (string.IsNullOrWhiteSpace(UserId))
+                {
+                    IsValid = false;
+                    ErrorMsgRsch = InvalidValue;
+                }
+                NewTransaction = new NewTransactionRequest
+                {
+                    Amount = Amount,
+                    ReceiverId = UserId,
+                    Token = Token
+                };
 
-            return NewTransaction != null && IsValid;
+                return NewTransaction != null && IsValid;
+            }
         }
-      
     }
 }

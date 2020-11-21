@@ -13,7 +13,7 @@ namespace CiBitMainServer.Controllers
 {
     public class UsersController : Controller
     {
-        private static readonly string pyFullPath = $"C:\\Users\\{Environment.UserName}\\Documents\\GitHub\\CiBit\\PythonFiles\\Bot.py";
+        private static readonly string pyFullPath = $"C:\\Users\\{Environment.UserName}\\OneDrive\\Documents\\GitHub\\CiBit\\PythonFiles\\Bot.py";
 
         public static CibitDb _context { get; set; }
 

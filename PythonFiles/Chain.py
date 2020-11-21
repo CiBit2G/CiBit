@@ -1,9 +1,11 @@
-from Block import Block
-from NoSSL import no_ssl_verification
-import mysql.connector
-import requests
 import hashlib
 import json
+
+import mysql.connector
+import requests
+
+from Block import Block
+from NoSSL import no_ssl_verification
 
 Id = "bank1Test"
 url = "https://localhost:5001/"

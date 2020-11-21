@@ -44,6 +44,7 @@ namespace CiBitMainServer.Controllers
             response.IsSuccessful= true;
             response.Token = Tokens.CreateToken(userinfo.CiBitId);
 
+            reader.Close();
             return response;
         }
 

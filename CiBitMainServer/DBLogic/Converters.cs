@@ -83,7 +83,23 @@ namespace CiBitMainServer.DBLogic
             }
             };
         }
-
+        public static List<SpObject> NewTransactionConverter(TransactionDTO request)
+        {
+            return new List<SpObject> {
+            new SpObject
+            {
+                Name = cibitId,
+                value = request.SenderId,
+                ParamType = MySqlDbType.VarChar
+            },
+            new SpObject
+            {
+                Name = amount,
+                value = request.Amount.ToString(),
+                ParamType = MySqlDbType.Int32
+            }
+            };
+        }
         internal static List<SpObject> RemoveCoinConverter(TransactionDTO request)
         {
             return new List<SpObject>

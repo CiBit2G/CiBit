@@ -41,18 +41,45 @@
     .input-group-text, select {
         width: 300px;
         margin: 10px 0px;
-        height:22px;
+        height: 22px;
     }
 
     .wrap-div .wrap-btn {
         margin-right: 130px;
     }
 </style>
-
+@section scripts{
+    <script src="~/lib/jquery/jquery2.min.js"></script>
+    <script>
+        function ChangeTable(goto) {
+            var img = $('#left').prop('src');
+            $.getJSON(`?handler=AvatarImages&img=${img}&next=${goto}`, (data) => {
+                $('#left').attr('src', '/images/avatar/'+ data.left);
+                $('#middle').attr('src', '/images/avatar/' + data.mid);
+                $('#right').attr('src', '/images/avatar/' + data.right);
+            });
+        }
+    </script>
+}
 <div class="wrap-div">
     <div class="wrap-title">
         <h1>Settings</h1>
     </div>
+    <table>
+        <tr>
+            <td><button onclick="ChangeTable(0)"></button></td>
+            <td>
+                <img id="left" src="~/images/avatar/man1.jpg" />
+            </td>
+            <td>
+                <img id="middle" src="~/images/avatar/man2.jpg" />
+            </td>
+            <td>
+                <img id="right" src="~/images/avatar/man3.jpg" />
+            </td>
+            <td><button onclick="ChangeTable(1)"></button></td>
+        </tr>
+    </table>
     <form asp-page-handler="ProcessRequest" method="post">
         <table class="wrap-form">
             <tr>
@@ -93,8 +120,7 @@
                     <span>University:</span>
                 </td>
                 <td class="info-td">
-                    @Html.DropDownListFor(x => Model.University, Model.SelectList, "Select university", 1)
-                    )
+                    @Html.DropDownListFor(x => Model.University, Model.SelectUniversitiesList, "Select university", 1)
                 <td class="error-td">
                     <label>@Model.ErrorMsgUni</label>
                 </td>

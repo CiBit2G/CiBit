@@ -5,6 +5,7 @@
     ViewData["User"] = "User";
     ViewData["Token"] = Model.Token;
 
+    string token;
 }
 
 @section scripts{
@@ -14,15 +15,15 @@
         var url;
         var settings;
         var list = "@Model.UserList?.UserNamesList";
-        var id = "@Model.UserName";
+        var id = "@Model.UserId";
         var amount;
         var research;
         var receiver;
-
+        var List;
         function Check() {
             amount =$("#Amount").val();
             research = $("#Research option:selected").val();
-            receiver = $("#UserName option:selected").val();
+            receiver = $("#UserId option:selected").val();
             if (selected == 0) {
                 if (amount > 0 && receiver !== null && receiver !== "")
                     $("#submit").attr("disabled", false);
@@ -37,47 +38,57 @@
 
             }
             else
-                $("#submit").attr("disabled", true);
+               $("#submit").attr("disabled", true);
+
         }
 
         function UpdateReciver() {
             selected = $("#type option:selected").val();
-            $("#UserName").empty();
-
+            $("#UserId").empty();
             if (selected == 0) {
-                $("#UserName").append("<option value=''>Select Bank</option>");
-                $.getJSON(`?handler=UserBank&Token=${"@Model.Token"}`, (data) => {
-                    $.each(data, function (i, user) {
-                        $("#UserName").append(`<option value="${user}">${user}</option>`)
+                var token = $('#Token').val();
+                $.getJSON(`?handler=UserBank&Token=${token}`, (data) => {
+                    let index = 0;
+                    $.each(data.nameList, function (i, user) {
+                        $("#UserId").append(`<option value="${data.idList[index]}" selected>${user}</option>`)
+                        index++;
                     });
                 });
-                $("#UserName option:eq(1)").attr('selected', true);
                 $("#ResearchInfo").hide();
             }
-            else {
-                $("#UserName").append("<option value=''>Select User</option>");
-                $.getJSON(`?handler=UsersList&Token=${"@Model.Token"}`, (data) => {
-                    $.each(data, function (i, user) {
-                        $("#UserName").append(`<option value="${user}">${user}</option>`)
+            else if (selected == 1) {
+                $("#UserId").append("<option value=''>Select User</option>");
+                var token = $('#Token').val();
+                $.getJSON(`?handler=UsersList&Token=${token}`, (data) => {
+                    let index = 0;
+                    $.each(data.nameList, function (i, user) {
+                        $("#UserId").append(`<option value="${data.idList[index]}">${user}</option>`)
+                        index++;
                     });
                 });
-                $.getJSON(`?handler=List&Token=${"@Model.Token"}`, (data) => {
-                    list = JSON.stringify(data);
-                });
+                $("#ResearchInfo").show();
+            }
+            else {
+                $("#Research").empty();
+                $("#Research").append("<option value=''>Select Research</option>");
+                $("#UserId").append("<option value=''>Select User</option>");
             }
             Check();
         }
 
         function UpdateResearch() {
-            id = $("#UserName option:selected").val();
+            id = $("#UserId option:selected").val();
             $("#Research").empty();
             $("#Research").append("<option value=''>Select Research</option>");
             if (selected == 1) {
-                $.getJSON(`?handler=ResearchList&Token=${"@Model.Token"}&id=${id}&List=${list}`, (data) => {
-                    $.each(data, function (i, research) {
-                        $("#Research").append(`<option value="${research}">${research}</option>`)
+                var token = $('#Token').val();
+                $.getJSON(`?handler=ResearchList&Token=${token}&id=${id}`, (data) => {
+                    let index = 0;
+                    $.each(data.nameList, function (i, research) {
+                        $("#Research").append(`<option value="${data.idList[index]}">${research}</option>`)
+                        index++;
                     });
-                });   
+                });
             }
             Check();
         }
@@ -129,6 +140,7 @@
     <div class="wrap-title">
         <h1>Create a new transaction</h1>
     </div>
+    @Html.HiddenFor(model => model.Token, new { id = "Token" });
     <form asp-page-handler="ProcessRequest" method="post">
         <input type="hidden" asp-for="Token" value="@Model.Token" />
         <table class="wrap-form">
@@ -138,7 +150,7 @@
                 </td>
                 <td>
                     <select id="type" onchange="UpdateReciver()" asp-for="TransactionType">
-                        <option value="">Select Type</option>
+                        <option value="-1">Select Type</option>
                         <option value="0">New Withdral</option>
                         <option value="1">New Trasaction</option>
                     </select>
@@ -149,7 +161,7 @@
                     <span>Sent to:</span>
                 </td>
                 <td>
-                    <select asp-for="UserName" onchange="UpdateResearch()" asp-items="Model.UserSelectList">
+                    <select asp-for="UserId" onchange="UpdateResearch()" asp-items="Model.UserSelectList">
                         <option value="">Select User</option>
                     </select>
                 </td>
@@ -169,7 +181,7 @@
                     <span>Amount:</span>
                 </td>
                 <td>
-                    <input type="text"  onblur="Check()" asp-for="Amount" class="input-group-text">
+                    <input type="text" onblur="Check()" asp-for="Amount" class="input-group-text">
                 </td>
             </tr>
         </table>

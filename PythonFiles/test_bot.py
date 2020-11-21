@@ -1,7 +1,10 @@
 import unittest
+
+import scholarly
+
 import Bot
 from Bot import Search
-import scholarly
+
 
 class TestBot(unittest.TestCase):
     connection = Bot.connect()

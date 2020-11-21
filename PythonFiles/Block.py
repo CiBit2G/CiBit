@@ -1,7 +1,9 @@
-import requests
 import json
-from CoinGenrator import verifyCoins
+
+import requests
+
 from NoSSL import no_ssl_verification
+from TransactionGenrator import verifyCoins
 
 url = "https://localhost:5001/"
 
@@ -65,7 +67,7 @@ class Block:
         for coin in coinList:
             if not verifyCoins(coin, cibitId):
                 return False
-            if not self.coinExist(coin):
+            if not self.coinExist(coin):x
                 return False
         return True
 

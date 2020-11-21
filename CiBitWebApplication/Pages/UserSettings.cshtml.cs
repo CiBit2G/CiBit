@@ -20,6 +20,8 @@ namespace CiBitWebApplication.Pages
 
         private static IHttpClientFactory ClientFactory { get; set; }
 
+        private List<string> AvatarList;
+
         #region Error Messages
 
         [BindProperty]
@@ -32,6 +34,8 @@ namespace CiBitWebApplication.Pages
         public string ErrorMsgDob { get; set; }
         [BindProperty]
         public string ErrorMsgPass { get; set; }
+        [BindProperty]
+        public string ErrorMsgPicture { get; set; }
         [BindProperty]
         public string ErrorMsgCoPass { get; set; }
         [BindProperty]
@@ -49,7 +53,8 @@ namespace CiBitWebApplication.Pages
 
         [BindProperty(SupportsGet = true)]
         public string Token { get; set; }
-
+        [BindProperty]
+        public string PicturePath { get; set; }
         [BindProperty]
         public string Password { get; set; }
 
@@ -69,7 +74,7 @@ namespace CiBitWebApplication.Pages
         [BindProperty(SupportsGet = true)]
         public GetBankNamesResponse UniversitiesList { get; set; }
 
-        public List<SelectListItem> SelectList
+        public List<SelectListItem> SelectUniversitiesList
         {
             get
             {
@@ -81,13 +86,53 @@ namespace CiBitWebApplication.Pages
                 return result;
             }
         }
+        public List<SelectListItem> SelectPicturesList
+        {
+            get
+            {
+                var result = new List<SelectListItem>();
+                foreach (var item in UniversitiesList.Universities)
+                {
+                    result.Add(new SelectListItem(item, item));
+                }
+                return result;
+            }
+        }
+
         #endregion
 
         public UserSettingsModel(IHttpClientFactory clientFactory)
         {
             ClientFactory = clientFactory;
+            AvatarList = new List<string>();
+            AvatarList.Add("man1.jpg");
+            AvatarList.Add("man2.jpg");
+            AvatarList.Add("man3.jpg");
+            AvatarList.Add("man4.jpg");
+            AvatarList.Add("woman1.jpg");
+            AvatarList.Add("woman2.jpg");
+            AvatarList.Add("woman3.jpg");
+            AvatarList.Add("woman4.jpg");
+            AvatarList.Add("woman5.jpg");
+            AvatarList.Add("woman6.jpg");
         }
+        public async Task<JsonResult> OnGetAvatarImages(string img, int next)
+        {
+            var pic = img.Split('/');
+            var index = AvatarList.IndexOf(pic[pic.Length-1]);
+            if (next == 0)
+                index = (index - 3) % AvatarList.Count;
+            else
+                index = (index + 3) % AvatarList.Count;
 
+            var JsonList = new
+            {
+                left = AvatarList[index],
+                mid = AvatarList[(index + 1) % AvatarList.Count],
+                right = AvatarList[(index + 2) % AvatarList.Count]
+            };
+            return new JsonResult(JsonList);
+        }
         public async void OnGetAsync()
         {
             Loading = true;

@@ -1,8 +1,10 @@
-import mysql.connector
-import scholarly
 import logging
 import sys
-from CoinGenrator import generateCoin
+
+import mysql.connector
+import scholarly
+
+from TransactionGenrator import createCoins
 
 logger = logging.getLogger('testbot')
 hdlr = logging.FileHandler('C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\testbot.log')
@@ -95,7 +97,7 @@ class Search:
         print("amount of of citations left, doubles in Google Scholar " + str(newCitations))
         print("finish checking User:" + name + "\n")
         if sum != 0:
-            self.createCoins(sum, user[0])
+            createCoins(None, sum, user[0], None, self.connection)
         cursor.close()
 
     # searches the user for the first time and add all the articles he got to the database
@@ -107,51 +109,7 @@ class Search:
         sum = self.addNewArticles(self.newPublications, cibitId)
         if check == sum:
             print(sum)
-        self.createCoins(sum, cibitId)
-
-    # Creates a new coin list with no duplicate keys in the database and the list.
-    def createCoins(self, amount, cibitId):
-        i = 0
-        counter = 0
-        fragment = amount
-        newCoinList = list()
-        cursor = self.connection.cursor()
-        cursor.callproc("getCoins")
-        oldCoinList = list(next(cursor.stored_results()))
-        while i < amount:
-            coinId = generateCoin(cibitId)
-            if coinId not in oldCoinList and coinId not in newCoinList:
-                counter += 1
-                i += 1
-                args = (coinId, cibitId)
-                newCoinList.append(args)
-            if (i + 1) % 100 == 0:
-                fragment -= 100
-                self.createTransaction(100, cibitId, newCoinList, fragment)
-                oldCoinList += newCoinList
-                newCoinList.clear()
-        self.createTransaction(fragment, cibitId, newCoinList, 0)
-        cursor.close()
-        return counter
-
-    # Creates a new transaction and enter all the Coins, as well as the shared table to the database.
-    def createTransaction(self, amount, cibitId, newCoinList, fragment):
-        cursor = self.connection.cursor()
-        transactionList = list()
-        transactionId = 0
-        args = [None, cibitId, None, amount, fragment, transactionId]
-        result = cursor.callproc('AddNewCoinsTransaction', args)
-        transactionId = result[-1]
-        queryCoins = "INSERT INTO coins (coinId, cibitId) VALUES(%s, %s)"
-        queryTransactionsCoins = "INSERT INTO coinspertranscation(transactionId, newCoinId, oldCoinId, status) VALUES(%s, %s, %s, %s)"
-        cursor.executemany(queryCoins, newCoinList)
-        self.connection.commit()
-        for coin in newCoinList:
-            args = (transactionId, coin[0], None, 0)
-            transactionList.append(args)
-        cursor.executemany(queryTransactionsCoins, transactionList)
-        self.connection.commit()
-        cursor.close()
+        createCoins(None, sum, cibitId, None, self.connection)
 
     # a function that gets the new user and find all the details known about him in google scholar
     def newUser(self, cibitId):

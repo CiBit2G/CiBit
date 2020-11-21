@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CiBitMainServer.Mapping;
 using static CiBitMainServer.Models.EnumClass;
+using System.Threading.Tasks;
 
 namespace CiBitMainServer.Controllers
 {
@@ -18,30 +19,32 @@ namespace CiBitMainServer.Controllers
     {
         private readonly CibitDb _context;
 
+        private static readonly string pyFullPath = $"C:\\Users\\{Environment.UserName}\\OneDrive\\Documents\\GitHub\\CiBit\\PythonFiles\\TransactionGenrator.py";
+
         public TransactionController(CibitDb context)
         {
             _context = context;
         }
 
         //INSERT: Transaction/AddTransaction/CreateUserRequest
-        public bool AddTransaction([FromBody]AddTransactionRequest request)
+        public bool AddTransaction([FromBody] AddTransactionRequest request)
         {
-            var verify = new ValidateUser();
+            //var verify = new ValidateUser();
             var userinfo = TypeMapper.Mapper.Map<AddTransactionRequest, TransactionDTO>(request);
 
             //TODO: verify CoinID with pythone API
 
             var spObj = Converters.AddTransactionConverter(userinfo);
             var reader = _context.StoredProcedureSql("AddTransaction", spObj);
-
+            reader.Close();
             _context.Connection.Close();
             return true;
         }
 
         // DELETE: Transaction/RemoveCoin/RemoveCoinRequest
-        public bool RemoveCoin([FromBody]RemoveCoinRequest request)
+        public bool RemoveCoin([FromBody] RemoveCoinRequest request)
         {
-            ValidateUser valid = new ValidateUser();
+            //ValidateUser valid = new ValidateUser();
 
             var userinfo = TypeMapper.Mapper.Map<RemoveCoinRequest, TransactionDTO>(request);
 
@@ -49,13 +52,13 @@ namespace CiBitMainServer.Controllers
 
             var spObj = Converters.RemoveCoinConverter(userinfo);
             var reader = _context.StoredProcedureSql("RemoveCoin", spObj);
-
+            reader.Close();
             _context.Connection.Close();
             return true;
         }
 
         //Used in Blockchain
-        public GetTransactionReponse GetTransaction([FromBody]GetTransactionRequest request)
+        public GetTransactionReponse GetTransaction([FromBody] GetTransactionRequest request)
         {
             var Transactioninfo = TypeMapper.Mapper.Map<GetTransactionRequest, TransactionDTO>(request);
 
@@ -76,7 +79,7 @@ namespace CiBitMainServer.Controllers
                     Date = DateTime.Parse(reader["transactionDate"].ToString()),
                     Amount = int.Parse(reader["coinAmount"].ToString()),
                     Fragment = int.Parse(reader["fragment"].ToString()),
-                    BlockchainNumber=request.BlockchainNumber
+                    BlockchainNumber = request.BlockchainNumber
                 };
             }
             _context.Connection.Close();
@@ -97,7 +100,7 @@ namespace CiBitMainServer.Controllers
         }
 
         // POST: Transaction/GetWithdrawlTransactions/GetWithdrawlRequest
-        public GetWithdrawlTransactionsReponse GetWithdrawlTransactions([FromBody]GetWithdrawlRequest request)
+        public GetWithdrawlTransactionsReponse GetWithdrawlTransactions([FromBody] GetWithdrawlRequest request)
         {
             if (!ModelState.IsValid)
                 throw new Exception(ModelState.ErrorCount.ToString());
@@ -182,7 +185,7 @@ namespace CiBitMainServer.Controllers
         }
 
         //Used in Blockchain
-        public ChechkHashType CheckHash([FromBody]CheckHashRequest request)
+        public ChechkHashType CheckHash([FromBody] CheckHashRequest request)
         {
             var Transactioninfo = TypeMapper.Mapper.Map<CheckHashRequest, TransactionDTO>(request);
 
@@ -224,7 +227,7 @@ namespace CiBitMainServer.Controllers
         }
 
         //Used in Blockchain
-        public bool SetHash([FromBody]SetHashRequest request)
+        public bool SetHash([FromBody] SetHashRequest request)
         {
             var Transactioninfo = TypeMapper.Mapper.Map<SetHashRequest, TransactionDTO>(request);
 
@@ -255,21 +258,21 @@ namespace CiBitMainServer.Controllers
                 var totalHashForBlock = response.Sum(c => c.BankCount);
                 if ((totalHashForBlock >= 11) && (double)consensus.BankCount / (double)totalHashForBlock > 0.8)
                 {
-                    Transactioninfo = new TransactionDTO() {BlockchainNumber = request.BlockchainNumber, Hash = consensus.Hash, PreviousHash = request.PreviousHash};
+                    Transactioninfo = new TransactionDTO() { BlockchainNumber = request.BlockchainNumber, Hash = consensus.Hash, PreviousHash = request.PreviousHash };
                     spObj = Converters.setHashConverter(Transactioninfo);
                     reader = _context.StoredProcedureSql("SetHash", spObj);
                 }
                 _context.Connection.Close();
                 return true;
             }
-            catch 
+            catch
             {
                 return false;
             }
         }
 
         //Used in Blockchain
-        public bool CoinExist([FromBody]GetCoinRequest request)
+        public bool CoinExist([FromBody] GetCoinRequest request)
         {
             var Transactioninfo = TypeMapper.Mapper.Map<GetCoinRequest, TransactionDTO>(request);
 
@@ -288,28 +291,8 @@ namespace CiBitMainServer.Controllers
             return false;
         }
 
-        //public bool ConfirmCoins([FromBody]GetAllCoinsRequest request)
-        //{
-        //    var Transactioninfo = TypeMapper.Mapper.Map<GetAllCoinsRequest, TransactionDTO>(request);
 
-        //    var spObj = Converters.GetCoinResponseConverter(Transactioninfo);
-
-        //    var reader = _context.StoredProcedureSql("getCoin", spObj);
-
-        //    string answer = null;
-        //    while (reader.Read())
-        //    {
-        //        answer = reader["coinId"].ToString();
-        //    }
-        //    _context.Connection.Close();
-        //    if (answer != null)
-        //        return true;
-        //    return false;
-        //}
-
-        //Used in Blockchain
-
-        public GetTransactionListReponse CheckConsensus([FromBody]GetBlockRequest request)
+        public GetTransactionListReponse CheckConsensus([FromBody] GetBlockRequest request)
         {
             var Transactioninfo = TypeMapper.Mapper.Map<GetBlockRequest, TransactionDTO>(request);
 
@@ -334,14 +317,14 @@ namespace CiBitMainServer.Controllers
         }
 
         //Used in Blockchain
-        public bool SetTransaction([FromBody]SetTransationsStatusRequest request)
+        public bool SetTransaction([FromBody] SetTransationsStatusRequest request)
         {
             var Transactioninfo = new TransactionDTO { BlockchainNumber = request.BlockchainNumber };
 
             var spObj = Converters.GetBlockConverter(Transactioninfo);
 
             try
-            {             
+            {
                 var reader = _context.StoredProcedureSql("GetTransactionIdByBlockNumber", spObj);
 
                 GetTransactionListReponse transactionList = new GetTransactionListReponse
@@ -377,18 +360,34 @@ namespace CiBitMainServer.Controllers
             }
         }
 
-        public bool NewTransaction([FromBody] AddTransactionRequest request)
+        public bool NewTransaction([FromBody] NewTransactionRequest request)
         {
-            var verify = new ValidateUser();
-            var userinfo = TypeMapper.Mapper.Map<AddTransactionRequest, TransactionDTO>(request);
+            //bool amountValid;
 
-            //TODO: verify CoinID with pythone API
+            if (!ModelState.IsValid)
+                throw new Exception(ModelState.ErrorCount.ToString());
 
-            var spObj = Converters.AddTransactionConverter(userinfo);
-            var reader = _context.StoredProcedureSql("AddTransaction", spObj);
+            if (!Tokens.VerifyToken(request.Token, out string ciBitId))
+                throw new Exception("Invalid Token, Or Token had expiered.");
 
+            var userinfo = TypeMapper.Mapper.Map<NewTransactionRequest, TransactionDTO>(request);
+            userinfo.SenderId = ciBitId;
+            var spObj = Converters.NewTransactionConverter(userinfo);
+            var reader = _context.StoredProcedureSql("canUserPay", spObj);
+            
+            var userCoins = 0;
+            while (reader.Read())
+            {
+                userCoins = int.Parse(reader["amount"].ToString());
+            }
             _context.Connection.Close();
-            return true;
+
+            if (userCoins < request.Amount)
+                return false;
+
+            var bot = new RunPythonBot();
+
+            return Task.Run(() => bot.RunPyCmd(pyFullPath, ciBitId, request)).GetAwaiter().GetResult();
         }
     }
 }
