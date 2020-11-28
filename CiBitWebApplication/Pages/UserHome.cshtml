@@ -10,16 +10,28 @@
     }
 }
 <style>
+
+    more-info{
+        right: 100px;
+    }
     .wrap-div {
         height: 460px;
     }
     .personl-info {
         left: 100px;
-        height: 460px
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 100px;
     }
-    .balance-info {
-        height: 100px;
-        left: 300px
+    .table-info {
+       flex:1
+    }
+    .more-info{
+        flex:2;
+    }
+    .avatar {
+        width: 150px;
+        height: 150px;
     }
     .span-info {
         width: 100px;
@@ -28,7 +40,7 @@
 </style>
 <div class="wrap-div">
     <div class="personl-info">
-        <table>
+        <table class="table-info">
             <tr>
                 <td>
                     <div>
@@ -49,62 +61,73 @@
                 </td>
                 <td>
                     <div>
-                        <h6>@Model.UserTransation.user.Email</h6>
+                        <h6>@Model.UserTransaction.user.Email</h6>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>
+                        <h6>Balance: </h6>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <h6>@Model.UserTransaction.user.CitationAmount</h6>
+                        <i class="glyphicon glyphicon-bitcoin"></i>
                     </div>
                 </td>
             </tr>
         </table>
-        <div class="balance-info">
-            <span class="span-info">Balance: </span>
-            <span class="span-info">@Model.UserTransation.user.CitationAmount</span>
-            <i class="glyphicon glyphicon-bitcoin"></i>
+        <div class="more-info">
+            <img class="avatar" src="@Model.UserTransaction.user.Picture" />
         </div>
-        <div>
-            <table id="myTable" class="table" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => Model.Transaction.Date)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Transaction.Receiver)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Transaction.Amount)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Transaction.Research)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Transaction.Status)
+    </div>
+    <div>
+        <table id="myTable" class="table" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => Model.Transaction.Date)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Transaction.Receiver)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Transaction.Amount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Transaction.Research)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Transaction.Status)
 
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{foreach (var item in Model.UserTransation.TransactionList)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Date)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Receiver)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Amount)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Research)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Status)
-                                </td>
-                            </tr>
-                        }
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{foreach (var item in Model.UserTransaction.TransactionList)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Date)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Receiver)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Amount)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Research)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Status)
+                            </td>
+                        </tr>
                     }
-                </tbody>
-            </table>
-        </div>
+                }
+            </tbody>
+        </table>
     </div>
 </div>

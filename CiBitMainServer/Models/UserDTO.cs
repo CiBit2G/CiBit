@@ -13,5 +13,9 @@ namespace CiBitMainServer.Models
         public string University { get; set; }
         public string ArticleName { get; set; }
         public int CitationCount { get; set; }
+
+        public string Picture { get; set; }
+
+        public int Status { get; set; }
     }
 }

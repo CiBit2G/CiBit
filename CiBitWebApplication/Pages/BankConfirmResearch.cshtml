@@ -4,22 +4,79 @@
     ViewData["Title"] = "Confirm Research";
     ViewData["User"] = "Bank";
     ViewData["Token"] = Model.Token;
+    int index = 1;
+
     while (Model.Loading)
     {
     }
 }
+@section scripts{
+    <script src="~/lib/jquery/jquery2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var list = $("#JsonList").val();
+            var data = $.parseJSON(list);
+            changeSelectOption(data);
+        });
+
+        function changeSelectOption(data) {
+            let index = 1;
+            $.each(data.status, function (i, status) {
+                $("#" + index).val(status);
+                if (status > 0) {
+                    $("#" + index).attr('disabled', true);
+                }
+                index++;
+            });
+        }
+
+        function update(index, id, research) {
+            var request = JSON.stringify({
+                token: "@Model.Token",
+                ciBitId: id,
+                researchName: research,
+                status: $("#" + index).val()
+            });
+
+            $.ajax
+                ({
+                    type: "POST",
+                    url: '/BankConfirmResearch?handler=Confirm',
+                    data: request,
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    headers: {
+                        "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (result) {
+                        $("#" + index).attr('disabled', true);
+                        $("#Token").val(result.token);
+                    },
+                    error: function (status, ex) {
+                        $("#" + index).val(0);
+                    }
+                });
+        }
+    </script>
+}
 <style>
     .wrap-div {
         height: 460px;
-        left:100px;
+        left: 100px;
     }
 
-    .table{
+    .table {
         margin: auto;
     }
-    .wrap-title{
+
+    .wrap-title {
         display: flex;
         justify-content: center;
+    }
+
+    .wrap-div #myTable select {
+        font-family: font-awesome;
+        color: black;
     }
 </style>
 
@@ -28,43 +85,49 @@
         <h1>Confirm Research</h1>
     </div>
     <div>
-            <table id="myTable" class="table" cellspacing="0">
-                <thead>
+        @Html.HiddenFor(model => model.JsonList, new { id = "JsonList" })
+        @Html.HiddenFor(model => model.Token, new { id = "Token" })
+        <table id="myTable" class="table" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Research.DateOfResearch)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Research.CiBitId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Research.ReseachName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Research.Status)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ResearchList.ResearchConfirmList)
+                {
                     <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Research.DateOfResearch)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Research.CiBitId)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Research.ReseachName)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Research.Status)
-                        </th>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DateOfResearch)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CiBitId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ReseachName)
+                        </td>
+                        <td>
+                            <select id="@(index.ToString())" onchange="update('@(index++.ToString())','@item.CiBitId', '@item.ReseachName')">
+                                <option value="0"> Pending </option>
+                                <option value="1"> Approve </option>
+                                <option value="2"> Decline </option>
+                            </select>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.ResearchList.Research)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.DateOfResearch)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.CiBitId)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ReseachName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Status)
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-       </div>
- </div>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 

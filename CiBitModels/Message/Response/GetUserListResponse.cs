@@ -8,6 +8,8 @@ namespace CiBitUtil.Message.Response
     {
         public Dictionary<string, string> UserNamesList { get; set; }
 
+        public string Token { get; set; }
+
         public GetUserListResponse()
         {
             UserNamesList = new Dictionary<string, string>();

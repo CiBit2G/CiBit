@@ -4,11 +4,62 @@
     ViewData["Title"] = "Confirm User";
     ViewData["User"] = "Bank";
     ViewData["Token"] = Model.Token;
+    int index = 1;
 
     while (Model.Loading)
     {
     }
 }
+@section scripts{
+    <script src="~/lib/jquery/jquery2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var list = $("#JsonList").val();
+            var data = $.parseJSON(list);
+            changeSelectOption(data);
+        });
+
+        function changeSelectOption(data) {
+            let index = 1;
+            $.each(data.status, function (i, status) {
+                $("#" + index).val(status);
+                if (status > 0) {
+                    $("#" + index).attr('disabled', true);
+                }
+                index++;
+            });
+        }
+
+        function update(index, id) {
+            var request = JSON.stringify({
+                token: "@Model.Token",
+                ciBitId: id,
+                status: $("#" + index).val()
+            });
+
+            $.ajax
+                ({
+                    type: "POST",
+                    url: '/BankConfirmUser?handler=Confirm',
+                    data: request,
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    headers: {
+                        "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (result) {
+                        $("#" + index).attr('disabled', true);
+                        $("#Token").val(result.token);
+                    },
+                    error: function (status, ex) {
+                        $("#" + index).val(0);
+                    }
+                });
+        }
+    </script>
+}
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" 
+      integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
 <style>
     .wrap-div {
         height: 460px;
@@ -23,64 +74,75 @@
         display: flex;
         justify-content: center;
     }
+    .wrap-div #myTable select {
+        font-family:font-awesome;
+        color: black;
+    }
+
 </style>
 
 <div class="wrap-div">
     <div class="wrap-title">
         <h1>Confirm User</h1>
     </div>
-            <div>
-                <table id="myTable" class="table" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>
-                                @Html.DisplayNameFor(model => model.UserInfo.Date)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.UserInfo.CiBitId)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.UserInfo.FullName)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.UserInfo.Email)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.UserInfo.University)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.UserInfo.Status)
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.UserList.Users)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Date)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.CiBitId)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.FullName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Email)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.University)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Status)
+    <div>
+        @Html.HiddenFor(model => model.JsonList, new { id = "JsonList" })
+        @Html.HiddenFor(model => model.Token, new { id = "Token" })
+        <table id="myTable" class="table" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UserInfo.Date)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UserInfo.CiBitId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UserInfo.FullName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UserInfo.Email)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UserInfo.University)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UserInfo.Status)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
 
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                @foreach (var item in Model.UserList.Users)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CiBitId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FullName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.University)
+                        </td>
+                        <td>
+                            <select id="@(index.ToString())" onchange="update('@(index++.ToString())','@item.CiBitId')">
+                                <option value="0"> Pending </option>
+                                <option value="1"> Approve </option>
+                                <option value="2"> Decline </option>
+                            </select>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
 

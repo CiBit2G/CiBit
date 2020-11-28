@@ -5,6 +5,7 @@
     ViewData["User"] = "Bank";
     ViewData["Token"] = Model.Token;
 
+    int index = 1;
     while (Model.Loading)
     {
     }
@@ -29,55 +30,60 @@
     <div class="wrap-title">
         <h1>Confirm Withdrawl</h1>
     </div>
-                <table id="myTable" class="table" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>
-                                @Html.DisplayNameFor(model => model.WithdrawlInfo.Date)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.WithdrawlInfo.SenderId)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.WithdrawlInfo.FullName)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.WithdrawlInfo.Reason)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.WithdrawlInfo.Amount)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.WithdrawlInfo.Status)
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.WithdrawlTransactionsList.Withdrawls)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Date)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.SenderId)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.FullName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Reason)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Amount)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Status)
-
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+    @Html.HiddenFor(model => model.JsonList, new { id = "JsonList" })
+    @Html.HiddenFor(model => model.Token, new { id = "Token" })
+    <table id="myTable" class="table" cellspacing="0">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.WithdrawlInfo.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.WithdrawlInfo.SenderId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.WithdrawlInfo.FullName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.WithdrawlInfo.Reason)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.WithdrawlInfo.Amount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.WithdrawlInfo.Status)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.WithdrawlTransactionsList.Withdrawls)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SenderId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Reason)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Amount)
+                    </td>
+                    <td>
+                        <select id="@(index.ToString())" onchange="update('@(index++.ToString())','@item.SenderId')">
+                            <option value="0"> Pending </option>
+                            <option value="1"> Approve </option>
+                            <option value="2"> Decline </option>
+                        </select>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
         </div>

@@ -20,16 +20,16 @@ namespace CiBitWebApplication.Pages
         public GetUserTransactionResponse Transaction { get; set; }
 
         [BindProperty]
-        public GetUserResponse UserTransation { get; set; } = null;
+        public GetUserResponse UserTransaction { get; set; } = null;
 
         [BindProperty]
         public string FullName
         {
             get
             {
-                if (UserTransation == null)
+                if (UserTransaction == null)
                     return "";
-                return UserTransation.user.FName + " " + UserTransation.user.LName;
+                return UserTransaction.user.FName + " " + UserTransaction.user.LName;
             }
         }
 
@@ -61,7 +61,7 @@ namespace CiBitWebApplication.Pages
 
             if (httpResponse.IsSuccessStatusCode)
             {
-                UserTransation = await httpResponse.Content.ReadFromJsonAsync<GetUserResponse>();
+                UserTransaction = await httpResponse.Content.ReadFromJsonAsync<GetUserResponse>();
             }
 
             Loading = false;

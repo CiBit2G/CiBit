@@ -45,6 +45,8 @@ namespace CiBitWebApplication.Pages
         [BindProperty]
         public string ErrorMsgArt { get; set; }
 
+        public string ErrorMsgSettings { get; set; }
+
         #endregion
 
         #region Properties
@@ -67,26 +69,16 @@ namespace CiBitWebApplication.Pages
         [BindProperty]
         public string University { get; set; }
         
-        public CreateUserRequest CreateUser { get; set; }
+        public UserSettingsRequest CreateUser { get; set; }
 
         public bool CreateUserResponse { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public GetBankNamesResponse UniversitiesList { get; set; }
 
+        public GetUserSettingsResponse UserSettings { get; set; }
+
         public List<SelectListItem> SelectUniversitiesList
-        {
-            get
-            {
-                var result = new List<SelectListItem>();
-                foreach (var item in UniversitiesList.Universities)
-                {
-                    result.Add(new SelectListItem(item, item));
-                }
-                return result;
-            }
-        }
-        public List<SelectListItem> SelectPicturesList
         {
             get
             {
@@ -116,7 +108,36 @@ namespace CiBitWebApplication.Pages
             AvatarList.Add("woman5.jpg");
             AvatarList.Add("woman6.jpg");
         }
-        public async Task<JsonResult> OnGetAvatarImages(string img, int next)
+
+        public async Task<JsonResult> OnGetUserSettings(string token)
+        {
+            string pathName = @"Users/GetUserSettings/";
+
+            var _httpClient = ClientFactory.CreateClient("cibit");
+
+            var todoItemJson = new StringContent(JsonSerializer.Serialize(new BaseWebRequest { Token = token }), Encoding.UTF8, "application/json");
+
+            var httpResponse =
+                await _httpClient.PostAsync($"{pathName}", todoItemJson);
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                UserSettings = await httpResponse.Content.ReadFromJsonAsync<GetUserSettingsResponse>();
+            }
+            else
+            {
+            }
+            var JsonList = new
+            {
+                email = UserSettings.Email,
+                university = UserSettings.University,
+                tokenGet = UserSettings.Token
+            };
+            return new JsonResult(JsonList);
+
+        }
+
+        public JsonResult OnGetAvatarImages(string img, int next)
         {
             var pic = img.Split('/');
             var index = AvatarList.IndexOf(pic[pic.Length-1]);
@@ -157,10 +178,10 @@ namespace CiBitWebApplication.Pages
             Loading = false;
         }
 
-        public async Task OnPostProcessRequestAsync()
+        public async Task<IActionResult> OnPostProcessRequestAsync()
         {
             if (!CheckDetails())
-                return;
+                ErrorMsgSettings = "Wrong Settings";
 
             string pathName = @"Users/CreateUser/";
 
@@ -182,13 +203,21 @@ namespace CiBitWebApplication.Pages
             }
             else
             {
+                ErrorMsgSettings = "Couldn't change Settings";
+
             }
+            return RedirectToPage("/UserSettings");
         }
 
         private bool CheckDetails()
         {
             bool IsValid = true;
             
+            if(string.IsNullOrEmpty(PicturePath))
+            {
+                IsValid = false;
+                ErrorMsgPicture = InvalidValue;
+            }
             if (string.IsNullOrWhiteSpace(Email))
             {
                 IsValid = false;
@@ -202,11 +231,13 @@ namespace CiBitWebApplication.Pages
             }
 
             if (!string.IsNullOrWhiteSpace(ConfirmPassword))
+            { 
                 if (!ConfirmPassword.Equals(Password))
                 {
                     IsValid = false;
                     ErrorMsgCoPass = InvalidValue;
                 }
+            }
 
             if (string.IsNullOrWhiteSpace(University))
             {
@@ -214,8 +245,9 @@ namespace CiBitWebApplication.Pages
                 ErrorMsgUni = InvalidValue;
             }
             
-            CreateUser = new CreateUserRequest
+            CreateUser = new UserSettingsRequest
             {
+                Picture = PicturePath,
                 Password = Password,
                 VerifyPassword = ConfirmPassword,
                 Email = Email,

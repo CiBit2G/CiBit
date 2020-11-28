@@ -360,7 +360,7 @@ namespace CiBitMainServer.Controllers
             }
         }
 
-        public bool NewTransaction([FromBody] NewTransactionRequest request)
+        public NewTransactionResponse NewTransaction([FromBody] NewTransactionRequest request)
         {
             //bool amountValid;
 
@@ -374,8 +374,9 @@ namespace CiBitMainServer.Controllers
             userinfo.SenderId = ciBitId;
             var spObj = Converters.NewTransactionConverter(userinfo);
             var reader = _context.StoredProcedureSql("canUserPay", spObj);
-            
+            var response = new NewTransactionResponse();
             var userCoins = 0;
+
             while (reader.Read())
             {
                 userCoins = int.Parse(reader["amount"].ToString());
@@ -383,11 +384,54 @@ namespace CiBitMainServer.Controllers
             _context.Connection.Close();
 
             if (userCoins < request.Amount)
-                return false;
+            { 
+                response.IsSuccessful = false;
+                response.Token = Tokens.CreateToken(userinfo.SenderId);
+                return response;
+            }
 
             var bot = new RunPythonBot();
+            response.Token = Tokens.CreateToken(userinfo.SenderId);
+            Task.Run(() => bot.RunPyCmd(pyFullPath, ciBitId, request));
+            response.IsSuccessful = true;
+            return response;
+        }
 
-            return Task.Run(() => bot.RunPyCmd(pyFullPath, ciBitId, request)).GetAwaiter().GetResult();
+        public NewTransactionResponse NewWithdrawal([FromBody]NewTransactionRequest request)
+        {
+            if (!ModelState.IsValid)
+                throw new Exception(ModelState.ErrorCount.ToString());
+
+            if (!Tokens.VerifyToken(request.Token, out string ciBitId))
+                throw new Exception("Invalid Token, Or Token had expiered.");
+
+            var userinfo = TypeMapper.Mapper.Map<NewTransactionRequest, TransactionDTO>(request);
+            userinfo.SenderId = ciBitId;
+            var spObj = Converters.NewTransactionConverter(userinfo);
+            var reader = _context.StoredProcedureSql("canUserPay", spObj);
+            var response = new NewTransactionResponse();
+            var userCoins = 0;
+
+            while (reader.Read())
+            {
+                userCoins = int.Parse(reader["amount"].ToString());
+            }
+            _context.Connection.Close();
+
+            if (userCoins < request.Amount)
+            {
+                response.IsSuccessful = false;
+                response.Token = Tokens.CreateToken(userinfo.SenderId);
+                return response;
+            }
+            spObj = Converters.NewWithdrawalConverter(userinfo);
+            reader = _context.StoredProcedureSql("AddWithdrawal", spObj);
+            
+            
+            response.IsSuccessful = true;
+            response.Token = Tokens.CreateToken(userinfo.SenderId);
+            return response;
+
         }
     }
 }

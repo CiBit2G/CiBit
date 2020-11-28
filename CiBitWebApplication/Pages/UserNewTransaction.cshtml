@@ -4,8 +4,6 @@
     ViewData["Title"] = "AddTransaction";
     ViewData["User"] = "User";
     ViewData["Token"] = Model.Token;
-
-    string token;
 }
 
 @section scripts{
@@ -46,9 +44,10 @@
             selected = $("#type option:selected").val();
             $("#UserId").empty();
             if (selected == 0) {
-                var token = $('#Token').val();
+                var token = $("#Token").val();
                 $.getJSON(`?handler=UserBank&Token=${token}`, (data) => {
                     let index = 0;
+                    $("#Token").val(data.tokenGet);
                     $.each(data.nameList, function (i, user) {
                         $("#UserId").append(`<option value="${data.idList[index]}" selected>${user}</option>`)
                         index++;
@@ -58,9 +57,10 @@
             }
             else if (selected == 1) {
                 $("#UserId").append("<option value=''>Select User</option>");
-                var token = $('#Token').val();
+                var token = $("#Token").val();
                 $.getJSON(`?handler=UsersList&Token=${token}`, (data) => {
                     let index = 0;
+                    $("#Token").val(data.tokenGet);
                     $.each(data.nameList, function (i, user) {
                         $("#UserId").append(`<option value="${data.idList[index]}">${user}</option>`)
                         index++;
@@ -81,9 +81,10 @@
             $("#Research").empty();
             $("#Research").append("<option value=''>Select Research</option>");
             if (selected == 1) {
-                var token = $('#Token').val();
+                var token = $("#Token").val();
                 $.getJSON(`?handler=ResearchList&Token=${token}&id=${id}`, (data) => {
                     let index = 0;
+                    $("#Token").val(data.tokenGet);
                     $.each(data.nameList, function (i, research) {
                         $("#Research").append(`<option value="${data.idList[index]}">${research}</option>`)
                         index++;
@@ -140,8 +141,8 @@
     <div class="wrap-title">
         <h1>Create a new transaction</h1>
     </div>
-    @Html.HiddenFor(model => model.Token, new { id = "Token" });
     <form asp-page-handler="ProcessRequest" method="post">
+        @Html.HiddenFor(model => model.Token, new { id = "Token" })
         <input type="hidden" asp-for="Token" value="@Model.Token" />
         <table class="wrap-form">
             <tr>
@@ -150,7 +151,7 @@
                 </td>
                 <td>
                     <select id="type" onchange="UpdateReciver()" asp-for="TransactionType">
-                        <option value="-1">Select Type</option>
+                        <option value="-1" selected="selected">Select Type</option>
                         <option value="0">New Withdral</option>
                         <option value="1">New Trasaction</option>
                     </select>

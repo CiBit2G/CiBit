@@ -12,5 +12,7 @@ namespace CiBitMainServer.Models
 
         public string Abstract { get; set; }
 
+        public int Status { get; set; }
+
     }
 }

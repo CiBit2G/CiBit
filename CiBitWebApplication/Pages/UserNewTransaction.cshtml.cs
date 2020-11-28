@@ -96,7 +96,7 @@ namespace CiBitWebApplication.Pages
         #region Error Messages
 
         [BindProperty]
-        public string ErrorMsgRsch { get; set; }
+        public string ErrorMsgTransaction { get; set; }
 
 
         #endregion
@@ -133,7 +133,8 @@ namespace CiBitWebApplication.Pages
             var JsonList = new
             {
                 IdList = UserList.UserNamesList.Keys.ToList(),
-                NameList = UserList.UserNamesList.Values.ToList()
+                NameList = UserList.UserNamesList.Values.ToList(),
+                tokenGet = UserList.Token
             };
             return new JsonResult(JsonList);
         }
@@ -159,7 +160,8 @@ namespace CiBitWebApplication.Pages
             var JsonList = new
             {
                 IdList = UserList.UserNamesList.Keys.ToList(),
-                NameList = UserList.UserNamesList.Values.ToList()
+                NameList = UserList.UserNamesList.Values.ToList(),
+                tokenGet = UserList.Token
             };
             return new JsonResult(JsonList);
 
@@ -193,15 +195,16 @@ namespace CiBitWebApplication.Pages
             var JsonList = new
             {
                 IdList = ResearchList.ResearchNamesList.Keys.ToList(),
-                NameList = ResearchList.ResearchNamesList.Values.ToList()
+                NameList = ResearchList.ResearchNamesList.Values.ToList(),
+                tokenGet = ResearchList.Token
             };
             return new JsonResult(JsonList);
         }
 
-        public async Task OnPostProcessRequestAsync()
+        public async Task<IActionResult> OnPostProcessRequestAsync()
         {
             if (!CheckDetails())
-                return;
+                ErrorMsgTransaction = "Transaction Detailes are wrong.";
 
             string pathName = (TransactionType == 1) ? @"Transaction/NewTransaction/" : @"Transaction/NewWithdrawal/";
             var _httpClient = ClientFactory.CreateClient("cibit");
@@ -214,16 +217,18 @@ namespace CiBitWebApplication.Pages
 
             if (httpResponse.IsSuccessStatusCode)
             {
-                var TransactionResponse = await httpResponse.Content.ReadFromJsonAsync<bool>();
+                var TransactionResponse = await httpResponse.Content.ReadFromJsonAsync<NewTransactionResponse>();
 
-                if (TransactionResponse)
+                if (TransactionResponse.IsSuccessful)
                 {
-                    //TODO Show Message success: wait for Bank confirmation.
+                    return RedirectToPage("/UserNewTransaction", new { TransactionResponse.Token });
                 }
             }
             else
             {
+                ErrorMsgTransaction = "Failed To Add Transaction";
             }
+            return RedirectToPage("/UserNewTransaction");
         }
         
 
@@ -235,7 +240,7 @@ namespace CiBitWebApplication.Pages
                 if (string.IsNullOrWhiteSpace(Research) && string.IsNullOrWhiteSpace(UserId))
                 {
                     IsValid = false;
-                    ErrorMsgRsch = InvalidValue;
+                    ErrorMsgTransaction = InvalidValue;
                 }
                 NewTransaction = new NewTransactionRequest
                 {
@@ -252,7 +257,7 @@ namespace CiBitWebApplication.Pages
                 if (string.IsNullOrWhiteSpace(UserId))
                 {
                     IsValid = false;
-                    ErrorMsgRsch = InvalidValue;
+                    ErrorMsgTransaction = InvalidValue;
                 }
                 NewTransaction = new NewTransactionRequest
                 {

@@ -9,6 +9,7 @@ namespace CiBitUtil.Message.Response
     {
         public Dictionary<string, string> ResearchNamesList { get; set; }
 
+        public string Token { get; set; }
         public GetResearchListResponse()
         {
             ResearchNamesList = new Dictionary<string, string>();

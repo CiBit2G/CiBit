@@ -24,19 +24,17 @@ namespace CiBitMainServer.DBLogic
                 using (StreamReader reader = process.StandardOutput)
                 {
                     string result = reader.ReadToEnd();
-                    Console.Write(result);
+                    Console.Write("Python result: " + result);
                 }
             }
         }
-        public async Task<bool> RunPyCmd(string pyFullPath, string cibitId, NewTransactionRequest request)
+        public void RunPyCmd(string pyFullPath, string cibitId, NewTransactionRequest request)
         {
             var param = cibitId + " " + request.Amount + " " + request.ReceiverId + " " + int.Parse(request.ResearchId);
-
             var arg = pyFullPath + " " + param;
+
             try
-            {
-
-
+            { 
                 ProcessStartInfo start = new ProcessStartInfo();
                 start.FileName = $"C:\\Users\\{Environment.UserName}\\OneDrive\\Documents\\GitHub\\CiBit\\PythonFiles\\venv\\Scripts\\python.exe";//cmd is full path to python.exe
                 start.Arguments = arg;//args is path to .py file and any cmd line args -> C://Python26//test.py 100
@@ -56,16 +54,15 @@ namespace CiBitMainServer.DBLogic
                     }
 
                     if (process.ExitCode != 0)
-                        return false;
+                        Console.WriteLine("Pythone failed");
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return false;
             }
-            return true;
-        }
 
+            Console.WriteLine("Pythone success");
+        }
     }
 }

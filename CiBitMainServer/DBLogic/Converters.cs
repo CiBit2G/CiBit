@@ -20,6 +20,8 @@ namespace CiBitMainServer.DBLogic
         private const string university = "uni";
         private const string articleName = "a_name";
         private const string citationCount = "amount";
+        private const string picture = "pic";
+        private const string status = "stat";
         #endregion
 
         #region Transaction
@@ -83,6 +85,7 @@ namespace CiBitMainServer.DBLogic
             }
             };
         }
+        
         public static List<SpObject> NewTransactionConverter(TransactionDTO request)
         {
             return new List<SpObject> {
@@ -100,6 +103,7 @@ namespace CiBitMainServer.DBLogic
             }
             };
         }
+        
         internal static List<SpObject> RemoveCoinConverter(TransactionDTO request)
         {
             return new List<SpObject>
@@ -192,6 +196,31 @@ namespace CiBitMainServer.DBLogic
             {
                 Name = info,
                 value = request.Abstract,
+                ParamType = MySqlDbType.VarChar
+            }
+            };
+        }
+
+        public static List<SpObject> ConfirmResearchConverter(ResearchDTO request)
+        {
+            return new List<SpObject> {
+            
+            new SpObject
+            {
+                Name = cibitId,
+                value = request.CiBitId,
+                ParamType = MySqlDbType.VarChar
+            },
+            new SpObject
+            {
+                Name = status,
+                value = request.Status.ToString(),
+                ParamType = MySqlDbType.Int32
+            },
+             new SpObject
+            {
+                Name = researchName,
+                value = request.ResearchName,
                 ParamType = MySqlDbType.VarChar
             }
             };
@@ -341,7 +370,6 @@ namespace CiBitMainServer.DBLogic
             };
         }
 
-
         public static List<SpObject> GetBlockConverter(TransactionDTO request)
         {
             return new List<SpObject>
@@ -386,6 +414,31 @@ namespace CiBitMainServer.DBLogic
             {
                 new SpObject
                 {
+                    Name = cibitId,
+                    value = request.SenderId,
+                    ParamType = MySqlDbType.VarChar
+                },
+                new SpObject
+                {
+                    Name = Bank,
+                    value = request.ReceiverId,
+                    ParamType = MySqlDbType.VarChar
+                },
+                new SpObject
+                {
+                    Name = amount,
+                    value = request.Amount.ToString(),
+                    ParamType = MySqlDbType.Int32
+                }  
+            };
+        }
+
+        public static List<SpObject> NewWithdrawalConverter(TransactionDTO request)
+        {
+            return new List<SpObject>
+            {
+                new SpObject
+                {
                     Name = Bank,
                     value = request.BankId,
                     ParamType = MySqlDbType.VarChar
@@ -401,9 +454,82 @@ namespace CiBitMainServer.DBLogic
                     Name = Hash,
                     value = request.Hash,
                     ParamType = MySqlDbType.VarChar
-                }  
+                }
             };
         }
-    #endregion
+
+        public static List<SpObject> UserSettingsConverter(UserDTO request)
+        {
+            return new List<SpObject> {
+            new SpObject
+            {
+                Name = cibitId,
+                value = request.CibitId,
+                ParamType = MySqlDbType.VarChar
+            },
+            new SpObject
+            {
+                Name = email,
+                value = request.Email,
+                ParamType = MySqlDbType.VarChar
+            },
+            new SpObject
+            {
+                Name = password,
+                value = request.Password,
+                ParamType = MySqlDbType.VarChar
+            },
+            new SpObject
+            {
+                Name = university,
+                value = request.University,
+                ParamType = MySqlDbType.VarChar
+            },
+            new SpObject
+            {
+                Name = picture,
+                value = request.Picture,
+                ParamType = MySqlDbType.VarChar
+            }
+            };
+        }
+
+        public static List<SpObject> ConfirmUserConverter(UserDTO request)
+        {
+            return new List<SpObject> {
+            new SpObject
+            {
+                Name = cibitId,
+                value = request.CibitId,
+                ParamType = MySqlDbType.VarChar
+            },
+            new SpObject
+            {
+                Name = status,
+                value = request.Status.ToString(),
+                ParamType = MySqlDbType.Int32
+            },
+            };
+        }
+
+        public static List<SpObject> VerifyUserConverter(UserDTO request)
+        {
+            return new List<SpObject> {
+            new SpObject
+            {
+                Name = email,
+                value = request.Email,
+                ParamType = MySqlDbType.VarChar
+            },
+            new SpObject
+            {
+                Name = university,
+                value = request.University,
+                ParamType = MySqlDbType.VarChar
+            }
+            };
+        }
+
+        #endregion
     }
 }

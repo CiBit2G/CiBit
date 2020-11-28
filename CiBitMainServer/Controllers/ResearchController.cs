@@ -82,6 +82,7 @@ namespace CiBitMainServer.Controllers
             }
 
             _context.Connection.Close();
+
             return response;
         }
 
@@ -108,8 +109,32 @@ namespace CiBitMainServer.Controllers
                     reader["researchName"].ToString()
                 );
             }
+           
+            _context.Connection.Close();
+            response.Token = Tokens.CreateToken(ciBitId);
+            return response;
+        }
+
+        [HttpPost]
+        public ConfirmResearchResponse ConfirmResearch([FromBody] ConfirmResearchRequest request)
+        {
+            if (!ModelState.IsValid)
+                throw new Exception(ModelState.ErrorCount.ToString());
+
+            if (!Tokens.VerifyToken(request.Token, out string ciBitId))
+                throw new Exception("Invalid Token, Or Token had expiered.");
+
+            var userinfo = TypeMapper.Mapper.Map<ConfirmResearchRequest, ResearchDTO>(request);
+
+            var spObj = Converters.ConfirmResearchConverter(userinfo);
+            var reader = _context.StoredProcedureSql("ChangeResearchStatus", spObj);
 
             _context.Connection.Close();
+            var response = new ConfirmResearchResponse();
+
+            response.Token = Tokens.CreateToken(ciBitId);
+
+            response.IsSuccessful = true;
             return response;
         }
     }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CiBitUtil.Message.Response
+﻿namespace CiBitUtil.Message.Response
 {
     public class CreateResearchResponse
     {

@@ -10,9 +10,11 @@ using CiBitUtil.Message.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using CiBitUtil.Message.Request;
+using Newtonsoft.Json;
 
 namespace CiBitWebApplication.Pages
 {
+    [IgnoreAntiforgeryToken(Order = 1001)]
     public class BankConfirmResearchModel : PageModel
     {
         private static IHttpClientFactory ClientFactory { get; set; }
@@ -26,9 +28,12 @@ namespace CiBitWebApplication.Pages
         public string Token { get; set; }
 
         [BindProperty]
+        public string JsonList { get; set; }
+
+        [BindProperty]
         public GetResearchConfirmResponse Research { get; set; }
 
-        public GetAllResearchConfirmResponse ResearchList { get; set; }
+        public GetResearchConfirmListResponse ResearchList { get; set; }
 
         public BankConfirmResearchModel(IHttpClientFactory clientFactory)
         {
@@ -48,19 +53,50 @@ namespace CiBitWebApplication.Pages
                 Token = Token
             };
 
-            var todoItemJson = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            var todoItemJson = new StringContent(System.Text.Json.JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
             var httpResponse =
                 await _httpClient.PostAsync($"{pathName}", todoItemJson);
 
             if (httpResponse.IsSuccessStatusCode)
             {
-                ResearchList = await httpResponse.Content.ReadFromJsonAsync<GetAllResearchConfirmResponse>();
+                ResearchList = await httpResponse.Content.ReadFromJsonAsync<GetResearchConfirmListResponse>();
             }
+
+
+            var StatusList = new
+            {
+                status = ResearchList.ResearchConfirmList.Select(x => x.Status).ToList()
+            };
+            if (StatusList != null)
+                JsonList = JsonConvert.SerializeObject(StatusList);
 
             //Token = ResearchList.Token;
 
             Loading = false;
+        }
+
+        public async Task<ActionResult> OnPostConfirm([FromBody] ConfirmResearchRequest json)
+        {
+            string pathName = @"Research/ConfirmResearch/";
+            var _httpClient = ClientFactory.CreateClient("cibit");
+
+            var todoItemJson = new StringContent(System.Text.Json.JsonSerializer.Serialize(json), Encoding.UTF8, "application/json");
+
+            var httpResponse =
+                await _httpClient.PostAsync($"{pathName}", todoItemJson);
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                var ConfirmResponse = await httpResponse.Content.ReadFromJsonAsync<ConfirmResearchResponse>();
+
+                if (ConfirmResponse.IsSuccessful)
+                {
+                    return new JsonResult(new { token = ConfirmResponse.Token });
+                }
+            }
+
+            return new JsonResult(new { token = Token });
         }
     }
 }

@@ -8,6 +8,7 @@ using CiBitMainServer.Models;
 using System;
 using CiBitMainServer.Mapping;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CiBitMainServer.Controllers
 {
@@ -54,7 +55,8 @@ namespace CiBitMainServer.Controllers
                     FName = reader["fName"].ToString(),
                     LName = reader["lName"].ToString(),
                     Email = reader["email"].ToString(),
-                    University = reader["university"].ToString()
+                    University = reader["university"].ToString(),
+                    Picture = reader["Picture"].ToString()
                 };
             }
 
@@ -126,7 +128,9 @@ namespace CiBitMainServer.Controllers
                 CibitId = ciBitId
             };
 
-            var reader = _context.StoredProcedureSql("newUsersPerBank", null);
+            var bankInfo = TypeMapper.Mapper.Map<GetUserRequest, BankDTO>(userRequest);
+            var spObj = Converters.GetBankConverter(bankInfo);
+            var reader = _context.StoredProcedureSql("newUsersPerBank", spObj);
 
             GetAllUsersResponse response = new GetAllUsersResponse();
 
@@ -180,6 +184,7 @@ namespace CiBitMainServer.Controllers
             }
 
             _context.Connection.Close();
+            response.Token = Tokens.CreateToken(ciBitId);
             return response;
         }
 
@@ -215,6 +220,7 @@ namespace CiBitMainServer.Controllers
             }
 
             _context.Connection.Close();
+            response.Token = Tokens.CreateToken(ciBitId);
             return response;
         }
 
@@ -231,6 +237,21 @@ namespace CiBitMainServer.Controllers
 
                 var userinfo = TypeMapper.Mapper.Map<CreateUserRequest, UserDTO>(request);
 
+                var spObj = Converters.VerifyUserConverter(userinfo);
+                var reader = _context.StoredProcedureSql("GetUserByEmailAndUni", spObj);
+
+                var id = string.Empty;
+
+                while (reader.Read())
+                {
+                    id = reader["cibitId"].ToString();
+                }
+
+                if(!string.IsNullOrEmpty(id))
+                    throw new Exception("User Exsits");
+
+                _context.Connection.Close();
+
                 userinfo.Password = hash.Hash(userinfo.Password); //hash Password
 
                 do
@@ -239,16 +260,13 @@ namespace CiBitMainServer.Controllers
                 } while (Tokens.IsUserExist(userinfo.CibitId)); // Verify CiBitId is unique.
 
                 userinfo.ArticleName = userinfo.ArticleName.ToLower();
-                var spObj = Converters.CreateUserConverter(userinfo);
-                var reader = _context.StoredProcedureSql("CreateUser", spObj);
-
-                //var bot = new RunPythonBot();
-                //bot.run_cmd(pyFullPath, userinfo.CibitId);
-
+                
+                spObj = Converters.CreateUserConverter(userinfo);
+                reader = _context.StoredProcedureSql("CreateUser", spObj);
                 _context.Connection.Close();
                 return true;
             }
-            catch 
+            catch (Exception e)
             {
                 return false;
             }
@@ -370,6 +388,97 @@ namespace CiBitMainServer.Controllers
                 response.Token = Tokens.CreateToken(request.CibitId);
 
             _context.Connection.Close();
+            return response;
+        }
+
+        [HttpPost]
+
+        public bool ChangeSettings([FromBody]UserSettingsRequest request)
+        {
+            if (!ModelState.IsValid)
+                throw new Exception(ModelState.ErrorCount.ToString());
+
+            if (!Tokens.VerifyToken(request.Token, out string ciBitId))
+                throw new Exception("Invalid Token, Or Token had expiered.");
+            try
+            {
+                var hash = new ValidateUser();
+                var userinfo = TypeMapper.Mapper.Map<UserSettingsRequest, UserDTO>(request);
+                userinfo.CibitId = ciBitId;
+                userinfo.Password = hash.Hash(userinfo.Password); //hash Password
+                
+                var spObj = Converters.UserSettingsConverter(userinfo);
+                var reader = _context.StoredProcedureSql("ChangeSettings", spObj);
+                
+                _context.Connection.Close();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            }
+        }
+
+        [HttpPost]
+        public ConfirmUserResponse ConfirmUser([FromBody] ConfirmUserRequest request)
+        {
+            if (!ModelState.IsValid)
+                throw new Exception(ModelState.ErrorCount.ToString());
+
+            if (!Tokens.VerifyToken(request.Token, out string ciBitId))
+                throw new Exception("Invalid Token, Or Token had expiered.");
+
+            var userinfo = TypeMapper.Mapper.Map<ConfirmUserRequest, UserDTO>(request);
+
+            var spObj = Converters.ConfirmUserConverter(userinfo);
+            var reader = _context.StoredProcedureSql("ChangeUserStatus", spObj);
+
+            _context.Connection.Close();
+            var response = new ConfirmUserResponse();
+            
+            response.Token = Tokens.CreateToken(ciBitId);
+            if(request.Status == 1)
+            {
+                var bot = new RunPythonBot();
+                Task.Run(() => bot.RunPyCmd(pyFullPath, request.CibitId));
+            }
+
+            response.IsSuccessful = true;
+            return response;
+        }
+
+        [HttpPost]
+        public GetUserSettingsResponse GetUserSettings([FromBody] BaseWebRequest request)
+        {
+            if (!ModelState.IsValid)
+                throw new Exception(ModelState.ErrorCount.ToString());
+
+            if (!Tokens.VerifyToken(request.Token, out string ciBitId))
+                throw new Exception("Invalid Token, Or Token had expiered.");
+
+            GetUserRequest userRequest = new GetUserRequest
+            {
+                Token = request.Token,
+                CibitId = ciBitId
+            };
+
+            var userinfo = TypeMapper.Mapper.Map<GetUserRequest, UserDTO>(userRequest);
+
+            var spObj = Converters.GetUserConverter(userinfo);
+
+            var reader = _context.StoredProcedureSql("GetUserSettings", spObj);
+
+            GetUserSettingsResponse response = new GetUserSettingsResponse();
+
+            while (reader.Read())
+            {
+                response.University = reader["university"].ToString();
+                response.Email = reader["email"].ToString();
+            }
+
+            _context.Connection.Close();
+            response.Token = Tokens.CreateToken(ciBitId);
             return response;
         }
     }

@@ -2,6 +2,7 @@
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 using CiBitUtil.Message.Request;
 using CiBitUtil.Message.Response;
 using CiBitUtil.Models;
@@ -20,6 +21,8 @@ namespace CiBitWebApplication.Pages
         [BindProperty]
         public Withdrawl WithdrawlInfo { get; set; }
 
+        [BindProperty]
+        public string JsonList { get; set; }
         public GetWithdrawlTransactionsReponse WithdrawlTransactionsList { get; set; }
 
         [BindProperty]
@@ -56,5 +59,27 @@ namespace CiBitWebApplication.Pages
             Loading = false;
         }
 
+        public async Task<ActionResult> OnPostConfirm([FromBody] ConfirmResearchRequest json)
+        {
+            string pathName = @"Users/ConfirmUser/";
+            var _httpClient = ClientFactory.CreateClient("cibit");
+
+            var todoItemJson = new StringContent(System.Text.Json.JsonSerializer.Serialize(json), Encoding.UTF8, "application/json");
+
+            var httpResponse =
+                await _httpClient.PostAsync($"{pathName}", todoItemJson);
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                var ConfirmResponse = await httpResponse.Content.ReadFromJsonAsync<ConfirmUserResponse>();
+
+                if (ConfirmResponse.IsSuccessful)
+                {
+                    return new JsonResult(new { token = ConfirmResponse.Token });
+                }
+            }
+
+            return new JsonResult(new { token = Token });
+        }
     }
 }
