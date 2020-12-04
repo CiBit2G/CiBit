@@ -41,6 +41,7 @@ namespace CiBitMainServer.DBLogic
         private const string Hash = "blockHash";
         private const string Bank = "bank_Id";
         private const string PreviousHash = "lastHash";
+        private const string WithdrawalId = "w_id";
 
 
         #endregion
@@ -89,18 +90,12 @@ namespace CiBitMainServer.DBLogic
         public static List<SpObject> NewTransactionConverter(TransactionDTO request)
         {
             return new List<SpObject> {
-            new SpObject
-            {
-                Name = cibitId,
-                value = request.SenderId,
-                ParamType = MySqlDbType.VarChar
-            },
-            new SpObject
-            {
-                Name = amount,
-                value = request.Amount.ToString(),
-                ParamType = MySqlDbType.Int32
-            }
+                new SpObject
+                {
+                    Name = cibitId,
+                    value = request.SenderId,
+                    ParamType = MySqlDbType.VarChar
+                }
             };
         }
         
@@ -439,25 +434,55 @@ namespace CiBitMainServer.DBLogic
             {
                 new SpObject
                 {
-                    Name = Bank,
-                    value = request.BankId,
+                    Name = cibitId,
+                    value = request.SenderId,
                     ParamType = MySqlDbType.VarChar
                 },
                 new SpObject
                 {
-                    Name = blockchainNumber,
-                    value = request.BlockchainNumber.ToString(),
+                    Name = Bank,
+                    value = request.ReceiverId,
+                    ParamType = MySqlDbType.VarChar
+                },
+                new SpObject
+                {
+                    Name = amount,
+                    value = request.Amount.ToString(),
+                    ParamType = MySqlDbType.Int32
+                }
+            };
+        }
+        public static List<SpObject> ConfirmWithdrawalConverter(TransactionDTO request)
+        {
+            return new List<SpObject>
+            {
+                new SpObject
+                {
+                    Name = WithdrawalId,
+                    value = request.WithdrawalId.ToString(),
+                    ParamType = MySqlDbType.Int32
+                },
+                 new SpObject
+                {
+                    Name = cibitId,
+                    value = request.SenderId,
+                    ParamType = MySqlDbType.VarChar
+                },
+                  new SpObject
+                {
+                    Name = status,
+                    value = request.Status.ToString(),
                     ParamType = MySqlDbType.Int32
                 },
                 new SpObject
                 {
-                    Name = Hash,
-                    value = request.Hash,
+                    Name = Bank,
+                    value = request.ReceiverId,
                     ParamType = MySqlDbType.VarChar
                 }
+               
             };
         }
-
         public static List<SpObject> UserSettingsConverter(UserDTO request)
         {
             return new List<SpObject> {

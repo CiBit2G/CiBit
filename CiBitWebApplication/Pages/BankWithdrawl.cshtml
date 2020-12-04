@@ -4,12 +4,64 @@
     ViewData["Title"] = "BankWithdrawl";
     ViewData["User"] = "Bank";
     ViewData["Token"] = Model.Token;
-
     int index = 1;
+
     while (Model.Loading)
     {
     }
 }
+
+@section scripts{
+    <script src="~/lib/jquery/jquery2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var list = $("#JsonList").val();
+            var data = $.parseJSON(list);
+            changeSelectOption(data);
+        });
+
+        function changeSelectOption(data) {
+            let index = 1;
+            $.each(data.status, function (i, status) {
+                $("#" + index).val(status);
+                if (status > 0) {
+                    $("#" + index).attr('disabled', true);
+                }
+                index++;
+            });
+        }
+
+        function update(index, id, sender, amount) {
+            var request = JSON.stringify({
+                token: "@Model.Token",
+                withdrawalId: id,
+                senderId: sender,
+                amount: amount,
+                status: $("#" + index).val()
+            });
+
+            $.ajax
+                ({
+                    type: "POST",
+                    url: '/BankWithdrawl?handler=Confirm',
+                    data: request,
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    headers: {
+                        "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function (result) {
+                        $("#" + index).attr('disabled', true);
+                        $("#Token").val(result.token);
+                    },
+                    error: function (status, ex) {
+                        $("#" + index).val(0);
+                    }
+                });
+        }
+    </script>
+}
+
 <style>
     .wrap-div {
         height: 460px;
@@ -23,6 +75,11 @@
     .wrap-title {
         display: flex;
         justify-content: center;
+    }
+
+    .wrap-div #myTable select {
+        font-family: font-awesome;
+        color: black;
     }
 </style>
 
@@ -43,9 +100,6 @@
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.WithdrawlInfo.FullName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.WithdrawlInfo.Reason)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.WithdrawlInfo.Amount)
@@ -69,13 +123,10 @@
                         @Html.DisplayFor(modelItem => item.FullName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Reason)
-                    </td>
-                    <td>
                         @Html.DisplayFor(modelItem => item.Amount)
                     </td>
                     <td>
-                        <select id="@(index.ToString())" onchange="update('@(index++.ToString())','@item.SenderId')">
+                        <select id="@(index.ToString())" onchange="update('@(index++.ToString())', '@item.WithdrawalId', '@item.SenderId', '@item.Amount')">
                             <option value="0"> Pending </option>
                             <option value="1"> Approve </option>
                             <option value="2"> Decline </option>
@@ -86,4 +137,4 @@
         </tbody>
     </table>
 </div>
-        </div>
+

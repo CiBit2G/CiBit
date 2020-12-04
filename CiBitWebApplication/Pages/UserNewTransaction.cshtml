@@ -18,11 +18,12 @@
         var research;
         var receiver;
         var List;
+
         function Check() {
             amount =$("#Amount").val();
             research = $("#Research option:selected").val();
             receiver = $("#UserId option:selected").val();
-            if (selected == 0) {
+            if (selected == 2) {
                 if (amount > 0 && receiver !== null && receiver !== "")
                     $("#submit").attr("disabled", false);
                 else
@@ -43,7 +44,7 @@
         function UpdateReciver() {
             selected = $("#type option:selected").val();
             $("#UserId").empty();
-            if (selected == 0) {
+            if (selected == 2) {
                 var token = $("#Token").val();
                 $.getJSON(`?handler=UserBank&Token=${token}`, (data) => {
                     let index = 0;
@@ -151,9 +152,9 @@
                 </td>
                 <td>
                     <select id="type" onchange="UpdateReciver()" asp-for="TransactionType">
-                        <option value="-1" selected="selected">Select Type</option>
-                        <option value="0">New Withdral</option>
+                        <option value="0" selected="selected">Select Type</option>
                         <option value="1">New Trasaction</option>
+                        <option value="2">New Withdral</option>
                     </select>
                 </td>
             </tr>

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CiBitUtil.Message.Request
+﻿namespace CiBitUtil.Message.Request
 {
     public class ConfirmResearchRequest: BaseWebRequest
     {

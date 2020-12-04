@@ -126,11 +126,12 @@ namespace CiBitMainServer.Controllers
             {
                 response.Withdrawls.Add(new Withdrawl()
                 {
+                    WithdrawalId = int.Parse(reader["id"].ToString()),
                     Date = DateTime.Parse(reader["createdDateTime"].ToString()),
+                    SenderId = reader["senderId"].ToString(),
                     Amount = int.Parse(reader["amount"].ToString()),
-                    Reason = reader["reason"].ToString(),
                     Status = int.Parse(reader["w_status"].ToString()),
-                    FullName = reader["FullName"].ToString(),
+                    FullName = reader["fName"].ToString() + " " + reader["lName"].ToString(),
                 });
             }
 
@@ -426,12 +427,44 @@ namespace CiBitMainServer.Controllers
             }
             spObj = Converters.NewWithdrawalConverter(userinfo);
             reader = _context.StoredProcedureSql("AddWithdrawal", spObj);
-            
-            
+            _context.Connection.Close();
+
             response.IsSuccessful = true;
             response.Token = Tokens.CreateToken(userinfo.SenderId);
             return response;
 
+        }
+
+        public ConfirmWithdrawalResponse ConfirmWithdrawal([FromBody] ConfirmWithdrawalRequest request)
+        {
+            if (!ModelState.IsValid)
+                throw new Exception(ModelState.ErrorCount.ToString());
+
+            if (!Tokens.VerifyToken(request.Token, out string ciBitId))
+                throw new Exception("Invalid Token, Or Token had expiered.");
+
+            var userinfo = TypeMapper.Mapper.Map<ConfirmWithdrawalRequest, TransactionDTO>(request);
+            userinfo.ReceiverId = ciBitId;
+
+            var spObj = Converters.ConfirmWithdrawalConverter(userinfo);
+            var reader = _context.StoredProcedureSql("ChangeWithdrawalStatus", spObj);
+
+            _context.Connection.Close();
+            if(request.Status == 1)
+            {
+                NewTransactionRequest newRequest = new NewTransactionRequest();
+                newRequest.ReceiverId = ciBitId;
+                newRequest.Amount = request.Amount;
+                newRequest.ResearchId = "0";
+                var bot = new RunPythonBot();
+                Task.Run(() => bot.RunPyCmd(pyFullPath, request.SenderId, newRequest));
+            }
+            var response = new ConfirmWithdrawalResponse();
+
+            response.Token = Tokens.CreateToken(ciBitId);
+
+            response.IsSuccessful = true;
+            return response;
         }
     }
 }

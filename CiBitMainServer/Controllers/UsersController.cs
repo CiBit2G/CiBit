@@ -56,7 +56,8 @@ namespace CiBitMainServer.Controllers
                     LName = reader["lName"].ToString(),
                     Email = reader["email"].ToString(),
                     University = reader["university"].ToString(),
-                    Picture = reader["Picture"].ToString()
+                    Picture = reader["Picture"].ToString(),
+                    Balance =int.Parse( reader["balance"].ToString())
                 };
             }
 

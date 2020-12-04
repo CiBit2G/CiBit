@@ -4,7 +4,7 @@ import sys
 import mysql.connector
 import scholarly
 
-from TransactionGenrator import createCoins
+from TransactionGenrator import arrangeCoins
 
 logger = logging.getLogger('testbot')
 hdlr = logging.FileHandler('C:\\Users\\guybo\\OneDrive\\Documents\\GitHub\\CiBit\\testbot.log')
@@ -97,7 +97,7 @@ class Search:
         print("amount of of citations left, doubles in Google Scholar " + str(newCitations))
         print("finish checking User:" + name + "\n")
         if sum != 0:
-            createCoins(None, sum, user[0], None, self.connection)
+            arrangeCoins(None, sum, user[0], None, self.connection)
         cursor.close()
 
     # searches the user for the first time and add all the articles he got to the database
@@ -109,7 +109,7 @@ class Search:
         sum = self.addNewArticles(self.newPublications, cibitId)
         if check == sum:
             print(sum)
-        createCoins(None, sum, cibitId, None, self.connection)
+        arrangeCoins(None, sum, cibitId, None, self.connection)
 
     # a function that gets the new user and find all the details known about him in google scholar
     def newUser(self, cibitId):

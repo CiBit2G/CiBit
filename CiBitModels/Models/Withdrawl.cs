@@ -2,7 +2,7 @@
 {
     public class Withdrawl : Transaction
     {
-        public string Reason { get; set; }
+        public int WithdrawalId { get; set; }
 
         public int Status { get; set; }
 

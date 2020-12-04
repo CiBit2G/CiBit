@@ -41,6 +41,7 @@ namespace CiBitMainServer.Mapping
             CreateMap<GetAllCoinsRequest, TransactionDTO>();
             CreateMap<GetBlockRequest, TransactionDTO>();
             CreateMap<NewTransactionRequest, TransactionDTO>();
+            CreateMap<ConfirmWithdrawalRequest, TransactionDTO>();
             #endregion
 
             #region Research

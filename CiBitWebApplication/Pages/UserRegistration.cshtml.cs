@@ -149,7 +149,7 @@ namespace CiBitWebApplication.Pages
 
                 if(CreateUserResponse)
                 {
-                    return RedirectToPage("/RegisterComplete");
+                    return RedirectToPage("/RegisterComplete", new { Approval = "univercity's" });
                 }
             }
             else

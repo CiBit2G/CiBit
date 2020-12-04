@@ -25,50 +25,61 @@ def verifyCoins(coinId, cibitId):
     return hash == coinId
 
 
+def createCoins(cibitId, newCoinList, oldCoinList, amount):
+        i = 0
+        while i < amount:
+            coinId = generateCoin(cibitId)
+            if coinId not in oldCoinList and coinId not in newCoinList:
+                i += 1
+                args = (coinId, cibitId)
+                newCoinList.append(args)
+        return newCoinList
+
+
 # Creates a new coin list with no duplicate keys in the database and the list.
-def createCoins(senderId, amount, cibitId, researchId, connection):
-    i = 0
-    counter = 0
-    fragment = amount
+def arrangeCoins(senderId, amount, cibitId, researchId, connection):
     newCoinList = list()
     cursor = connection.cursor()
     cursor.callproc("getCoins")
     oldCoinList = list(next(cursor.stored_results()))
-    while i < amount:
-        coinId = generateCoin(cibitId)
-        if coinId not in oldCoinList and coinId not in newCoinList:
-            counter += 1
-            i += 1
-            args = (coinId, cibitId)
-            newCoinList.append(args)
-        if (i + 1) % 100 == 0:
-            fragment -= 100
-            createTransaction(senderId, 100, cibitId, researchId, newCoinList, fragment, connection)
-            oldCoinList += newCoinList
-            newCoinList.clear()
-    createTransaction(senderId, fragment, cibitId, researchId, newCoinList, 0, connection)
+    result = cursor.callproc('isUserOrBank', [cibitId, 0])
+    isUser = result[-1]
+    if isUser == 1:
+        newCoinList = createCoins(cibitId, newCoinList, oldCoinList, amount)
+        createTransaction(senderId, amount, cibitId, researchId, newCoinList, connection)
+    else:
+        createTransaction(senderId, amount, cibitId, researchId, None, connection)
     cursor.close()
-    return counter
 
 
-def createTransaction(senderId, amount, cibitId, researchId, newCoinList, fragment, connection, oldCoinList=None):
+def createTransaction(senderId, amount, cibitId, researchId, newCoinList, connection, oldCoinList=None):
     cursor = connection.cursor()
     transactionList = list()
-    transactionId = 0
-    args = [senderId, cibitId, researchId, amount, fragment, transactionId]
+    transactionId = []
+    counter = 0
+    fragment = amount
+    totalAmount = amount
+    while fragment > 0:
+        amount = 100 if fragment >= 100 else fragment
+        fragment -= amount
+        args = [senderId, cibitId, researchId, amount, fragment, counter]
+        result = cursor.callproc('AddNewCoinsTransaction', args)
+        transactionId.append(result[-1])
     if senderId is not None:
-        args2 = [senderId, amount]
+        args2 = [senderId, totalAmount]
         cursor.callproc("getCoinList", args2)
         oldCoinList = list(next(cursor.stored_results()))
-    result = cursor.callproc('AddNewCoinsTransaction', args)
-    transactionId = result[-1]
     queryCoins = "INSERT INTO coins (coinId, cibitId) VALUES(%s, %s)"
     queryTransactionsCoins = "INSERT INTO coinspertranscation(transactionId, newCoinId, oldCoinId, status) VALUES(%s, %s, %s, %s)"
     cursor.executemany(queryCoins, newCoinList)
     connection.commit()
-    for i in range(0, (amount - 1)):
-        args = (transactionId, newCoinList[i][0], None if oldCoinList is None else oldCoinList[i][0], 0)
+    for i in range(0, totalAmount):
+        args = (transactionId[counter],  None if newCoinList is None else newCoinList[i][0], None if oldCoinList is None else oldCoinList[i][0], 0)
         transactionList.append(args)
+        if (i+1) % 100 == 0:
+            counter += 1
+            cursor.executemany(queryTransactionsCoins, transactionList)
+            transactionList.clear()
     cursor.executemany(queryTransactionsCoins, transactionList)
     connection.commit()
     cursor.close()
@@ -87,11 +98,14 @@ def connect():
 
 
 def main():
+    id = 'hf9br7X8F5Qzj'
+    amount = 150
+    bank = 'bank2Test'
+
     try:
-        # js = '{ "senderId":"dixRxir-v6AAP", "amount":15, "cibitId":"hf9br7X8F5Qzj", "researchId":10}'
-        # data = json.loads(sys.argv[1])
         connection = connect()
-        amount = createCoins(sys.argv[1],int(sys.argv[2]), sys.argv[3], int(sys.argv[4]), connection)
+        arrangeCoins(id, amount, bank, None, connection)
+        #arrangeCoins(sys.argv[1], int(sys.argv[2]), sys.argv[3], None if int(sys.argv[4]) == 0 else int(sys.argv[4]), connection)
         print(amount)
     finally:
         if connection is None:

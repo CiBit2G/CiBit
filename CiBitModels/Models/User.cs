@@ -10,5 +10,7 @@
         public int? CitationAmount { get; set; }
 
         public string Picture { get; set; }
+
+        public int Balance { get; set; }
     }
 }

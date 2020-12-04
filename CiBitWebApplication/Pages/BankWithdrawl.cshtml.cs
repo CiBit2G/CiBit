@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -8,9 +9,11 @@ using CiBitUtil.Message.Response;
 using CiBitUtil.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 
 namespace CiBitWebApplication.Pages
 {
+    [IgnoreAntiforgeryToken(Order = 1001)]
     public class BankWithdrawlModel : PageModel
     {
         private static IHttpClientFactory ClientFactory { get; set; }
@@ -46,7 +49,7 @@ namespace CiBitWebApplication.Pages
                 Token = Token
             };
 
-            var todoItemJson = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            var todoItemJson = new StringContent(System.Text.Json.JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
             var httpResponse =
                 await _httpClient.PostAsync($"{pathName}", todoItemJson);
@@ -55,13 +58,21 @@ namespace CiBitWebApplication.Pages
             {
                 WithdrawlTransactionsList = await httpResponse.Content.ReadFromJsonAsync<GetWithdrawlTransactionsReponse>();
             }
+            if (WithdrawlTransactionsList == null)
+                return;
 
+            var StatusList = new
+            {
+                status = WithdrawlTransactionsList.Withdrawls.Select(x => x.Status).ToList()
+            };
+            if (StatusList != null)
+                JsonList = JsonConvert.SerializeObject(StatusList);
             Loading = false;
         }
 
-        public async Task<ActionResult> OnPostConfirm([FromBody] ConfirmResearchRequest json)
+        public async Task<ActionResult> OnPostConfirm([FromBody] ConfirmWithdrawalRequest json)
         {
-            string pathName = @"Users/ConfirmUser/";
+            string pathName = @"Transaction/ConfirmWithdrawal/";
             var _httpClient = ClientFactory.CreateClient("cibit");
 
             var todoItemJson = new StringContent(System.Text.Json.JsonSerializer.Serialize(json), Encoding.UTF8, "application/json");
@@ -71,7 +82,7 @@ namespace CiBitWebApplication.Pages
 
             if (httpResponse.IsSuccessStatusCode)
             {
-                var ConfirmResponse = await httpResponse.Content.ReadFromJsonAsync<ConfirmUserResponse>();
+                var ConfirmResponse = await httpResponse.Content.ReadFromJsonAsync<ConfirmWithdrawalResponse>();
 
                 if (ConfirmResponse.IsSuccessful)
                 {

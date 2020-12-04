@@ -81,7 +81,7 @@ namespace CiBitWebApplication.Pages
                 if (CreateBankResponse)
                 {
                     //TODO Show Message success: wait for Bank confirmation.
-                    return RedirectToPage("/RegisterComplete");
+                    return RedirectToPage("/RegisterComplete", new { Approval = "CiBit's" });
                 }
             }
             else

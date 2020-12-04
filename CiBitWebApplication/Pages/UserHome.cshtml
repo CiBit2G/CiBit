@@ -11,9 +11,6 @@
 }
 <style>
 
-    more-info{
-        right: 100px;
-    }
     .wrap-div {
         height: 460px;
     }
@@ -24,10 +21,11 @@
         margin-bottom: 100px;
     }
     .table-info {
-       flex:1
+       flex:2
     }
     .more-info{
-        flex:2;
+        display:inline;
+        flex:1;
     }
     .avatar {
         width: 150px;
@@ -35,11 +33,17 @@
     }
     .span-info {
         width: 100px;
-        font-size: 20px
+        font-size: 20px;
+    }
+    #balance-info{
+        display:inline;
     }
 </style>
 <div class="wrap-div">
     <div class="personl-info">
+        <div class="more-info">
+            <img class="avatar" src="@Model.UserTransaction.user.Picture" />
+        </div>
         <table class="table-info">
             <tr>
                 <td>
@@ -73,15 +77,12 @@
                 </td>
                 <td>
                     <div>
-                        <h6>@Model.UserTransaction.user.CitationAmount</h6>
+                        <h6 id="balance-info">@Model.UserTransaction.user.Balance</h6>
                         <i class="glyphicon glyphicon-bitcoin"></i>
                     </div>
                 </td>
             </tr>
         </table>
-        <div class="more-info">
-            <img class="avatar" src="@Model.UserTransaction.user.Picture" />
-        </div>
     </div>
     <div>
         <table id="myTable" class="table" cellspacing="0">

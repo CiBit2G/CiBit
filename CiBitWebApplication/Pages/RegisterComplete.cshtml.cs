@@ -9,6 +9,10 @@ namespace CiBitWebApplication.Pages
 {
     public class RegisterCompleteModel : PageModel
     {
+
+        [BindProperty(SupportsGet = true)]
+        public string Approval { get; set; }
+
         public void OnGet()
         {
         }

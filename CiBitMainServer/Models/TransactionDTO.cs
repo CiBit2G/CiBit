@@ -20,7 +20,7 @@ namespace CiBitMainServer.Models
         public List<string> Coins { get; set; }
         public int Status { get; set; }
         public string BankId { get; set; }
-
+        public int WithdrawalId { get; set; }
 
         public TransactionDTO()
         {
