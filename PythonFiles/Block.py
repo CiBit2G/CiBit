@@ -67,7 +67,7 @@ class Block:
         for coin in coinList:
             if not verifyCoins(coin, cibitId):
                 return False
-            if not self.coinExist(coin):x
+            if not self.coinExist(coin):
                 return False
         return True
 
