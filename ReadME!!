@@ -1,2 +1,5 @@
-blockReady -> לשנות שיסגור בלוק אחרון עם עבר התאריך, שידע להחזיר מצב קיצון שבו כולם מעודכנים.
-deleted coinID :'ded74c9816cf3f8d2762387986045979f20a6a3a93cf54e0c1f82e2d5857664c507ad3da7372860391f6addb88d77c2f7716083f6c7e0103043b0eee5ac8587c96e1a6065de141b35d9c9024d634abffd7a01dcde96b7d41169e46e06cb63e6d', 'Shalom1'
+This Project is about creating a currency for Acadmic research,
+There is automated search in python script, bot.py.
+The block-chain is automated check of each transaction and coin inside it.
+The project in C# is the server with two websites one for the researchers and
+one for the Universities that want to be part of the project.

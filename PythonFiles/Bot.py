@@ -1,9 +1,7 @@
 import logging
 import sys
-
 import mysql.connector
 import scholarly
-
 from TransactionGenrator import arrangeCoins
 
 logger = logging.getLogger('testbot')
@@ -102,9 +100,20 @@ class Search:
 
     # searches the user for the first time and add all the articles he got to the database
     # and counts all the citations from his articles.
-    def addUser(self, author, cibitId):
+    def addUser(self, user, cibitId):
+        name = user[1] + ' ' + user[2] + ', ' + user[4]
         check = 0
-        newAuthor = next((scholarly.search_author(author))).fill()
+        try:
+            newAuthor = next((scholarly.search_author(name))).fill()
+        except Exception as e:
+            print(e)
+            email = user[3].split('@')[1]
+            name = user[1] + ' ' + user[2] + ', ' + email
+            try:
+                newAuthor = next((scholarly.search_author(name))).fill()
+            except Exception as e:
+                print(e)
+                return 0
         check = self.createDict(newAuthor)
         sum = self.addNewArticles(self.newPublications, cibitId)
         if check == sum:
@@ -116,8 +125,7 @@ class Search:
         cursor = self.connection.cursor()
         cursor.callproc('getUser', [cibitId])
         user = list(next(cursor.stored_results())).pop()
-        name = user[1] + ' ' + user[2] + ', ' + user[4]
-        self.addUser(name, cibitId)
+        self.addUser(user, cibitId)
 
     # a function that gets all the users in the database and send each one to check for new citations
     def monthlyUpdate(self):
@@ -150,11 +158,11 @@ def main():
     search = Search()
     try:
         if len(sys.argv) == 2:
-            print(sys.argv[1])
-            search.newUser(str(sys.argv[1]))
+           print(sys.argv[1])
+           search.newUser(str(sys.argv[1]))
         elif len(sys.argv) == 1:
-            print(sys.argv[0])
-            search.monthlyUpdate()
+           print(sys.argv[0])
+           search.monthlyUpdate()
         else:
             logger.error("Too many arguments")
     finally:

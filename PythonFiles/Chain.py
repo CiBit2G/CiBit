@@ -1,13 +1,11 @@
 import hashlib
 import json
-
 import mysql.connector
 import requests
-
 from Block import Block
 from NoSSL import no_ssl_verification
 
-Id = "bank1Test"
+Id = "FWi1LQxHjO"
 url = "https://localhost:5001/"
 
 
@@ -234,12 +232,13 @@ def useReturnDb(args, sp):
     cursor = connection.cursor()
     try:
         if args is None:
-             cursor.callproc(sp)
+            cursor.callproc(sp)
         else:
             cursor.callproc(sp, args)
         answer = list(next(cursor.stored_results()))
     except mysql.connector.Error as e:
         print("Error while connecting to MySQL", e)
+        answer = None
     connection.commit()
     cursor.close()
     return answer

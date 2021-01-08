@@ -394,8 +394,9 @@ namespace CiBitMainServer.Controllers
 
         [HttpPost]
 
-        public bool ChangeSettings([FromBody]UserSettingsRequest request)
+        public UserSettingsResponse ChangeSettings([FromBody]UserSettingsRequest request)
         {
+            UserSettingsResponse response = new UserSettingsResponse();
             if (!ModelState.IsValid)
                 throw new Exception(ModelState.ErrorCount.ToString());
 
@@ -412,12 +413,15 @@ namespace CiBitMainServer.Controllers
                 var reader = _context.StoredProcedureSql("ChangeSettings", spObj);
                 
                 _context.Connection.Close();
-                return true;
+                response.IsSuccessful = true;
+                response.Token = Tokens.CreateToken(ciBitId);
+                return response;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return false;
+                response.IsSuccessful = false;
+                return response;
             }
         }
 
@@ -482,5 +486,12 @@ namespace CiBitMainServer.Controllers
             response.Token = Tokens.CreateToken(ciBitId);
             return response;
         }
+
+        [HttpGet]
+        public string CibitGenrator()
+        {
+            var hash = new ValidateUser();
+            return hash.CreateCibitId();
+        } 
     }
 }

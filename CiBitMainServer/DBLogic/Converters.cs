@@ -409,21 +409,23 @@ namespace CiBitMainServer.DBLogic
             {
                 new SpObject
                 {
-                    Name = cibitId,
-                    value = request.SenderId,
-                    ParamType = MySqlDbType.VarChar
-                },
-                new SpObject
-                {
                     Name = Bank,
-                    value = request.ReceiverId,
+                    value = request.BankId,
                     ParamType = MySqlDbType.VarChar
                 },
+
                 new SpObject
                 {
-                    Name = amount,
-                    value = request.Amount.ToString(),
+                    Name = blockchainNumber,
+                    value = request.BlockchainNumber.ToString(),
                     ParamType = MySqlDbType.Int32
+                },
+                
+                new SpObject
+                {
+                    Name = Hash,
+                    value = request.Hash,
+                    ParamType = MySqlDbType.VarChar
                 }  
             };
         }

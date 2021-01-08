@@ -71,7 +71,7 @@ namespace CiBitWebApplication.Pages
         
         public UserSettingsRequest CreateUser { get; set; }
 
-        public bool CreateUserResponse { get; set; }
+        public UserSettingsResponse CreateUserResponse { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public GetBankNamesResponse UniversitiesList { get; set; }
@@ -183,7 +183,7 @@ namespace CiBitWebApplication.Pages
             if (!CheckDetails())
                 ErrorMsgSettings = "Wrong Settings";
 
-            string pathName = @"Users/CreateUser/";
+            string pathName = @"Users/ChangeSettings/";
 
             var _httpClient = ClientFactory.CreateClient("cibit");
 
@@ -194,11 +194,11 @@ namespace CiBitWebApplication.Pages
 
             if (httpResponse.IsSuccessStatusCode)
             {
-                CreateUserResponse = await httpResponse.Content.ReadFromJsonAsync<bool>();
+                CreateUserResponse = await httpResponse.Content.ReadFromJsonAsync<UserSettingsResponse>();
 
-                if (CreateUserResponse)
+                if (CreateUserResponse.IsSuccessful)
                 {
-                    //TODO Show Message success: wait for Bank confirmation.
+                    return RedirectToPage("/UserSettings", new {CreateUserResponse.Token });
                 }
             }
             else

@@ -63,7 +63,7 @@ namespace CiBitWebApplication.Pages
         public async Task<IActionResult> OnPostProcessRequestAsync()
         {
             if (!CheckDetails())
-                ErrorMsg = "Details are not valid"; ;
+                ErrorMsg = "Details are not valid";
 
             string pathName = @"Users/CreateBank/";
 

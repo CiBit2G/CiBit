@@ -98,15 +98,9 @@ def connect():
 
 
 def main():
-    id = 'hf9br7X8F5Qzj'
-    amount = 150
-    bank = 'bank2Test'
-
     try:
         connection = connect()
-        arrangeCoins(id, amount, bank, None, connection)
-        #arrangeCoins(sys.argv[1], int(sys.argv[2]), sys.argv[3], None if int(sys.argv[4]) == 0 else int(sys.argv[4]), connection)
-        print(amount)
+        arrangeCoins(sys.argv[1], int(sys.argv[2]), sys.argv[3], None if int(sys.argv[4]) == 0 else int(sys.argv[4]), connection)
     finally:
         if connection is None:
             return 0

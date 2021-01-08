@@ -153,7 +153,7 @@ namespace CiBitMainServer.Controllers
             {
                 response = new BlockReadyResponse()
                 {
-                    BlockchainNumber = int.Parse(reader["lastBlock"].ToString()),
+                    BlockchainNumber = int.Parse(reader["blockId"].ToString()),
                 };
             }
             _context.Connection.Close();
@@ -266,8 +266,9 @@ namespace CiBitMainServer.Controllers
                 _context.Connection.Close();
                 return true;
             }
-            catch
+            catch(Exception e)
             {
+                Console.WriteLine(e);
                 return false;
             }
         }

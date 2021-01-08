@@ -40,7 +40,6 @@ class Block:
                 end -= 1
             i += 1
 
-
     # a function to get next transaction of the block from the server.
     def getTransactions(self, index):
         temp = url + "Transaction/GetTransaction/"
